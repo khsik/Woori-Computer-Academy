@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="web.test.bean.MemberDTO"/>
+    <fullyQualifiedTypeName name="web.test.bean.OracleConnection"/>
+    <fullyQualifiedTypeName name="webP.userpage.bean.OracleConnection"/>
+    <fullyQualifiedTypeName name="webP.userpage.bean.UserInfoDTO"/>
+    <fullyQualifiedTypeName name="webP.userpage.bean.ReplyDTO"/>
+    <fullyQualifiedTypeName name="web.bean.board02.Board02DTO"/>
+    <fullyQualifiedTypeName name="java.sql.Connection"/>
+    <fullyQualifiedTypeName name="java.sql.ResultSet"/>
+    <fullyQualifiedTypeName name="java.sql.DriverManager"/>
+    <fullyQualifiedTypeName name="java.sql.SQLException"/>
+    <fullyQualifiedTypeName name="business.businessDTO"/>
+    <fullyQualifiedTypeName name="business.BusinessDTO"/>
+    <fullyQualifiedTypeName name="business.OrderDTO"/>
+    <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpServletRequest"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpServletResponse"/>
+    <fullyQualifiedTypeName name="java.util.Date"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="java.sql.Timestamp"/>
+    <fullyQualifiedTypeName name="mvc.board.model.BoardDTO"/>
+    <fullyQualifiedTypeName name="mvc.board.model.BoardDAO"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpServlet"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
+    <fullyQualifiedTypeName name="java.util.Properties"/>
+    <fullyQualifiedTypeName name="java.io.FileInputStream"/>
+    <fullyQualifiedTypeName name="java.util.Iterator"/>
+    <fullyQualifiedTypeName name="javax.websocket.Session"/>
+    <fullyQualifiedTypeName name="java.io.UnsupportedEncodingException"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
+    <fullyQualifiedTypeName name="mvc.member.model.MemberDTO"/>
+    <fullyQualifiedTypeName name="mvc.member.model.MemberDAO"/>
+    <fullyQualifiedTypeName name="mvc.test.action.SuperAction"/>
+    <fullyQualifiedTypeName name="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"/>
+    <fullyQualifiedTypeName name="com.oreilly.servlet.MultipartRequest"/>
+    <fullyQualifiedTypeName name="java.io.File"/>
+</qualifiedTypeNameHistroy>

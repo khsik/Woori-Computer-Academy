@@ -1,0 +1,22 @@
+package mvc.test.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class Jstl01Action implements SuperAction {
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+
+		JstlDTO d1 = new JstlDTO();
+		d1.setNum(1);
+		d1.setName("java");
+
+		JstlDTO d2 = new JstlDTO();
+		d2.setNum(2);
+		d2.setName("python");
+		
+		return "/WEB-INF/views/test/jstl01.jsp";
+	}
+
+}

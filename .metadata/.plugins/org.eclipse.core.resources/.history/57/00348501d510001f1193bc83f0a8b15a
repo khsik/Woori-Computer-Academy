@@ -1,0 +1,5 @@
+package mvc.test.action;
+
+public interface SuperAction {
+	public String action(HttpServlRequest request);
+}

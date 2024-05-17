@@ -1,0 +1,5 @@
+package mvc.test.action;
+
+public class JstlDTO {
+
+}

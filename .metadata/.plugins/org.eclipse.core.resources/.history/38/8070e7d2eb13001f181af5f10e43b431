@@ -1,0 +1,57 @@
+package mvc.board.action;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
+import mvc.board.model.BoardDAO;
+import mvc.test.action.SuperAction;
+
+public class DeleteProAction implements SuperAction {
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		String filePath = request.getServletContext().getRealPath("resources/upload");
+		int max = 10 * 1024 * 1024;
+		String enc = "UTF-8";
+		DefaultFileRenamePolicy dp = new DefaultFileRenamePolicy();
+		try {
+			MultipartRequest mr = new MultipartRequest(request, filePath, max, enc, dp);
+
+			String sid =  mr.getParameter("sid");
+			int num = Integer.parseInt(mr.getParameter("num"));
+			String pageNum = mr.getParameter("pageNum");
+			String passwd = mr.getParameter("passwd");
+
+			BoardDAO dao = BoardDAO.getInstance();
+			String[] result = dao.boardDelete(num, sid, passwd);
+			
+			request.setAttribute("result", result[0]);
+			request.setAttribute("pageNum", pageNum);
+			
+			if(result[1] != null) {
+				File f = new File(filePath + "/" + result[1]);
+				f.delete();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "/WEB-INF/views/board/deletePro.jsp";
+	}
+
+}

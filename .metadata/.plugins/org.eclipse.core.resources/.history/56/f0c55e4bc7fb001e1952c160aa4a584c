@@ -1,0 +1,101 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@page import="java.util.ArrayList"%>
+<%@ page import="business.BusinessDAO" %>
+<%@ page import="business.BusinessDTO" %>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+	img {width:200px; height:200px;}
+	table, tr, th, td {border-collapse:collapse; border:1px solid black; text-align:center; padding:2px;}
+	table {margin:10px 0px 2px; width:100%;}
+	.tbox {max-width:800px;}
+	.tbox button {float:right; margin-left:4px; margin-bottom:8px;}
+</style>
+<meta charset="UTF-8">
+<title>등록 상품 목록</title>
+</head>
+<body>
+<%
+//	String sid = (String)session.getAttribute("sid");
+//	TODO 여러 페이지에서 세션 처리 주석으로 바꿨음
+	String sid = "test";
+	// 세션에 회원 종류(일반, 판매자, 관리자 등) 넣어서 처리 -> 메인 페이지로
+	
+	int pageNum; // 현제 페이지
+	try{
+		pageNum = Integer.parseInt(request.getParameter("pageNum"));
+	}catch(Exception e){
+		pageNum = 1; // 현제 페이지 기본값 1
+	}%>
+
+<button type="button" onclick="window.location='../main.jsp'">메인</button>
+<button type="button" onclick="window.location='uploadForm.jsp'">상품등록</button>
+<%-- 주문확인 --%>
+<%	
+	BusinessDAO dao = BusinessDAO.getInstance();
+	int countList = dao.countList(sid); // 총 등록 상품 개수
+	int pageSize = 10; // 한 페이지에 표시할 상품 개수
+	int start = (pageNum-1)*pageSize + 1; // db에서 가져올 상품 rownum 시작
+	int end = pageNum*pageSize; // db에서 가져올 상품 rownum 끝
+	if(end > countList){end = countList;} // 실제 개수 넘어가지 않도록
+	if(countList == 0){ %>
+		<h2>등록된 상품이 없습니다.</h2>
+<%	}else{ // 목록 출력. 나중에 주문 정보도 받아와서 판매량도 나오면 좋을거같음. %>
+		<h2> 상품목록 </h2>	
+<%		ArrayList<BusinessDTO> list = dao.productList(sid, start, end);
+		for(BusinessDTO dto : list){ %>
+	<%--
+		디자인은 나중에. 눌렀을 때 넘어가게 링크 걸어야됨.
+		href="주소.jsp?pageNum=<%=pageNum%>&pnum=<%=dto.getPnum()%>"
+	--%>
+			<div class="tbox">
+			<table>
+				<tr>
+					<td rowspan="4">
+						<img src="../upload/<%=dto.getThum1() %>">
+						<img src="../upload/<%=dto.getThum2() %>">
+					</td>
+					<th>글번호</th><td><%=dto.getPnum() %></td>
+					<th>상품이름</th><td><%=dto.getpName() %></td>
+				</tr>
+				<tr>
+					<th>가격</th><td><%=dto.getPrice() %> 원</td>
+					<th>재고</th><td><%=dto.getStock() %> 개</td>
+				</tr>
+				<tr>
+					<th>조리법</th><td><%=dto.getCook() %></td>
+					<th>제조사</th><td><%=dto.getCompany() %></td>
+				</tr>
+				<tr>
+					<th>원산지</th><td><%=dto.getCountry() %></td>
+					<th>등록일자</th><td><%=dto.getReg() %></td>
+				</tr>
+			</table>
+			<button type="button" onclick="window.location='updateForm.jsp?pnum=<%=dto.getPnum() %>'">수정</button>
+			<button type="button" onclick="window.location='deleteForm.jsp?pnum=<%=dto.getPnum() %>'">삭제</button>
+			</div>
+<%		} %>
+	<%
+		int blockSize = 5; // 한번에 표시할 페이지 수. ex) 1~5, 6~10 페이지
+		int totalPage = countList / blockSize; // 전체 페이지 수
+		int currentBlock = (pageNum-1)/blockSize + 1; // 계산용. 현제 페이지 블럭. 1~5 => 1번블럭, 6~10 => 2번블럭, ...
+		int startPage = (currentBlock-1)*blockSize + 1; // 표시할 페이지 목록의 시작
+		int endPage = currentBlock * blockSize; // 표시할 페이지 목록의 끝
+		if(endPage > totalPage){endPage = totalPage;} // 실제 페이지 개수 넘어가지 않도록 처리
+		
+		if(pageNum > blockSize){ %>
+			<a href="myList.jsp?pageNum=<%=startPage-blockSize %>">이전</a> &nbsp;
+	<%	} %>
+		
+	<%	for(int i=startPage; i<=endPage; i++){ %>
+			<a href="myList.jsp?pageNum=<%=i %>"><%=i %></a> &nbsp;
+	<%	} %>
+		
+	<%	if(endPage < totalPage){%>
+			<a href="myList.jsp?pageNum=<%=startPage+blockSize %>">다음</a>
+	<%	} %>
+<%	} %>
+</body>
+</html>

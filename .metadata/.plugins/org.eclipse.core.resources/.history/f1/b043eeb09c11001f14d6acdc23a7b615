@@ -1,0 +1,38 @@
+package mvc.board.action;
+
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import mvc.board.model.BoardDAO;
+import mvc.board.model.BoardDTO;
+import mvc.test.action.SuperAction;
+
+public class ListAction implements SuperAction{
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+		
+		int pageSize = 10;
+	    String pageNum = request.getParameter("pageNum");
+	    if (pageNum == null) {
+	        pageNum = "1";
+	    }
+
+	    int currentPage = Integer.parseInt(pageNum);
+	    int startRow	= (currentPage - 1) * pageSize + 1;
+	    int endRow	= currentPage * pageSize;
+	    int count	= 0;
+
+	    ArrayList<BoardDTO> list = null;
+	    BoardDAO dao = BoardDAO.getInstance();
+	    count = dao.boardCount();
+	    if (count > 0) {
+	    	list = dao.boardList(startRow, endRow);
+	    }
+		
+		return "/WEB-INF/views/board/list.jsp";
+	}
+
+}

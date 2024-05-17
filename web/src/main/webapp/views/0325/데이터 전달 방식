@@ -1,0 +1,52 @@
+데이터 전달 방식
+	- get / post 두가지 방식
+
+	method="get"
+		- post보다 전송속도 빠르다
+		- 문자만 전송 가능, 파일 전송 불가
+		- 최대 256바이트 전송
+		- URL로 파라미터 노출 -> 보안 취약
+	
+	method="post"
+		- get 방식보다 전송속도 느리다
+		- 전송량의 한계가 없음
+		- URL 노출 안됨
+		
+	인코딩 방식
+		post
+		반드시 첫줄에 사용해야함
+		<%@ request.setCharacterEncoding("UTF-8"); %>
+		
+		get
+		server.xml 파일에
+		63번 라인쯤에 URIEncoding="UTF-8" 추가한다.
+			( <Connector URIEncoding="UTF-8" connectionTimeout="20000"
+				maxParameterCount="1000" port="8080" protocol="HTTP/1.1"
+				redirectPort="8443" /> ) 이런식으로 됨.
+	
+	* include
+		<%@ include file="" %>
+			- 디렉티브 인클루드
+			- 해당 페이지의 코드를 합침
+			- 변수가 있는 페이지를 합칠 때 좋다.
+		
+		<jsp:include page="" />
+			- 액션태그 인클루드
+			- 따로따로 실행 후 에러가 없으면 결과를 합친다.
+			 페이지끼리 인코딩이 달라도 사용 가능
+			- 헤더 / 푸터 페이지 합칠 때 좋음.
+	 
+	 * 페이지 이동 방식 - redirect / forward
+		redirect
+			- post 방식 불가 : get 방식 가능
+			- 파라미터 전달 불가
+			- 단순 페이지 이동
+			- request 한 페이지만 가능
+		
+		forward
+			- get / post 둘다 가능
+			- 파라미터를 전달할 때 사용
+			
+워크스페이스에서
+\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\work\Catalina\localhost\
+들어가보면 jsp 파일들 java, class 만들어진거 볼 수 있음.

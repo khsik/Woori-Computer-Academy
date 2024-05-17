@@ -1,0 +1,7 @@
+package mvc.test.action;
+
+import javax.servlet.http.HttpServletRequest;
+
+public interface SuperAction {
+	public String action(HttpServletRequest request, HttpServletResponse response);
+}

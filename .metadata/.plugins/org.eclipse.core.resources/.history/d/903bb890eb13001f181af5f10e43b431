@@ -1,0 +1,9 @@
+package justTest;
+
+public class Abeee {
+	public static void main(String[] args) {
+		String[] r = new String[2];
+		System.out.println(r);
+		System.out.println(r[1]);
+	}
+}

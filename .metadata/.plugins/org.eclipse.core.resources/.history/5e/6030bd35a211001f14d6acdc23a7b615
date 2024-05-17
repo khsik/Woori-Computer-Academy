@@ -1,0 +1,4 @@
+# key=value
+# uri=action
+! board
+/mvc/board/list.bo = mvc.board.action.ListAction

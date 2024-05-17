@@ -1,0 +1,5 @@
+package mvc.member.action;
+
+public class InsertFormAction {
+
+}

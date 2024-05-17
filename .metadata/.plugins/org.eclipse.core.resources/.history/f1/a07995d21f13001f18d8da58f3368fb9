@@ -1,0 +1,42 @@
+package mvc.test.controller;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import mvc.test.action.SuperAction;
+
+public class MemberController extends HttpServlet {
+
+	// properties 파일은 map 타입
+	private Map<String, SuperAction> map = new HashMap<>();
+
+	// init() : 요청 시 최초 한번 동작
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		String propertiesPath = config.getInitParameter("memberURI");
+
+		// Key와 Value로 읽기 위함
+		Properties p = new Properties();
+		try {
+			FileInputStream f = new FileInputStream(propertiesPath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+}

@@ -1,0 +1,6 @@
+# key=value
+# uri=action
+! board
+/mvc/board/list.bo = mvc.board.action.ListAction
+/mvc/board/writeForm.bo=mvc.board.action.WriteFormAction
+/mvc/board/writePro.bo=mvc.board.action.WriteProAction

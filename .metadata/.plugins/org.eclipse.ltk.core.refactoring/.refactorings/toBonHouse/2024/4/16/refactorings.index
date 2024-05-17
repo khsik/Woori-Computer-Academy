@@ -1,0 +1,12 @@
+1713145085304	Delete element
+1713148088248	Delete element
+1713148352981	Rename type 'businessDAO'
+1713148359518	Rename type 'businessDTO'
+1713148426660	Delete elements
+1713149044333	Rename field 'num'
+1713167006042	Rename method 'getSale'
+1713324372043	Move 'test.jsp' to 'views'
+1713325451509	Rename resource 'uploadForm.jsp'
+1713325462199	Rename resource 'uploadPro.jsp'
+1713399964051	Rename field 'seller'
+1713490306149	Rename method 'upload'

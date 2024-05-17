@@ -1,0 +1,14 @@
+package mvc.test.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class Jstl01Action implements SuperAction {
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+
+		return "/WEB-INF/views/test/jstl01.jsp";
+	}
+
+}

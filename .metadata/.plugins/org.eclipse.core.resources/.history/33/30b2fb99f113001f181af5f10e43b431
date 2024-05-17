@@ -1,0 +1,72 @@
+package mvc.board.action;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
+import mvc.board.model.BoardDAO;
+import mvc.board.model.BoardDTO;
+import mvc.test.action.SuperAction;
+
+public class UpdateProAction implements SuperAction{
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		String filePath = request.getServletContext().getRealPath("resources/upload");
+		int max = 10 * 1024 * 1024;
+		String enc = "UTF-8";
+		DefaultFileRenamePolicy dp = new DefaultFileRenamePolicy();
+		try {
+			MultipartRequest mr = new MultipartRequest(request, filePath, max, enc, dp);
+
+			BoardDTO dto = new BoardDTO();
+			dto.setNum(Integer.parseInt(mr.getParameter("num")));
+			dto.setWriter(mr.getParameter("writer"));
+			dto.setTitle(mr.getParameter("title"));
+			dto.setContent(mr.getParameter("content"));
+			dto.setPasswd(mr.getParameter("passwd"));
+
+			String img = mr.getFilesystemName("img");
+			String orgImg = mr.getParameter("orgImg");
+			if(img != null) {
+				dto.setImg(img);
+			}else {
+				dto.setImg(orgImg);
+			}
+			
+			BoardDAO dao = BoardDAO.getInstance();
+			int result = dao.boardUpPro(dto);
+			
+			String delOrgImg = mr.getParameter("delOrgImg");
+			delOrgImg.equals("delOrgImg");
+			if(img != null && result == 1) {
+				File f = new File(filePath + "/" + orgImg);
+				f.delete();
+			}
+			
+			String pageNum = mr.getParameter("pageNum");
+			
+			request.setAttribute("result", result);
+			request.setAttribute("pageNum", pageNum);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "/WEB-INF/views/board/updatePro.jsp";
+	}
+
+}

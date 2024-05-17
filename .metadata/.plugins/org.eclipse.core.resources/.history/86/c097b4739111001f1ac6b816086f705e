@@ -1,0 +1,74 @@
+package mvc.test.controller;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import mvc.test.action.SuperAction;
+
+public class BoardController extends HttpServlet {
+
+	Map<String, SuperAction> map = new HashMap<>();
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		// ServletConfig config 설정 -> 전체 설정인 web.xml에서 전달된 파라미터
+		String propertiesPath = config.getInitParameter("boardURI");
+		
+		// properties 설정
+		// properties 파일의 내용을 = 기준으로 key=value 읽기 위해서
+		Properties p = new Properties();
+		
+		// properties 파일 읽기위한 FileInputStream 생성 수 변수 선언
+		FileInputStream f = null;
+		try {
+			// propertiesPath 변수 사용하여 생성
+			// 예외처리 필수(FileNotFoundException)
+			f = new FileInputStream(propertiesPath);
+			
+			// 예외처리 필요(IOException)
+			// key=value 로 읽는다
+			p.load(f);
+		} catch (Exception e) { // 예외 최고 조상인 Exception으로 한번에 처리
+			e.printStackTrace();
+		} finally {
+			// 연결 끊기
+			if(f != null) { try {f.close();} catch (IOException e) {} }
+		}
+		
+		// keySet() 으로 key만 모아줌. 객체 생성을 위해 value(클래스 풀네임)를 꺼내야함.
+		Iterator iter = p.keySet().iterator();
+		
+		// 반복으로 key, value 꺼내고 객체생성 후 map에 대입 
+		while(iter.hasNext()) {
+			// key 꺼내서 변수에 대입
+			String key = (String)iter.next();
+			String value = (String)p.get(key);
+			try {
+				// ClassNotFoundException
+				Class c = Class.forName(value);
+				// InstantiationException , IllegalAccessException
+				SuperAction sa = (SuperAction) c.newInstance();
+				map.put(key, sa);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 
+		
+	}
+
+}

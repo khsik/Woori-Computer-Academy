@@ -1,0 +1,4 @@
+# key=value
+# uri=action
+! member
+/mvc/member/main.me = mvc.member.action.MainAction

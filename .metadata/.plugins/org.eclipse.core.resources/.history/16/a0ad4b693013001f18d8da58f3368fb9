@@ -1,0 +1,8 @@
+! member
+# key=value
+# uri=action
+/mvc/member/main.me = mvc.member.action.MainAction
+/mvc/member/insertForm.me = mvc.member.action.InsertFormAction
+/mvc/member/insertPro.me = mvc.member.action.InsertProAction
+/mvc/member/loginForm.me = mvc.member.action.LoginFormAction
+/mvc/member/loginPro.me = mvc.member.action.LoginProAction

@@ -1,0 +1,17 @@
+127.0.0.1 - - [26/Mar/2024:16:50:17 +0900] "GET / HTTP/1.1" 404 807
+127.0.0.1 - - [26/Mar/2024:16:50:33 +0900] "GET / HTTP/1.1" 404 807
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:16:50:54 +0900] "GET /web/views/0322/ex12.jsp HTTP/1.1" 200 364
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:16:50:54 +0900] "GET /favicon.ico HTTP/1.1" 404 818
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:16:51:03 +0900] "GET /web/views/0322/ex03.jsp HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:16:51:03 +0900] "GET /web/views/0322/ex04.jsp HTTP/1.1" 200 162
+127.0.0.1 - - [26/Mar/2024:17:05:48 +0900] "GET / HTTP/1.1" 404 807
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:05:49 +0900] "GET /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1036
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:05:49 +0900] "GET /webPractice/css/ranNum2.css HTTP/1.1" 200 438
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:05:49 +0900] "GET /favicon.ico HTTP/1.1" 404 818
+127.0.0.1 - - [26/Mar/2024:17:13:38 +0900] "GET / HTTP/1.1" 404 807
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:13:38 +0900] "GET /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1036
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:13:38 +0900] "GET /webPractice/css/ranNum2.css HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:13:42 +0900] "POST /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1338
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:13:46 +0900] "POST /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1345
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:14:47 +0900] "GET /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1036
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:17:14:55 +0900] "POST /webPractice/pages/ranNum2.jsp HTTP/1.1" 200 1353

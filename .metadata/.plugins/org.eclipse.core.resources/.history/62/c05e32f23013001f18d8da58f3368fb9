@@ -1,0 +1,24 @@
+package mvc.member.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import mvc.test.action.SuperAction;
+
+public class DeleteProAction implements SuperAction{
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+		
+		request.setCharacterEncoding("UTF-8");
+		
+		String sid = (String)session.getAttribute("sid");
+		dto.setId(sid);
+		int result = dao.deleteMember(dto);
+		if(result == 1){
+			session.invalidate();
+		
+		return "/WEB-INF/views/member/deletePro.jsp";
+	}
+
+}

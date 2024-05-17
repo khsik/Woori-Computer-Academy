@@ -1,0 +1,2 @@
+# uri=action
+/mvc/test/main.do=mvc.test.action.MainAction

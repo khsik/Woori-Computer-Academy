@@ -1,0 +1,16 @@
+package mvc.board.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import mvc.test.action.SuperAction;
+
+public class WriteFormAction implements SuperAction {
+
+	@Override
+	public String action(HttpServletRequest request, HttpServletResponse response) {
+		
+		return "/WEB-INF/views/board/writeForm.jsp";
+	}
+
+}
