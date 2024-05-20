@@ -734,3 +734,14 @@
 192.168.0.10 - - [17/May/2024:15:01:44 +0900] "POST /mvc/board/writePro.bo HTTP/1.1" 200 139
 192.168.0.10 - - [17/May/2024:15:01:45 +0900] "GET /mvc/board/list.bo HTTP/1.1" 200 5621
 192.168.0.10 - - [17/May/2024:15:01:47 +0900] "GET /mvc/board/content.bo?num=29&pageNum=1 HTTP/1.1" 200 1849
+127.0.0.1 - - [17/May/2024:15:35:45 +0900] "GET / HTTP/1.1" 404 807
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:35:52 +0900] "GET /mvc/board/list.bo HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:35:52 +0900] "GET /mvc/member/main.me HTTP/1.1" 200 219
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:35:54 +0900] "GET /mvc/member/loginForm.me HTTP/1.1" 200 223
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:35:58 +0900] "GET /mvc/member/loginPro.me?id=1234&pw=1234 HTTP/1.1" 200 126
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:36:00 +0900] "GET /mvc/member/main.me HTTP/1.1" 200 533
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:36:08 +0900] "GET /mvc/board/list.bo HTTP/1.1" 200 5621
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:36:10 +0900] "GET /mvc/board/content.bo?num=29&pageNum=1 HTTP/1.1" 200 1553
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:36:14 +0900] "GET /mvc/board/content.bo?num=28&pageNum=1 HTTP/1.1" 200 1611
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:36:14 +0900] "GET /mvc/resources/upload/500error.png HTTP/1.1" 200 15487
+0:0:0:0:0:0:0:1 - - [17/May/2024:15:59:52 +0900] "GET /mvc/board/list.bo HTTP/1.1" 200 5621
