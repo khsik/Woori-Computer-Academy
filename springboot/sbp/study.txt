@@ -1,0 +1,64 @@
+ORM
+	Object Relational Mapping
+	데이터베이스의 테이블을 자바 클래스로 만들어서 관리할 수 있다.
+	어플리케이션의 객체와 관계형 데이터베이스의 데이터를 자동으로 매핑하는 역할
+	DTO 클래스의 변수와 DB 테이블의 컬럼이 매핑되는 방식
+	ORM의 자바 클래스 : 엔티티
+	엔티티 : 데이터베이스의 테이블과 매핑되는 자바 클래스
+
+예시
+DB, java 클래스
+id	subject	content
+1	안녕하세요	인사드려요
+2	질문있어요	ORM이 뭔가요
+
+Question q = new Question();	Question 은 자바 클래스이며 Entity(엔티티)
+q.setId(1);
+q.setSubject(“안녕하세요”);
+q.setContent(“인사드려요”);
+this.questionRepository.save(q);
+
+Question q2 = new Question();
+q2.setId(2);
+q2.setSubject(“질문있어요”);
+q2.setContent(“ORM이 뭔가요”);
+this.questionRepository.save(q2);
+
+JPA
+	Java Persistence API
+	인터페이스의 모음 : 구현한 실제 클래스 필요
+	하이버네이트(Hibernate) : 대표적인 구현 클래스
+하이버네이트(Hibernate)
+	JPA의 인터페이스를 구현한 실제 클래스
+	자바의 ORM 프레임워크로 스프링부트에서 데이터베이스를 관리하기 쉽게 도와준다.
+
+
+Entity
+	데이터베이스 테이블과 매칭되는 자바 클래스
+	테이블을 구성하여 데이터를 관리할 준비 완료
+	데이터 수정 삭제 조회 할 수 없다.
+	
+예시
+	질문(Question)
+	답변(Answer)
+필요한 속성
+	질문(Question)
+		속성			설명
+		id			질문 데이터의 고유 번호
+		subject		질문 데이터의 제목
+		content		질문 데이터의 내용
+		createDate	질문 데이터의 작성일시
+	답변(Answer)
+		속성			설명
+		id			답변 데이터의 고유 번호
+		question	질문 데이터 -> 어떤 질문의 답변인지 알아야 함.
+		content		답변 데이터의 내용
+		createDate	답변 데이터의 작성일시
+
+Repository
+	테이블의 데이터를 저장 조회 수정 삭제 등을 할 수 있도록 도와주는 인터페이스
+	테이블에 접근하고 데이터를 관리하는 메서드를 제공함.
+	CRUD 작업을 처리하는 메서드 들을 이미 내장하고 있다.
+	JpaRepository<T, ID> 상속받는 인터페이스 생성.
+		T : 해당 엔티티로 리포지토리를 생성한다.
+		ID : 엔티티의 기본키 타입을 지정 (ex : Integer)
