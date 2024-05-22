@@ -1,0 +1,59 @@
+<h1>Thymeleaf</h1>
+<h3>SpringEL</h3>
+
+<pre>
+~{} 프래그먼트
+@{} 링크
+#{} 메시지
+${} 변수
+${#} 내장객체
+*{} 선택 변수(지역변수)
+</pre>
+
+<hr>
+<h3>fragment</h3>
+<div th:insert="~{sub.html :: content}"></div>
+<div th:replace="~{sub.html :: userInfo('김이름','010-1234-5678','20')}"></div>
+
+<hr>
+<div>
+	<h3>link</h3>
+	<p><a th:href="@{page2}" th:text="${'페이지2'}"></a></p>
+	<p><a th:href="@{|${p2}|}" >page2</a></p>
+	<p><a th:href="@{page2?id=AAA}">2AAA</a></p>
+	<p><a th:href="@{page2(id=${'ss'})}" th:text="${'2ss'}"></a></p>
+	<p><a th:href="@{{uri}(uri=page2, id=${'F'})}" th:text="${'2F'}"></a></p>
+</div>
+
+<hr>
+<div>
+	<h3>messages</h3>
+	<p th:text="#{msg.hello}"></p>
+	<p>
+		이름 : <span th:text="#{name}"></span> <br>
+		버전 : <span th:text="${#messages.msg('version')}"></span>
+	</p>
+</div>
+
+<hr>
+<div>
+	<h3>var</h3>
+	<table>
+		<tr>
+			<td>배열</td>
+			<td>타입</td>
+			<td>압력</td>
+		</tr>
+		<tr>
+			<td th:text="${keys}"></td>
+			<td th:text="${type}"></td>
+			<td th:text="${press}"></td>
+		</tr>
+	</table>
+</div>
+
+<hr>
+<div>
+	<p>꺼내온 색상 수 : [[${#lists.size(colors)}]]</p>
+	<p th:text="${#lists.sort(colors)}"></p>
+</div>

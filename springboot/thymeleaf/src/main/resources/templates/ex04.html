@@ -1,0 +1,26 @@
+기본 객체 표현식
+<hr>
+
+<div th:text="${#locale}"></div>
+	- 적용된 언어 확인
+<div th:text="${#messages.msg('version')}"></div>
+	- messages.properties 파일의 속성 사용
+<div th:text="${#dates.format(date)}"></div>
+<div th:text="${#dates.format(date, 'dd/MMM/yyy HH:mm')}"></div>
+	- Date 클래스 활용
+<div th:text="${#calendars.day(date)}"></div>
+	- Calendar 클래스 활용
+<div th:text="${#numbers.formatInteger(num,3)}"></div>
+	- 숫자 형식 적용 (값, 최소 자리수) : (, 3) 최소 3자리 ex) 52 -> 052 표현
+<div th:text="${#numbers.formatPercent(num2, 3, 2)}"></div>
+	- 숫자 형식 적용 (값, 정수 최소 자리수, 소수 유효숫자(반올림 적용))
+<div th:text="${#strings.substring(message, 0 , 5)}"></div>
+	- 자바 String 클래스
+<div th:text="${#lists.size(list)}"></div>
+<div th:text="${#lists.sort(list)}"></div>
+	- util 패키지의 List, Set, Map 사용
+
+<!--
+	https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#appendix-a-expression-basic-objects
+	https://intrepidgeeks.com/tutorial/all-thymeleaf-builtin-object-expressions
+-->

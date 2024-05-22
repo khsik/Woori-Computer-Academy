@@ -1,10 +1,10 @@
 package com.example.sbp;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+//import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.sbp.answer.Answer;
-import com.example.sbp.answer.AnswerRepository;
+//import com.example.sbp.answer.AnswerRepository;
 import com.example.sbp.question.Question;
 import com.example.sbp.question.QuestionRepository;
 
@@ -34,7 +34,7 @@ class SbpApplicationTests {
 	private QuestionRepository questionRepository;
 	
 	@Autowired
-	private AnswerRepository answerRepository;
+//	private AnswerRepository answerRepository;
 
 	@Transactional
 	@Test

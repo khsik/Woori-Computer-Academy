@@ -1,0 +1,14 @@
+<h1>page2</h1>
+<div th:object=${lotto}>
+	<p>생성 시간 : <span th:text="*{generateTime}"></span></p>
+	<p>번호 : <span th:text=*{#lists.sort(nums)}></span></p>
+</div>
+<hr>
+<div th:object=${session.lotto2}>
+	<p>세션 계정 : <span th:text=${session.sid}></span></p>
+	<p>세션 등급 : <span th:text=${session.grade}></span></p>
+	<br>
+	<p><span th:text=*{#lists.size(nums)}></span>개의 번호</p>
+	<p>생성 시간 : <span th:text="*{generateTime}"></span></p>
+	<p><span th:text=${#lists.sort(session.lotto2.nums)}></span></p>
+</div>

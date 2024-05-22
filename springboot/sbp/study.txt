@@ -62,3 +62,10 @@ Repository
 	JpaRepository<T, ID> 상속받는 인터페이스 생성.
 		T : 해당 엔티티로 리포지토리를 생성한다.
 		ID : 엔티티의 기본키 타입을 지정 (ex : Integer)
+
+Thymeleaf
+	.html
+	자바 기반의 서버사이드 템플릿 엔진
+		: 웹 어플리케이션의 서버에서 동작하여 동적인 HTML 생성하는 도구
+	HTML, XML, JavaScript, CSS 등을 템플릿으로 사용하여 동적 웹페이지를 생성
+	특히 Springframework와 잘 통합되어있다.

@@ -1,0 +1,35 @@
+<div th:text="${message}"></div>
+<div th:utext="${htmlContent}"></div>
+
+- th:text
+	: 전달받은 message 속성에 html 태그를 포함해도 그대로 출력됨.
+		(전달받는 내용에 포함된 html 태그 적용 안되고 출력)
+- th:utext
+	: 전달받은 htmlContent 속성에 html 태그가 포함되면 적용됨.
+
+타임리프의 표현식
+	- #{} : 메세지 표현식
+			messages.properties 파일에 정의된 속성을 사용, 다국어 처리
+			-> JSP에서의 I18N : (JSTL의) fmt태그와 같다.
+			
+	- ${} : 변수 표현식
+			모델 속성에 접근하는데 사용
+			-> JSP에서 사용하는 표현언어 ${}와 동일하다.
+			
+	- ${#} : 기본 객체 표현식
+			예) ${#list.size()} 타임리프에 내장된 기본객체 list 를 사용한 것
+			
+	- @{} : 링크 표현식
+			URL을 생성하는데 사용
+			예) <a th:href="@{/main}"></a>
+				<form th:action="@{/main/image/list}"></form>
+
+	- *{} : 선택 변수 표현식
+			현재 객체의 내부 변수(속성)에 접근하는데 사용, 주로 반복문에서 사용
+			
+	- ~{} : 프래그먼트 표현식
+			다른 html을 포함할 때 사용
+			-> JSP 에서 include와 같은 기능  
+
+
+

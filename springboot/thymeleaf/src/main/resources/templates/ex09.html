@@ -1,0 +1,14 @@
+<h1>세션 사용</h1>
+
+<h2 th:text="${session.sid}"></h2>
+<h2 th:text="'세션 = '+${session.sid}"></h2>
+
+<!-- 내용에 표현식을 직접 쓰려면 대괄호[] 2개로 묶어서 사용 -->
+
+<p>세션 sid 값 확인 = [[${session.sid}]]</p>
+<p>세션 저장된 개수 = [[${session.size()}]]</p>
+<p>세션 비어있는지 확인 = [[${session.isEmpty()}]]</p>
+<p>특정 세션키 sid 있는지 확인 = [[${session.containsKey('sid')}]]</p>
+
+- 변수 표현식을 th:text 같은 타임리프 속성 외의
+	단순 사용시 [ [ ${} ] ] 대괄호로 묶어줘야 한다.

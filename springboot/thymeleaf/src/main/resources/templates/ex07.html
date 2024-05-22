@@ -1,0 +1,27 @@
+<h2>프래그먼트 표현식</h2>
+<div th:insert="~{main.html}"></div>
+<div th:replace="~{main.html}"></div>
+
+<div th:insert="~{ex07sub.html :: title}"></div>
+<div th:replace="~{ex07sub.html :: content}"></div>
+<br>
+<div th:insert="~{ex07sub.html :: info('춘식','010-1111-2222')}"></div>
+<br>
+<div th:insert="~{ex07sub.html :: info('라이언','010-3333-4444')}"></div>
+
+<hr>
+
+- th:insert
+	태그 내부에 삽입한다.
+	< div >main.html</ div >
+
+- th:replace
+	태그를 대체한다.
+	< div >< /div > => main.html
+
+- th:insert="~{ex07sub.html :: title}
+	태그 내부에 ex07sub.html의 th:fragment="title" 설정된 부분만 삽입한다.
+
+- th:insert="~{ex07sub.html :: info('춘식','010-1111-2222')}"
+	ex07sub.html의 th:fragment="info(name, tel)" 부분만 삽입한다.
+		(메서드, 매개변수처럼 사용됨)
