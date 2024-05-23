@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>회원가입</title>
+</head>
+<body>
+	<h1>회원가입</h1>
+	<form action="#" th:action="@{/th/memberPro}" method="post">
+		<label for="userName">사용자 :</label>
+		<input type="text" id="userName" name="userName" required>
+		<br>
+		
+		<label for="pw">비밀번호 :</label>
+		<input type="password" id="pw" name="pw" required>
+		<br>
+		
+		<label for="email">이메일 :</label>
+		<input type="email" id="email" name="email" required>
+		<br>
+		
+		성별 :
+		<label for="male">남성</label>
+		<input type="radio" id="male" name="gender" value="male">
+		,
+		<label for="female">여성</label>
+		<input type="radio" id="female" name="gender" value="female">
+		<br>
+		
+		<label for="country">국가 :</label>
+		<select id="country" name="country">
+			<option value="korea" selected>대한민국</option>
+			<option value="usa">미국</option>
+			<option value="canada">캐나다</option>
+		</select>
+		<br>
+		
+		취미 :
+		<label for="hobby1">운동</label>
+		<input type="checkbox" name="hobbies" id="hobby1" value="sports">&nbsp;
+		<label for="hobby2">독서</label>
+		<input type="checkbox" name="hobbies" id="hobby2" value="reading">&nbsp;
+		<label for="hobby3">여행</label>
+		<input type="checkbox" name="hobbies" id="hobby3" value="traveling">&nbsp;
+		<label for="hobby4">게임</label>
+		<input type="checkbox" name="hobbies" id="hobby4" value="game">
+		<br><br>
+		
+		<button type="submit">가입하기</button>
+		<a th:attr="href=@{/th/main}, title=${'Main'}">메인으로</a>
+	</form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>조건문 - if, unless를 같은 조건식으로 사용</h2>
+<h2>자바의 조건문처럼 사용</h2>
+<span th:if="${age} > 10">크다</span>
+<span th:unless="${age} > 10">작다</span>
+<hr>
+<h2>조건문 if만 사용 가능</h2>
+<span th:if="${age} > 10">크다, [[${age}]]</span>
+<hr>
+<h2>조건문 unless만 사용 가능</h2>
+<span th:unless="${age} > 10">작다, [[${age}]]</span>
+</body>
+</html>

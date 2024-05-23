@@ -1,15 +1,18 @@
 package com.example.ex;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
+
 
 
 @Controller
@@ -90,6 +93,72 @@ public class ThymeleafController {
 		session.setAttribute("sid", "springboot");
 		return "ex09";
 	}
+	
+	// if
+	@GetMapping("ex10")
+	public String ex10(Model model) {
+		model.addAttribute("age", "20");
+		return "ex10";
+	}
+	
+	// switch
+	@GetMapping("ex11")
+	public String ex11(Model model) {
+		model.addAttribute("age", "20");
+		return "ex11";
+	}
+	
+	// 반복문
+	@GetMapping("ex12")
+	public String ex12(Model model) {
+		List<String> list = Arrays.asList("java", "jsp", "spring", "sql");
+		model.addAttribute("list", list);
+		
+		List<User> userList = new ArrayList<>();
+		userList.add(new User("java", 20));
+		userList.add(new User("jsp", 30));
+		userList.add(new User("spring", 35));
+		userList.add(new User("sql", 41));
+		model.addAttribute("userList", userList);
+		
+		return "ex12";
+	}
+	
+	// th:value 속성 활용
+	@GetMapping("ex13")
+	public String ex13(Model model) {
+		model.addAttribute("age", "20");
+		return "ex13";
+	}
+	
+	// th:src 속성 활용
+	@GetMapping("ex14")
+	public String ex14(Model model) {
+		model.addAttribute("image", "default.jpg");
+		return "ex14";
+	}
+	
+	// th:attr 속성 활용
+	@GetMapping("ex15")
+	public String ex15(Model model) {
+		
+		return "ex15";
+	}
+	
+	@GetMapping("memberForm")
+	public String memberForm() {
+		return "memberForm";
+	}
+	
+	@PostMapping("memberPro")
+	public String memberPro(Member member,Model model) {
+		model.addAttribute("message", "회원가입이 완료되었습니다.");
+		model.addAttribute("member", member);
+		return "memberPro";
+	}
+	
+}
+
 /*	
 	스프링에서 session 사용 시
 	메서드의 매개변수로 HttpSession 선언해두면
@@ -103,5 +172,4 @@ public class ThymeleafController {
 		- Model : 컨트롤러에서 뷰로 데이터 전달할 때 사용
 		- ModelMap : Model과 비슷한 역할. Map 인터페이스를 구현한 객체.
 		- MultipartFile : 파일 업로드 처리
-*/	
-}
+ */	

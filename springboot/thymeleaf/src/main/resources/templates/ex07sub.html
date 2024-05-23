@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
 <h2>프래그먼트 표현식</h2>
 <div th:fragment="title">제목입니다.</div>
 <div th:fragment="content">내용입니다.</div>
@@ -17,3 +20,5 @@
 - th:fragment="info(name, tel)
 	자바의 메서드처럼 사용 가능
 	각각 ${name} ${tel}에 적용된다.
+</body>
+</html>

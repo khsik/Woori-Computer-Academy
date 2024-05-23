@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
 <h2>선택 변수 표현식</h2>
 <div th:object="${session.user}"> 
 	<p>Name : <span th:text="*{name}"></span></p>
@@ -18,3 +21,5 @@ div th:object="${session.user}"
 	<p>Name : <span th:text="${session.user.name}"></span></p>
 	<p>Age : <span th:text="${session.user.age}"></span></p>
 </div>
+</body>
+</html>
