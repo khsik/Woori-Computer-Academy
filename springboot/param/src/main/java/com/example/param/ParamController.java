@@ -157,6 +157,7 @@ public class ParamController {
 		// 파일 업로드 시 MultipartFile 객체 사용 -> 업로드 직접 해줘야한다.
 		// 파일 이름 중복처리 기능이 없다.
 		// c드라이브 upload 폴더
+		// 업로드 최대 크기 지정 -> application.properties에 설정
 		model.addAttribute("contentType", mf.getContentType());
 		model.addAttribute("orgName", mf.getOriginalFilename());
 		model.addAttribute("fileSize", mf.getSize());
