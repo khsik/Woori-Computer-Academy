@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 	<meta charset="UTF-8"/>
 	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 	<title>Question Detail</title>
 </head>
-<body>
+<body layout:fragment="content">
 	<div class="container my-3">
 		<!-- 질문 -->
 		<h1 class="border-bottom py-2" th:text="${question.subject}"></h1>
@@ -34,9 +33,11 @@
 				</div>
 			</div>
 		</div>
+		
 		<!-- 답변 작성 -->
-		<form th:action="@{|/answer/create/${question.id}|}" method="post" class="my-3">
-			<textarea name="content" id="content" rows="10"></textarea> <br>
+		<form th:action="@{|/answer/create/${question.id}|}" method="post" class="my-3" th:object="${answerForm}">
+			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+			<textarea th:field="*{content}" rows="10"></textarea> <br>
 			<button type="submit" class="btn btn-primary my-2">답변 등록</button>
 		</form>
 	</div>

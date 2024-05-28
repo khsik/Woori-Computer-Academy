@@ -1,22 +1,10 @@
 package com.example.sbp;
 
-//import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-//import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.example.sbp.answer.Answer;
-//import com.example.sbp.answer.AnswerRepository;
-import com.example.sbp.question.Question;
-import com.example.sbp.question.QuestionRepository;
+import com.example.sbp.question.QuestionService;
 
 /*
 	@Test
@@ -28,14 +16,28 @@ import com.example.sbp.question.QuestionRepository;
 
 @SpringBootTest
 class SbpApplicationTests {
-
+/*
 	@Autowired	// 의존성 주입(DI - Dependency Injection)
 				// 스프링이 객체를 대신 생성하여 주입하는 방식
 	private QuestionRepository questionRepository;
 	
 	@Autowired
-//	private AnswerRepository answerRepository;
-
+	private AnswerRepository answerRepository;
+*/
+	
+	@Autowired
+	private QuestionService questionService;
+	
+	@Test
+	void testJpa() {
+		for(int i=1; i<=300; i++) {
+			String subject = String.format("테스트 데이터:[%03d]", i);
+			String content = "내용";
+			this.questionService.create(subject, content);
+		}
+	}
+	
+/*
 	@Transactional
 	@Test
 	void testJpa() { // question -> answer 꺼내기
@@ -52,7 +54,7 @@ class SbpApplicationTests {
 		assertEquals(1, al.size());
 		assertEquals("네, 자동으로 생성됩니다.", al.get(0).getContent());
 	}
-	
+*/	
 	
 /*
 	@Test
