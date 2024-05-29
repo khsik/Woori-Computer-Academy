@@ -24,7 +24,7 @@ public class QuestionController {
 	
 	@GetMapping("/")	// http://localhost:8080/question/
 	public String root(){	// Question의 메인 페이지인 list로 보냄
-		return "redirect:/question/list";
+		return "redirect:list";
 	}
 
 	@GetMapping("/list")
