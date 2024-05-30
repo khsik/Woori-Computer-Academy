@@ -2,8 +2,10 @@ package com.example.sbp.question;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.example.sbp.answer.Answer;
+import com.example.sbp.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,6 +13,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,20 +24,28 @@ import lombok.Setter;
 @Entity
 public class Question {
 
+	@ManyToMany
+	Set<SiteUser> voter; // 추천
+	
+	@ManyToOne
+	private SiteUser author; // 글쓴이
+	
+	private LocalDateTime modifyDate; // 수정 날짜
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer id; // primary key
 	
 	@Column(length = 200)
-	private String subject;
+	private String subject; // 제목
 	
 	@Column(columnDefinition = "TEXT")
-	private String content;
+	private String content; // 내용
 	
-	private LocalDateTime createDate;
+	private LocalDateTime createDate; // 작성 날짜
 	
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-	private List<Answer> answerList;
+	private List<Answer> answerList; // 답변
 }
 /*
 	@Id
