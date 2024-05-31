@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page; // 페이징을 위한 클래스
 import org.springframework.data.domain.Pageable; // 페이징 처리 인터페이스
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
@@ -18,6 +19,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	
 	Page<Question> findAll(Pageable pageable);
 	// org.springframework.data.domain.PageRequest : 현재 페이지와 한 페이지에 보여 줄 게시물 수 등을 설정하여 페이징 요청하는 클래스
+	
+	Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 }
 
 /*
