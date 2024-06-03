@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>회원가입</title>
+</head>
+<body>
+<h1>회원가입</h1>
+<form method="post" th:action="@{/member/join}" th:object="${memberCreateForm}">
+	<div th:replace="~{layouts/errors :: errors}"></div>
+	<label for="id">아이디</label>
+	<input type="text" th:field="*{id}" required> <br>
+	<label for="pw">비밀번호</label>
+	<input type="password" th:field="*{pw}" required> <br>
+	<label for="pw2">비밀번호 확인</label>
+	<input type="password" th:field="*{pw2}" required> <br>
+	<label for="email">이메일</label>
+	<input type="email" th:field="*{email}" required> <br>
+	<span>성별 : </span>
+	<label for="gender_male">남</label>
+	<input type="radio" name="gender" id="gender_male" value="male">
+	<label for="gender_female">여</label>
+	<input type="radio" name="gender" id="gender_female" value="female"> <br>
+	<label for="country">국가</label>
+	<select name="country" id="country" required>
+		<option value="한국">한국</option>
+		<option value="일본">일본</option>
+		<option value="미국">미국</option>
+		<option value="중국">중국</option>
+		<option value="인도">인도</option>
+	</select> <br>
+	<span>취미 : </span>
+	<label for="hobby_1">독서</label>
+	<input type="checkbox" name="hobbies" id="hobby_1" value="독서">
+	<label for="hobby_2">게임</label>
+	<input type="checkbox" name="hobbies" id="hobby_2" value="게임">
+	<label for="hobby_3">여행</label>
+	<input type="checkbox" name="hobbies" id="hobby_3" value="여행">
+	<label for="hobby_4">운동</label>
+	<input type="checkbox" name="hobbies" id="hobby_4" value="운동">
+	<br>
+	<button type="submit">가입</button>
+</form>
+
+</body>
+</html>

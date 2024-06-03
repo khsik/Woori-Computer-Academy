@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>메인</title>
+</head>
+<body>
+<a th:href="@{/member/join}" sec:authorize="isAnonymous()">회원가입</a>
+<a th:href="@{/member/login}" sec:authorize="isAnonymous()">로그인</a>
+<a th:href="@{/member/logout}" sec:authorize="isAuthenticated()">로그아웃</a>
+<a th:href="@{/board/list}">게시판</a>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title th:text="${board.title}"></title>
+</head>
+<body>
+<div th:object="${board}">
+	<h2 th:text="*{title}"></h2>
+	<p>글번호 : <span th:text="*{boardId}"></span></p>
+	<p>작성자 : <span th:text="*{writer.id}"></span></p>
+	<p>작성일자 : <span th:text="*{createDate}"></span></p>
+	<p th:if="*{updateDate}">작성일자 : <span th:text="*{updateDate}"></span></p>
+	<div>
+		<pre th:utext="*{#temporals.format(content, 'yyyy-MM-dd HH:mm:ss')}"></pre>
+	</div>
+	
+	댓글부분 추가
+</div>
+</body>
+</html>

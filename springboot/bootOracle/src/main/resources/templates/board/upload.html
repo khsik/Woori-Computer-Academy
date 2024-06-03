@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>게시글 작성</title>
+</head>
+<body>
+<h2>게시글 작성</h2>
+<form th:action="@{upload}" method="post" th:object="${boardForm}">
+	<div th:replace="~{layouts/errors :: errors}"></div>
+	<label for="title">제목</label>
+	<input type="text" th:field="*{title}"> <br>
+	<label for="content">내용</label>
+	<br>
+	<textarea rows="9" cols="60" th:field="*{content}"></textarea> <br>
+	<button type="submit">저장</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>게시판 목록</title>
+</head>
+<body>
+<h1>게시판</h1>
+<a th:href="@{/board/upload}">게시글 작성</a> <br>
+<form method="get">
+	<label for="search">검색 : </label>
+	<input type="text" name="search" id="search" th:value="${search}">
+	<button type="submit">검색</button>
+</form>
+
+<div>
+	<table>
+		<tr>
+			<th>글번호</th>
+			<th>제목</th>
+			<th>작성자</th>
+			<th>작성일자</th>
+		</tr>
+		<tr th:each="board : ${paging}">
+			<td th:text="${board.boardId}"></td>
+			<td><a th:text="${board.title}" th:href="@{|post/${board.boardId}|}"></a></td>
+			<td th:text="${board.writer.id}"></td>
+			<td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+		</tr>
+	</table>
+</div>
+
+<div>
+	페이지, 검색 손봐야됨.
+	<a></a>
+</div>
+<!--
+	paging.hasPrevious
+	paging.number
+	paging.hasNext
+	paging.isEmpty
+	paging.totalPages
+	paging.totalElements
+-->
+
+</body>
+</html>

@@ -8,11 +8,11 @@
 	<div layout:fragment="content" class="container my-3">
 		<form th:action="@{/user/login}" method="post">
 			<div th:if="${param.error}">
-				<!--
+			<!--
 			로그인 실패 시 매개변수로 error가 전달되는 것은 스프링 시큐리티의 규칙
 			스프링 시큐리티는 로그인 실패 시 http://localhost:8080/user/login?error와 같이 error 매개변수를 전달
 			${param.error}로 error 매개변수가 전달되었는지 확인
-		-->
+			-->
 				<div class="alert alert-danger">사용자 이름 또는 비밀번호를 확인해주세요</div>
 			</div>
 			<div class="mb-3">
