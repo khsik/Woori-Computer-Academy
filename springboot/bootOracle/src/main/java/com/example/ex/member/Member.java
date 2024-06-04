@@ -30,6 +30,5 @@ public class Member {
 	@Nonnull
 	private String country;
 	
-	@Nonnull
 	private List<String> hobbies;
 }

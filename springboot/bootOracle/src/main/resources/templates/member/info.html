@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>회원 정보</title>
+</head>
+<body>
+<a th:href="@{/main}">메인</a>
+<hr>
+<table th:object="${member}">
+	<tr>
+		<td>아이디</td>
+		<td th:text="*{id}"></td>
+	</tr>
+	<tr>
+		<td>이메일</td>
+		<td th:text="*{email}"></td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td th:text="*{gender}"></td>
+	</tr>
+	<tr>
+		<td>국가</td>
+		<td th:text="*{country}"></td>
+	</tr>
+	<tr>
+		<td>취미</td>
+		<td th:unless="*{#lists.isEmpty(hobbies)}">
+			<span th:each="hobby : *{hobbies}" th:text="${hobby}+' '"></span>
+		</td>
+		<td th:if="*{#lists.isEmpty(hobbies)}"></td>
+	</tr>
+</table>
+
+<a th:href="@{/member/modify}"><button>회원정보 수정</button></a>
+<a th:href="@{/member/drop}"><button>회원 탈퇴</button></a>
+</body>
+</html>

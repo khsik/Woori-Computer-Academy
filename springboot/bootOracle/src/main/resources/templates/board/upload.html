@@ -6,7 +6,9 @@
 </head>
 <body>
 <h2>게시글 작성</h2>
-<form th:action="@{upload}" method="post" th:object="${boardForm}">
+<form method="post" th:object="${boardForm}">
+	<!-- form에 action이 없으면 현재 주소로 submit 되는데, 그러면 csrf는 자동생성 안되서 hidden으로 추가 -->
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 	<div th:replace="~{layouts/errors :: errors}"></div>
 	<label for="title">제목</label>
 	<input type="text" th:field="*{title}"> <br>

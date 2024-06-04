@@ -5,8 +5,10 @@
 	<title>게시판 목록</title>
 </head>
 <body>
-<h1>게시판</h1>
-<a th:href="@{/board/upload}">게시글 작성</a> <br>
+<h1><a th:href="@{/board/list}">게시판</a></h1>
+<a th:href="@{/board/upload}">게시글 작성</a>
+<a th:href="@{/main}">메인</a>
+<br>
 <form method="get">
 	<label for="search">검색 : </label>
 	<input type="text" name="search" id="search" th:value="${search}">
@@ -30,18 +32,14 @@
 	</table>
 </div>
 
-<div>
-	페이지, 검색 손봐야됨.
-	<a></a>
+<div th:if="${!paging.isEmpty}">
+	<a th:if="${paging.hasPrevious}" th:href="@{|list?page=${paging.number}&search=${search}|}">이전</a>
+	<a th:each="page : ${#numbers.sequence(1, paging.totalPages)}" style="margin:0 4px;"
+		th:if="${page >= paging.number-4 and page <= paging.number+6}"
+		th:href="@{|list?page=${page}&search=${search}|}" th:text="${page}"></a>
+	</th:block>
+	<a th:if="${paging.hasNext}" th:href="@{|list?page=${paging.number+2}&search=${search}|}">다음</a>
 </div>
-<!--
-	paging.hasPrevious
-	paging.number
-	paging.hasNext
-	paging.isEmpty
-	paging.totalPages
-	paging.totalElements
--->
 
 </body>
 </html>

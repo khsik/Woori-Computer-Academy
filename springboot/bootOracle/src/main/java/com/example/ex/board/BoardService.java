@@ -29,7 +29,7 @@ public class BoardService {
 
 	private final BoardRepository boardRepository;
 	
-	public Board getBoard(long num) {
+	public Board getBoard(long num) { // 특정 게시글의 정보 가져오기
 		Optional<Board> _board = this.boardRepository.findById(num);
 		if(_board.isEmpty()) {
 			throw new DataNotFoundException("존재하지 않는 게시글 입니다.");
@@ -43,7 +43,7 @@ public class BoardService {
 
 			@Override
 			public Predicate toPredicate(Root<Board> boards, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				query.distinct(true);
+				query.distinct(true); // 중복 제거
 				Join<Board, Member> member = boards.join("writer", JoinType.LEFT);
 				return cb.or(
 						cb.like(boards.get("title"), "%"+search+"%"),
@@ -54,15 +54,15 @@ public class BoardService {
 		};
 	}
 	
-	public Page<Board> getPaging(int page, String search){
+	public Page<Board> getPaging(int page, String search){ // (검색, 페이지 처리된)게시글 목록
 		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("boardId"));
-		Pageable pageable = PageRequest.of(page-1, 10, Sort.by(sorts));
+		sorts.add(Sort.Order.desc("boardId")); // 게시글 boardId로 내림차순 정렬
+		Pageable pageable = PageRequest.of(page-1, 10, Sort.by(sorts)); // page를 0이아니라 1부터 하려고 -1,  10은 한 페이지에 게시글 갯수
 		Specification<Board> spec = search(search);
 		return this.boardRepository.findAll(spec, pageable);
 	}
 	
-	public long save(BoardForm boardForm, Member member) {
+	public long save(BoardForm boardForm, Member member) { // 새로운 게시글 저장
 		Board board = new Board();
 		board.setWriter(member);
 		board.setCreateDate(LocalDateTime.now());
@@ -71,5 +71,18 @@ public class BoardService {
 		
 		this.boardRepository.save(board);
 		return board.getBoardId();
+	}
+	
+	public void update(BoardForm boardForm, long num) { // 기존 게시글 수정
+		Optional<Board> _board = this.boardRepository.findById(num);
+		Board board = _board.get();
+		board.setTitle(boardForm.getTitle());
+		board.setContent(boardForm.getContent());
+		board.setUpdateDate(LocalDateTime.now());
+		this.boardRepository.save(board);
+	}
+	
+	public void delete(Board board) { // 게시글 삭제
+		this.boardRepository.delete(board);
 	}
 }

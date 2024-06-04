@@ -5,16 +5,23 @@
 	<title th:text="${board.title}"></title>
 </head>
 <body>
+<h1><a th:href="@{/board/list}">게시판</a></h1>
+<hr>
 <div th:object="${board}">
 	<h2 th:text="*{title}"></h2>
 	<p>글번호 : <span th:text="*{boardId}"></span></p>
 	<p>작성자 : <span th:text="*{writer.id}"></span></p>
-	<p>작성일자 : <span th:text="*{createDate}"></span></p>
-	<p th:if="*{updateDate}">작성일자 : <span th:text="*{updateDate}"></span></p>
+	<p>작성일자 : <span th:text="*{#temporals.format(createDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+	<p th:if="*{updateDate}">작성일자 : <span th:text="*{#temporals.format(updateDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
 	<div>
-		<pre th:utext="*{#temporals.format(content, 'yyyy-MM-dd HH:mm:ss')}"></pre>
+		<pre th:utext="*{content}"></pre>
 	</div>
-	
+	<button type="button" onclick="history.go(-1)">뒤로가기</button>
+	<a sec:authorize="isAuthenticated()" th:if="*{writer.id == #authentication.getPrincipal().getUsername()}"
+		th:href="@{|/board/update/*{boardId}|}"><button>게시글 수정</button></a>
+	<a sec:authorize="isAuthenticated()" th:if="*{writer.id == #authentication.getPrincipal().getUsername()}"
+		th:href="@{|/board/delete/*{boardId}|}"><button>게시글 삭제</button></a>
+<hr>
 	댓글부분 추가
 </div>
 </body>

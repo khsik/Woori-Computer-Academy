@@ -22,14 +22,15 @@ public class MemberDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Member> _member = this.memberRepository.findById(username);
-		if(_member.isEmpty()) {
+		// username => member.id
+		Optional<Member> _member = this.memberRepository.findById(username); // 해당 id인 계정 검색
+		if(_member.isEmpty()) { // 해당 id인 계정 없음
 			throw new UsernameNotFoundException("아이디를 확인해 주세요.");
 		}
 		
 		Member member = _member.get();
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		if(!username.equals("admin")) {
+		if(!username.equals("admin")) { // id가 admin이 아니면 해당 회원의 권한은 일반회원
 			authorities.add(new SimpleGrantedAuthority("일반"));
 		}
 		return new User(member.getId(), member.getPw(), authorities);

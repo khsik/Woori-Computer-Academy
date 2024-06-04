@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>아이디 찾기</title>
+</head>
+<body>
+<a th:href="@{/main}">메인</a>
+<hr>
+<div th:if="${id}">
+	<p>아이디 : <span th:text="${id}"></span></p>
+</div>
+<form th:action="@{/member/findid}" method="post" th:unless="${id}">
+	<label for="email">이메일 : </label>
+	<input type="email" name="email" id="email" required> <br>
+	<button type="submit">찾기</button>
+</form>
+</body>
+</html>

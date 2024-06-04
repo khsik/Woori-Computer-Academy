@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>회원 탈퇴</title>
+</head>
+<body>
+	<h2>회원 탈퇴 후 복구할 수 없습니다.</h2>
+	<h2>탈퇴하시겠습니까?</h2>
+	<h4 th:if="${msg}" th:text="${msg}"></h4>
+	<form method="post" th:action="@{/member/drop}">
+		<label for="pw">비밀번호 : </label>
+		<input type="password" name="pw" id="pw">
+		<button type="submit">예</button>
+		<a th:href="@{/main}"><button type="button">아니오</button></a>
+	</form>
+</body>
+</html>

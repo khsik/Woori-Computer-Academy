@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8" />
+	<title>회원정보 수정</title>
+</head>
+<body>
+<a th:href="@{/main}">메인</a>
+<hr>
+	<h1>회원정보 수정</h1>
+	<form th:action="@{/member/modify}" method="post" th:object="${member}">
+	<!--
+		<div th:replace="~{layouts/errors :: errors}"></div> 하고
+		th:object에 mmf(MemberModifyForm 전달할 때 이름) 넣고 하면 유효성 검사 통과 못하면 문구가 출력되야 하는데
+		페이지 자체가 오류가 생겨서 해결해야됨.
+		findpw2에서는 BindingResult 쓰면서 문제가 생겼었는데, 해결됨.
+		여기도 object 바꿔둔 상태에서는 아마 bindingResult 메서드 사용한 부분들 수정하면??
+	-->
+		<table>
+			<tr>
+				<td>아이디</td>
+				<td th:text="*{id}"></td>
+			</tr>
+			<tr>
+				<td><label for="pw">기존 비밀번호</label></td>
+				<td><input type="password" name="pw" id="pw" required></td>
+			</tr>
+			<tr>
+				<td><label for="npw">변경 비밀번호</label></td>
+				<td><input type="password" name="npw" id="npw"></td>
+			</tr>
+			<tr>
+				<td><label for="npw2">변경 비밀번호 확인</label></td>
+				<td><input type="password" name="npw2" id="npw2"></td>
+			</tr>
+			<tr>
+				<td><label for="email">이메일</label></td>
+				<td><input th:field="*{email}" required></td>
+			</tr>
+			<tr>
+				<td>취미</td>
+				<td>
+				<!-- 취미를 Enum 클래스로 관리하면 관리하기 편해질 것으로 생각됨. -->
+					<label for="hobby_1">독서</label>
+					<input type="checkbox" name="hobbies" id="hobby_1" value="독서" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '독서')}">
+					<input type="checkbox" name="hobbies" id="hobby_1" value="독서" th:if="*{#lists.isEmpty(hobbies)}">
+					<label for="hobby_2">게임</label>
+					<input type="checkbox" name="hobbies" id="hobby_2" value="게임" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '게임')}">
+					<input type="checkbox" name="hobbies" id="hobby_2" value="게임" th:if="*{#lists.isEmpty(hobbies)}">
+					<label for="hobby_3">여행</label>
+					<input type="checkbox" name="hobbies" id="hobby_3" value="여행" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '여행')}">
+					<input type="checkbox" name="hobbies" id="hobby_3" value="여행" th:if="*{#lists.isEmpty(hobbies)}">
+					<label for="hobby_4">운동</label>
+					<input type="checkbox" name="hobbies" id="hobby_4" value="운동" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '운동')}">
+					<input type="checkbox" name="hobbies" id="hobby_4" value="운동" th:if="*{#lists.isEmpty(hobbies)}">
+					<label for="hobby_5">코딩</label>
+					<input type="checkbox" name="hobbies" id="hobby_5" value="코딩" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '코딩')}">
+					<input type="checkbox" name="hobbies" id="hobby_5" value="코딩" th:if="*{#lists.isEmpty(hobbies)}">
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<button type="submit">변경</button>
+					<a th:href="@{/member/info}"><button type="button">취소</button></a>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

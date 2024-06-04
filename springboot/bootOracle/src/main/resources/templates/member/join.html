@@ -5,6 +5,8 @@
 	<title>회원가입</title>
 </head>
 <body>
+<a th:href="@{/main}">메인</a>
+<hr>
 <h1>회원가입</h1>
 <form method="post" th:action="@{/member/join}" th:object="${memberCreateForm}">
 	<div th:replace="~{layouts/errors :: errors}"></div>
@@ -18,26 +20,34 @@
 	<input type="email" th:field="*{email}" required> <br>
 	<span>성별 : </span>
 	<label for="gender_male">남</label>
-	<input type="radio" name="gender" id="gender_male" value="male">
+	<input type="radio" name="gender" id="gender_male" value="male" th:checked="*{gender == 'male'}">
 	<label for="gender_female">여</label>
-	<input type="radio" name="gender" id="gender_female" value="female"> <br>
+	<input type="radio" name="gender" id="gender_female" value="female" th:checked="*{gender == 'female'}"> <br>
 	<label for="country">국가</label>
 	<select name="country" id="country" required>
-		<option value="한국">한국</option>
-		<option value="일본">일본</option>
-		<option value="미국">미국</option>
-		<option value="중국">중국</option>
-		<option value="인도">인도</option>
+		<option value="한국" th:selected="*{country == '한국'}">한국</option>
+		<option value="일본" th:selected="*{country == '일본'}">일본</option>
+		<option value="미국" th:selected="*{country == '미국'}">미국</option>
+		<option value="중국" th:selected="*{country == '중국'}">중국</option>
+		<option value="인도" th:selected="*{country == '인도'}">인도</option>
 	</select> <br>
+	<!-- 취미를 Enum 클래스로 관리하면 관리하기 편해질 것으로 생각됨. -->
 	<span>취미 : </span>
-	<label for="hobby_1">독서</label>
-	<input type="checkbox" name="hobbies" id="hobby_1" value="독서">
-	<label for="hobby_2">게임</label>
-	<input type="checkbox" name="hobbies" id="hobby_2" value="게임">
-	<label for="hobby_3">여행</label>
-	<input type="checkbox" name="hobbies" id="hobby_3" value="여행">
-	<label for="hobby_4">운동</label>
-	<input type="checkbox" name="hobbies" id="hobby_4" value="운동">
+		<label for="hobby_1">독서</label>
+		<input type="checkbox" name="hobbies" id="hobby_1" value="독서" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '독서')}">
+		<input type="checkbox" name="hobbies" id="hobby_1" value="독서" th:if="*{#lists.isEmpty(hobbies)}">
+		<label for="hobby_2">게임</label>
+		<input type="checkbox" name="hobbies" id="hobby_2" value="게임" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '게임')}">
+		<input type="checkbox" name="hobbies" id="hobby_2" value="게임" th:if="*{#lists.isEmpty(hobbies)}">
+		<label for="hobby_3">여행</label>
+		<input type="checkbox" name="hobbies" id="hobby_3" value="여행" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '여행')}">
+		<input type="checkbox" name="hobbies" id="hobby_3" value="여행" th:if="*{#lists.isEmpty(hobbies)}">
+		<label for="hobby_4">운동</label>
+		<input type="checkbox" name="hobbies" id="hobby_4" value="운동" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '운동')}">
+		<input type="checkbox" name="hobbies" id="hobby_4" value="운동" th:if="*{#lists.isEmpty(hobbies)}">
+		<label for="hobby_5">코딩</label>
+		<input type="checkbox" name="hobbies" id="hobby_5" value="코딩" th:unless="*{#lists.isEmpty(hobbies)}" th:checked="*{#lists.contains(hobbies, '코딩')}">
+		<input type="checkbox" name="hobbies" id="hobby_5" value="코딩" th:if="*{#lists.isEmpty(hobbies)}">
 	<br>
 	<button type="submit">가입</button>
 </form>
