@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>main</title>
+</head>
+<body>
+<h1>메인</h1>
+<span th:if="${session.sid} == null">
+	<a th:href="@{/mytest/form}" th:text="'회원가입'"></a>
+	<a th:href="@{/mytest/login}" th:text="'로그인'"></a>
+</span>
+<span th:unless="${session.sid} == null">
+	<a th:href="@{/mytest/myInfo}">내 정보</a>
+	<a th:href="@{/mytest/userInfo}">전체회원 정보</a>
+	<a th:href="@{/mytest/update}">정보 수정</a>
+	<a th:href="@{/mytest/logout}">로그아웃</a>
+	<a th:href="@{/mytest/delete}">회원 탈퇴</a>
+</span>
+</body>
+</html>

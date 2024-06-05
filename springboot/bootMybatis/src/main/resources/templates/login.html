@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>login</title>
+</head>
+<body>
+<h1>로그인</h1>
+<form action="/mytest/login" method="post">
+	<label for="username">username : </label> <input type="text" name="username" id="username" required> <br>
+	<label for="password">password : </label> <input type="password" name="password" id="password" required> <br>
+	<input type="submit" value="로그인">
+	<button type="button" onclick="window.location='form'">회원가입</button>
+</form>
+</body>
+</html>

@@ -184,12 +184,18 @@ public class MemberController {
 	// 비밀번호 변경
 	@GetMapping("/member/findpw2")
 	public String findPw2(Model model, MemberPwForm memberPwForm) {
+		if(model.getAttribute("id") == null) {
+			return "redirect:/member/findpw";
+		}
 		return "/member/findpw2";
 	}
 	
 	// 비밀번호 변경
 	@PostMapping("/member/findpw2")
 	public String findPw2(@ModelAttribute("id") String id, @Valid MemberPwForm memberPwForm, BindingResult bindingResult) {
+		if(id == null) {
+			return "redirect:/member/findpw";
+		}
 		if(!memberPwForm.getPw().equals(memberPwForm.getPw2())) { // 비밀번호 2번 입력한거 검사
 			bindingResult.rejectValue("pw2","passwordIncorrect", "비밀번호가 일치하지 않습니다.");
 		}

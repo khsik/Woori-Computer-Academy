@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>myInfo</title>
+</head>
+<body>
+<h1>내 정보</h1>
+<div th:object="${myTestDTO}">
+<p>
+	<span>아이디 : </span>
+	<span th:text="*{username}"></span>
+</p>
+<p>
+	<span>비밀번호 : </span>
+	<span th:text="*{password}"></span>
+</p>
+<p>
+	<span>생일 : </span>
+	<span th:text="*{birth}"></span>
+</p>
+<p>
+	<span>나이 : </span>
+	<span th:text="*{age}"></span>
+</p>
+<p>
+	<span>가입일자 : </span>
+	<span th:text="*{reg}"></span>
+</p>
+</div>
+</body>
+</html>

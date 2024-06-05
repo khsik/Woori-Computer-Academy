@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>userInfo</title>
+</head>
+<body>
+<h1>전체 회원 정보</h1>
+<table>
+	<tr>
+		<th>아이디</th>
+		<th>비밀번호</th>
+		<th>생일</th>
+		<th>나이</th>
+		<th>가입일</th>
+	</tr>
+	<tr th:each="myTestDTO : ${list}">
+		<td th:text="${myTestDTO.username}"></td>
+		<td th:text="${myTestDTO.password}"></td>
+		<td th:text="${myTestDTO.birth}"></td>
+		<td th:text="${myTestDTO.age}"></td>
+		<td th:text="${#temporals.format(myTestDTO.reg, 'yyyy-MM-dd HH:mm')}"></td>
+	<tr>
+</table>
+</body>
+</html>

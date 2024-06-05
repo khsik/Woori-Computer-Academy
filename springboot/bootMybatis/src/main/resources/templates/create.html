@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>create</title>
+</head>
+<body>
+<span th:if="${result} == 1">
+	<script>
+		alert("가입되었습니다.");
+		window.location="/mytest/login";
+	</script>
+</span>
+<span th:if="${result} != 1">
+	<script>
+		alert("다시 작성하세요.");
+		history.go(-1);
+	</script>
+</span>
+</body>
+</html>

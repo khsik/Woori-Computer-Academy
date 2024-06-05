@@ -37,7 +37,7 @@ public class BoardController {
 		return "/board/list";
 	}
 	
-	// 게시글 ㅈ가성
+	// 게시글 작성
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("upload")
 	public String uploadPost(BoardForm boardForm) {
