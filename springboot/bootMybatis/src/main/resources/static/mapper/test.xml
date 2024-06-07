@@ -32,4 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		delete from mytest <include refid="whereUsername"/>
 	</delete>
 	
+	<update id="myInfoUpdate" parameterType="MyTestDTO">
+		update mytest set password=#{password}, birth=#{birth}, age=#{age} where username=#{username}
+	</update>
 </mapper>

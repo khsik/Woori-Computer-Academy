@@ -28,4 +28,6 @@ public interface TestMapper {
 	// 회원 탈퇴
 	public int mytestDelete(String username);
 	
+	// 정보 수정
+	public void myInfoUpdate(MyTestDTO myTestDTO);
 }

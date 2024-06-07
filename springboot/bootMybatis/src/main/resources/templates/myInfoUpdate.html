@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>myInfoUpdate</title>
+</head>
+<body>
+<h1>내 정보 수정</h1>
+<form th:object="${myTestDTO}" action="/mytest/update" method="post">
+<p>
+	<span>아이디 : </span>
+	<span th:text="*{username}"></span>
+	<input type="hidden" th:field="*{username}">
+</p>
+<p>
+	<label for="orgPassword">비밀번호 : </label>
+	<input type="password" name="orgPassword" id="orgPassword" required>
+</p>
+<p>
+	<label for="newPassword1">비밀번호 변경 : </label>
+	<input type="password" name="newPassword1" id="newPassword1">
+</p>
+<p>
+	<label for="newPassword2">비밀번호 변경 확인 : </label>
+	<input type="password" name="newPassword2" id="newPassword2">
+</p>
+<p>
+	<label for="birth">생일 : </label>
+	<input type="date" name="birth" id="birth" th:value="*{#temporals.format(birth, 'yyyy-MM-dd')}" required>
+</p>
+<p>
+	<label for="age">나이 : </label>
+	<input type="number" th:field="*{age}" required>
+</p>
+<button type="submit">수정</button>
+</form>
+</body>
+</html>

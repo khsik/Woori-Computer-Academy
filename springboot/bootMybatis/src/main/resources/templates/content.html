@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>게시글</title>
+</head>
+<body>
+	<table width="400" border="1" cellspacing="0" cellpadding="0" align="center" th:object="${boardDTO}">
+		<tr>
+			<td width="70" align="center">작성자</td>
+			<td width="180">
+				<span th:text="*{writer}"></span>
+			</td>
+			<td width="70" align="center">조회수</td>
+			<td th:text="*{readCount}" align="center"></td>
+		</tr>
+		<tr>
+			<td width="70" align="center">작성일자</td>
+			<td width="330" th:text="*{#temporals.format(reg, 'yyyy-MM-dd HH:mm:ss')}" colspan="3"></td>
+		</tr>
+		<tr>
+			<td width="70" align="center">제목</td>
+			<td width="330" colspan="3">
+				<span th:text="*{title}"></span>
+			</td>
+		</tr>
+		<tr>
+			<td width="70" align="center">내용</td>
+			<td width="330" colspan="3">
+				<pre th:text="*{content}"></pre>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" align="center">
+				<a th:href="@{|/board/update?num=*{num}|}"><button type="button">수정</button></a>
+				<a th:href="@{|/board/delete?num=*{num}|}"><button type="button">삭제</button></a>
+				<a th:href="@{|/board/writeForm?num=*{num}|}"><button type="button">답글</button></a>
+				<a th:href="@{|/board/list?pageNum=${pageNum}|}"><button type="button">목록</button></a>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

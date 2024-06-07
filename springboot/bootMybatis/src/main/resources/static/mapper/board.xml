@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.repository.BoardMapper">
+
+	<!-- 글 작성 (sql문 3개) -->
+	<select id="maxNum" resultType="int">
+		select nvl(max(num), 1) from
+		myboard
+	</select>
+
+	<update id="reStepUp">
+		update myboard set re_step=re_step+1 where ref=#{ref}
+		and re_step > #{re_step}
+	</update>
+
+	<insert id="boardInsert">
+		insert into myboard values(
+		myboard_seq.nextval,
+		#{writer},
+		#{title},
+		#{content},
+		#{passwd},
+		0, <!-- 조회수 0 -->
+		#{ref},
+		#{re_step},
+		#{re_level},
+		sysdate
+		)
+	</insert>
+
+	<!-- 글 개수 -->
+	<select id="boardCount" resultType="int">
+		select count(*) from myboard
+	</select>
+
+	<!-- 글 목록 -->
+	<!-- <![CDATA[ ]]> 안에 써야 부등호를 태그로 인식하지 않고 사용 가능 -->
+	<select id="boardList" resultType="BoardDTO">
+	<![CDATA[
+		select * 
+			from (select b.* , rownum r 
+				from (select * 
+					from myboard order by ref desc, re_step asc ) b)
+		where r >= #{start} and r <= #{end}
+	]]>
+	</select>
+
+	<!-- 조회수 up -->
+	<update id="readCountUp">
+		update myboard set readcount=readcount+1 where num=#{num}
+	</update>
+
+	<!-- 글 번호로 글 가져오기 -->
+	<select id="boardNum" resultType="BoardDTO">
+		select * from myboard where num=#{num}
+	</select>
+
+	<!-- 비밀번호 확인 -->
+	<select id="passwdNum" resultType="String">
+		select passwd from myboard where num = #{num}
+	</select>
+
+	<!-- 글 수정 -->
+	<update id="boardUpdate">
+		update myboard set writer=#{writer}, title=#{title}, content=#{content}, passwd=#{passwd} where num=#{num}
+	</update>
+
+	<!-- 글 삭제 -->
+	<delete id="boardDelete">
+		delete from myboard where num=#{num}
+	</delete>
+
+</mapper>

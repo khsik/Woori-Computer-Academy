@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>글삭제</title>
+</head>
+<body>
+<form th:action="@{|/board/delete?num=${num}|}" method="post">
+	<label for="passwd">비밀번호</label>
+	<input type="password" name="passwd" id="passwd">
+	<button type="submit">삭제</button>
+	<button type="button" onclick="window.location='/board/list'">목록으로</button>
+</form>
+</body>
+</html>

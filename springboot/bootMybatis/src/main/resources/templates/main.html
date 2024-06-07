@@ -12,8 +12,8 @@
 </span>
 <span th:unless="${session.sid} == null">
 	<a th:href="@{/mytest/myInfo}">내 정보</a>
-	<a th:href="@{/mytest/userInfo}">전체회원 정보</a>
 	<a th:href="@{/mytest/update}">정보 수정</a>
+	<a th:href="@{/mytest/userInfo}">전체회원 정보</a>
 	<a th:href="@{/mytest/logout}">로그아웃</a>
 	<a th:href="@{/mytest/delete}">회원 탈퇴</a>
 </span>

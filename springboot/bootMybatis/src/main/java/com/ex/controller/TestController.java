@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ex.data.MyTestDTO;
+import com.ex.data.MyTestUpdateDTO;
 import com.ex.service.TestService;
 
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +18,11 @@ import lombok.RequiredArgsConstructor;
 public class TestController {
 
 	private final TestService testService;
+	
+	@GetMapping("/")
+	public String main2() {
+		return "redirect:/mytest/main";
+	}
 	
 	@GetMapping("/mytest/main")
 	public String main() {
@@ -82,5 +88,25 @@ public class TestController {
 		session.invalidate();
 		testService.mytestDelete(username);
 		return "redirect:/mytest/main";
+	}
+	
+	@GetMapping("/mytest/update")
+	public String myInfoUpdate(HttpSession session, Model model) {
+		String username = (String) session.getAttribute("sid");
+		MyTestDTO myTestDTO = testService.myInfo(username);
+		model.addAttribute("myTestDTO", myTestDTO);
+		return "myInfoUpdate";
+	}
+	
+	@PostMapping("/mytest/update")
+	public String myInfoUpdate(MyTestUpdateDTO dto) {
+		// 기존 비밀번호 확인 || 새로운 비밀번호 일치 확인
+		if(!testService.myInfo(dto.getUsername()).getPassword().equals(dto.getOrgPassword())
+				|| !dto.getNewPassword1().equals(dto.getNewPassword2())) {
+			return "redirect:/mytest/update";
+		}
+		testService.updateInfo(dto);
+		
+		return "redirect:/mytest/myInfo";
 	}
 }

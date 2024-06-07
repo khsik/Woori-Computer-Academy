@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="script.js"></script>
+	<title>글작성</title>
+</head>
+<body>
+<center><b>글쓰기</b></center>
+<br>
+<form action="/board/writePro" method="post" name="writeform" onsubmit="return writeSave()">
+	<input type="hidden" name="num" th:value="${boardDTO.num}">
+	<input type="hidden" name="ref" th:value="${boardDTO.ref}">
+	<input type="hidden" name="re_step" th:value="${boardDTO.re_step}">
+	<input type="hidden" name="re_level" th:value="${boardDTO.re_level}">
+	<table width="400" border="1" cellspacing="0" cellpadding="0" align="center">
+		<tr>
+			<td width="70" align="center">작성자</td>
+			<td width="330">
+				<input type="text" size="10" maxlength="10" name="writer">
+			</td>
+		</tr>
+		<tr>
+			<td width="70" align="center">제목</td>
+			<td width="330">
+				<span th:if="${boardDTO.num == 0}">
+					<input type="text" size="41" maxlength="50" name="title">
+				</span>
+				<span th:unless="${boardDTO.num == 0}">
+					<input type="text" size="41" maxlength="50" name="title" value="[답글]">
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td width="70" align="center">내용</td>
+			<td width="330">
+				<textarea rows="13" cols="43" name="content"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td width="70" align="center">비밀번호</td>
+			<td width="330">
+				<input type="password" size="8" maxlength="12" name="passwd">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="글쓰기">
+				<input type="reset" value="다시작성">
+				<input type="button" value="글목록" onclick="window.location='/board/list'">
+			</td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

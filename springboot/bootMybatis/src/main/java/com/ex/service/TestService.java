@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ex.data.MyTestDTO;
+import com.ex.data.MyTestUpdateDTO;
 import com.ex.repository.TestMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -34,4 +35,13 @@ public class TestService {
 		return testMapper.mytestDelete(username);
 	}
 
+	public void updateInfo(MyTestUpdateDTO dto) {
+		MyTestDTO myTestDTO = testMapper.myInfo(dto.getUsername());
+		if(!dto.getNewPassword1().equals("")) {
+			myTestDTO.setPassword(dto.getNewPassword1());
+		}
+		myTestDTO.setBirth(dto.getBirth());
+		myTestDTO.setAge(dto.getAge());
+		testMapper.myInfoUpdate(myTestDTO);
+	}
 }
