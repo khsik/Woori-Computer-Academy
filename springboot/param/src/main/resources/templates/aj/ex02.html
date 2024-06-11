@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>ex02</title>
+	<script th:src="@{jquery-3.7.1.min.js}"></script>
+	<script>
+		$(document).ready(function(){
+			$("#btn").click(function(){
+				$.ajax({
+					url:"/form",
+					success:function(a){
+						console.log(a);
+						// form.html 코드가 a에 들어감 -> include 같은 기능
+						$("#result").append(a);
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<button id="btn">연결</button>
+	<div id="result"></div>
+</body>
+</html>

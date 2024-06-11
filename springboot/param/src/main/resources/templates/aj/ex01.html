@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>ex01</title>
+	<script th:src="@{jquery-3.7.1.min.js}"></script>
+	<script>
+		$(document).ready(function(){
+			$("#btn").click(function(){ // 클릭 이벤트
+				console.log("btn click"); // 실행 확인용도. 브라우저의 콘솔창 출력
+				$.ajax({
+					url:"/call", // 요청 url
+					success:function(a){ // 요청 성공시 결과 실행 함수 : 변수명은 아무거나.
+						$("#result").append(a);
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<button id="btn">연결</button>
+	<div id="result"></div>
+</body>
+</html>

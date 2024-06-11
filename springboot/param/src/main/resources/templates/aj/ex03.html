@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>ex03</title>
+	<script th:src="@{jquery-3.7.1.min.js}"></script>
+	<script>
+		var interval;
+			$(document).ready(function(){
+				$("#start").click(function(){
+					// setInterval(function, 1000); -> 1000ms = 1초 마다 function 실행
+					interval = window.setInterval(function(){
+						$.ajax({
+							url:"/date",
+							success : function(a){
+								$("#result").text(a);
+							}
+						});
+					},1000);
+				});
+				
+				$("#end").click(function(){
+					clearInterval(interval);
+					//$("#result").text("");
+					//종료 누르면 내용 지우는거도 가능
+				});
+			});
+	</script>
+</head>
+<body>
+	<button id="start">시작</button>
+	<button id="end">종료</button>
+	<div id="result"></div>
+</body>
+</html>

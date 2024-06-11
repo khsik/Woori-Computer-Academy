@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>ex05</title>
+	<script th:src="@{jquery-3.7.1.min.js}"></script>
+	<script>
+		$(document).ready(function(){ // 줄여서 $(function(){})
+			$("#userCheck").click(function(){
+				$.ajax({
+					url : "/userCheck",
+					// 파라미터 data : { : } K:V 방식인 json
+					data : { username : $("#username").val(), kor : "1234"},
+					success : function(a){
+						$("#checkResult").css("color", "red").text(a);
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<form>
+		<label for="username">username : </label> <input type="text" id="username">
+		<button type="button" id="userCheck">중복체크</button>
+		<span id="checkResult"></span> <br>
+		
+		<label for="password">password : </label> <input type="password" id="password"> <br>
+		<button type="submit">로그인</button>
+	</form>
+</body>
+</html>
