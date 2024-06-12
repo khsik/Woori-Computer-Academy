@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>그룹 생성</title>
+</head>
+<body>
+	<form action="" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td><label for="team_name">그룹 이름</label></td>
+			<!-- team_name 중복 검사 들어가야됨. unique임. -->
+			<td><input type="text" name="team_name" id="team_name" maxlength="50" required></td>
+		</tr>
+		<tr>
+			<td><label for="team_explain">그룹 설명</label></td>
+			<td><textarea name="team_explain" id="team_explain" cols="42" rows="7" maxlength="333"></textarea></td>
+		</tr>
+		<tr>
+			<td><label for="team_image">그룹 이미지</label></td>
+			<!-- 업로드 한 파일 유효성 검사. 크기제한, 확장자 제한 -->
+			<td><input type="file" name="team_image" id="team_image"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<!-- 글자크기 조금 줄이고 회색으로 -->
+			<td><span>이미지는 100x100 사이즈를 권장합니다.</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<button type="reset">리셋</button>
+				<button type="submit">생성</button>
+			</td>
+		</tr>
+	</table>
+	</form>
+</body>
+</html>
