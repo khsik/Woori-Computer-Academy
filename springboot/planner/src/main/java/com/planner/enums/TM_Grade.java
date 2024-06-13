@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public enum TM_Grade {
-	MASTER("TEAM_MASTER"),
-	SUB_MASTER("TEAM_SUB_MASTER"),
-	USER("TEAM_USER");
+	ROLE_TEAM_MASTER("TEAM_MASTER"),
+	ROLE_TEAM_SUB_MASTER("TEAM_SUB_MASTER"),
+	ROLE_TEAM_USER("TEAM_USER");
 
-	TM_Grade(String value){
+	private TM_Grade(String value){
 		this.value = value;
 	}
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.planner.mapper.TeamMemberMapper">
+
+	<insert id="insertTeamMember" parameterType="TeamMemberDTO">
+		insert into team_member values(
+			team_member_seq.nextval,
+			#{member_id},
+			#{team_id},
+			#{tm_grade},
+			sysdate,
+			#{tm_nickname}
+		)
+	</insert>
+
+</mapper>

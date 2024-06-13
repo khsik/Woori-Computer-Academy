@@ -2,21 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8"/>
-	<title>그룹 생성</title>
+	<title>그룹 정보 수정</title>
 </head>
 <body>
-<!-- th:action으로 해야 csrf 자동생성됨. 그냥 action쓰면 자동생성 안됨. -->
-<form th:action="@{/team/create}" method="post" enctype="multipart/form-data" onsubmit="return imgcheck()">
-<p th:if="${result} != null" th:text="${result}"> <!-- team_name 중복일 때 출력 -->
-<table>
+<script th:if="${dto} == null">
+	alert("잘못된 접근입니다");
+	location.replace('/team/main');
+</script>
+<form th:action="@{|/team/update?team_id=${dto.team_id}|}" method="post" enctype="multipart/form-data" onsubmit="return imgcheck()">
+<table th:if="${dto} != null" th:object="${dto}">
 	<tr>
 		<td><label for="team_name">그룹 이름</label></td>
-		<!-- team_name 중복 검사 들어가야됨. unique임. -->
-		<td><input type="text" name="team_name" id="team_name" maxlength="50" required></td>
+		<td><input type="text" th:field="*{team_name}" maxlength="50" required></td>
 	</tr>
 	<tr>
 		<td><label for="team_explain">그룹 소개</label></td>
-		<td><textarea name="team_explain" id="team_explain" cols="42" rows="7" maxlength="333"></textarea></td>
+		<td><textarea th:field="*{team_explain}" cols="42" rows="7" maxlength="333"></textarea></td>
+	</tr>
+	<tr>
+		<td>이미지</td>
+		<td>
+			<span th:if="*{team_image} != null">
+				<img th:src="'/team/img?img='+*{team_image}" th:alt="*{team_name}+' 그룹의 이미지'">
+				<label for="delimg">이미지 제거</label><input type="checkbox" name="delimg" id="delimg" value="delimg">
+			</span>
+			<span th:if="*{team_image} == null">
+				<img src="/images/team_default.jpg" alt="기본이미지"></img>
+				<span style="font-size:0.8em; color:gray;">기본 이미지</span>
+				<input type="hidden" name="delimg">
+			</span>
+		</td>
 	</tr>
 	<tr>
 		<td><label for="team_image">그룹 이미지</label></td>
@@ -29,15 +44,16 @@
 			<span style="font-size:0.8em; color:gray;">이미지는 100x100 사이즈를 권장합니다.<br>움직이는 이미지는 지원하지 않습니다.</span>
 		</td>
 	</tr>
+	<!-- 회원 권한 따라서 수정 버튼 출력해야됨. -->
 	<tr>
 		<td colspan="2" align="right">
-			<button type="reset">리셋</button>
-			<button type="submit">생성</button>
+			<button type="submit">수정</button>
+			<button type="button" th:onclick="|window.location='/team/info?team_id=*{team_id}'|">취소</button>
 		</td>
 	</tr>
 </table>
 </form>
-	
+
 <script>
 	const img = document.getElementById('team_image');
 	const fileFormat = /(jpg|jpeg|png|bmp|wbmp|gif|tif|tiff)/; // 허용할 이미지 확장자
@@ -57,6 +73,6 @@
 		}
 	}
 </script>
-
+	
 </body>
 </html>

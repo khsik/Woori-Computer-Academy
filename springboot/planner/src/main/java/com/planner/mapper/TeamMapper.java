@@ -12,4 +12,6 @@ public interface TeamMapper {
 	public void teamInsert(TeamDTO dto);
 	public void teamUpdate(TeamDTO dto);
 	public void teamDelete(Long member_id);
+	public TeamDTO teamInfo(Long team_id);
+	public void teamImgDelete(Long team_id);
 }
