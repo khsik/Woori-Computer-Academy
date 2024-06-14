@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>그룹 회원 정보 수정</title>
+</head>
+<body>
+<form th:action="update" method="post">
+<table>
+	<tr>
+		<td>그룹 명
+		<td th:text="${tdto.team_name}">
+	<tr>
+		<td><label for="tm_nickname">별명</label>
+		<td><input th:field="${tmdto.tm_nickname}">
+	<tr>
+		<td>등급
+		<td th:text="${tmdto.tm_grade}">
+	<tr>
+		<td>그룹 참가 일자
+		<td th:text="${#temporals.format(tmdto.tm_reg, 'yyyy-MM-dd')}">
+	<tr>
+		<td colspan="2">
+			<input type="hidden" name="team_id" id="team_id" th:value="${tmdto.team_id}">
+			<input type="hidden" name="member_id" id="member_id" th:value="${tmdto.member_id}">
+			<button type="submit">수정</button>
+			<button type="button" onclick="history.go(-1)">취소</button>
+</table>
+</form>
+</body>
+</html>

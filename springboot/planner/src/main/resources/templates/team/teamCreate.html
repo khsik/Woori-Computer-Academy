@@ -7,6 +7,7 @@
 <body>
 <!-- th:action으로 해야 csrf 자동생성됨. 그냥 action쓰면 자동생성 안됨. -->
 <form th:action="@{/team/create}" method="post" enctype="multipart/form-data" onsubmit="return imgcheck()">
+<input type="hidden" name="member_id" th:value="${member_id}">
 <p th:if="${result} != null" th:text="${result}"> <!-- team_name 중복일 때 출력 -->
 <table>
 	<tr>

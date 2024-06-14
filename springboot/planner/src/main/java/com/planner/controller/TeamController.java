@@ -21,7 +21,17 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class TeamController {
 
+	// TODO 합치고 나면 로그인 회원의 권한과 관련된 부분들 수정해야됨
+	// team 정보 수정, 삭제 같은것들.
+	// 주소창에 직접 적어서 임의로 접근하는 것들 대비해서 기본값 설정, 예외처리 필요함. 특히 team_id 관련된 부분
+	
 	private final TeamService teamService;
+	
+	// 편하게 실행하기 위한 임시 메인
+	@GetMapping("/")
+	public String tempMain() {
+		return "redirect:/team/main";
+	}
 	
 	@GetMapping("/team/main")
 	public String teamMain() {
@@ -29,12 +39,12 @@ public class TeamController {
 	}
 	
 	@GetMapping("/team/create")
-	public String teamCreate() {
+	public String teamCreate(@ModelAttribute("member_id") Long member_id) {
 		return "/team/teamCreate";
 	}
 	
 	@PostMapping("/team/create")
-	public String teamCreate(Principal principal, Model model,
+	public String teamCreate(Principal principal, Model model, @ModelAttribute("member_id") Long member_id,
 							@ModelAttribute("team_name") String team_name, @ModelAttribute("team_explain") String team_explain,
 							@RequestParam("team_image") MultipartFile team_image) {
 		boolean result = teamService.teamNameOverlap(team_name); // 중복 검사. 중복이면 false
@@ -42,10 +52,7 @@ public class TeamController {
 			model.addAttribute("result", "중복된 그룹 이름입니다.");
 			return "/team/teamCreate";
 		}
-//		TODO 합치고 나서 수정해야되는거.
-//		String userid = principal.getName();
-		String userid = "";
-		boolean result2 = teamService.teamCreate(userid, team_name, team_explain, team_image); // 등록 실패시 false
+		boolean result2 = teamService.teamCreate(member_id, team_name, team_explain, team_image); // 등록 실패시 false
 		if(!result2) {
 			model.addAttribute("result", "지원하지 않는 형식의 이미지입니다.");
 			return "/team/teamCreate";
@@ -55,11 +62,11 @@ public class TeamController {
 	}
 	
 	@GetMapping("/team/info")
-	public String teamInfo(Model model, @RequestParam("team_id") long team_id) {
+	public String teamInfo(Model model, @RequestParam(name="team_id", defaultValue = "-1") long team_id) {
 		TeamDTO dto = teamService.teamInfo(team_id);
 		model.addAttribute("dto", dto);
 		if(dto == null) {
-			model.addAttribute("nodto", "없는 그룹입니다.");
+			model.addAttribute("nodto", "잘못된 접근입니다.");
 		}
 		return "/team/teamInfo";
 	}
@@ -76,14 +83,14 @@ public class TeamController {
 	public String teamUpdate(Principal principal, Model model, @RequestParam("team_id") long team_id,
 							@ModelAttribute("team_name") String team_name, @ModelAttribute("team_explain") String team_explain,
 							@RequestParam("team_image") MultipartFile team_image, @RequestParam("delimg") String delimg) {
-		// TODO 수정할 때 이미지쪽으로 아직 오류나오는 부분들 있음. 수정해야됨.
 		teamService.teamInfoUpdate(principal, team_id, team_name, team_explain, team_image, delimg);
 		return "redirect:/team/info?team_id="+team_id;
 	}
 	
 	@GetMapping("/team/delete")
-	public String teamDelete() {
-		return "";
+	public String teamDelete(@RequestParam("team_id") long team_id, @RequestParam("member_id") long member_id) {
+		teamService.teamDelete(team_id, member_id);
+		return "redirect:/";
 	}
 	
 	@GetMapping("/team/img")

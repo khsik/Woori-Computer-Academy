@@ -21,15 +21,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<delete id="teamDelete">
 		delete team where team_id=
-			(select team_id from team_member where tm_grade='TEAM_MASTER' and member_id=#{member_id})
+			(select team_id from team_member where member_id=#{member_id} and team_id=#{team_id} and tm_grade='TEAM_MASTER')
 	</delete>
 	
 	<select id="teamInfo" resultType="TeamDTO">
 		select * from team where team_id=#{team_id}
 	</select>
-
-	<update id="teamImgDelete">
-		update team set team_image='' where team_id=#{team_id}
-	</update>
 
 </mapper>

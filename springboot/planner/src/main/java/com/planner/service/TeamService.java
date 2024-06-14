@@ -23,9 +23,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.planner.dto.MemberDTO;
 import com.planner.dto.TeamDTO;
 import com.planner.dto.TeamMemberDTO;
 import com.planner.enums.TM_Grade;
+import com.planner.mapper.MemberMapper;
 import com.planner.mapper.TeamMapper;
 import com.planner.mapper.TeamMemberMapper;
 
@@ -35,16 +37,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class TeamService {
 
+	private final MemberMapper memberMapper;
 	private final TeamMapper teamMapper;
-	private final TeamMemberMapper teamMemberMapper;
+	private final TeamMemberMapper tmMapper;
 	private final String uploadPath = new File("").getAbsolutePath() +"\\src\\main\\resources\\static\\upload\\";
 	private final List<String> exts = Arrays.asList(ImageIO.getReaderFormatNames()); 
 	
+	// 그룹 이름 중복 검사
 	public boolean teamNameOverlap(String team_name) {
 		return teamMapper.teamNameOverlap(team_name) == 1 ? false : true;
 	}
 	
-	// 이미지 리사이즈 후 저장
+	// 그룹 이미지 리사이즈 후 저장
 	public boolean setImg(TeamDTO dto, MultipartFile team_image) {
 		String team_name = dto.getTeam_name();
 		if(!team_image.isEmpty()) { // 업로드한 파일이 있고
@@ -84,15 +88,14 @@ public class TeamService {
 		return true;
 	}
 	
-	public void delImg(TeamDTO dto, boolean newImg) {
+	// 그룹 이미지 제거
+	public void delImg(TeamDTO dto) {
 		File img = new File(uploadPath+dto.getTeam_image());
 		img.delete();
-		if(!newImg) {
-			teamMapper.teamImgDelete(dto.getTeam_id());
-		}
 	}
 	
-	public boolean teamCreate(String userid, String team_name, String team_explain, MultipartFile team_image) {
+	// 그룹 생성
+	public boolean teamCreate(Long member_id, String team_name, String team_explain, MultipartFile team_image) {
 		TeamDTO dto = new TeamDTO();
 		dto.setTeam_name(team_name);
 		dto.setTeam_explain(team_explain);
@@ -105,22 +108,25 @@ public class TeamService {
 		teamMapper.teamInsert(dto); // team 생성
 		
 		TeamMemberDTO tmdto = new TeamMemberDTO();
-		tmdto.setMember_id(1L);	// TODO 합치고나서 principal에서 뭐 가져오는지, member_id 어떻게 가져올 지 확인 후 변경 
+		MemberDTO memdto = memberMapper.getInfo(member_id);
+		
+		tmdto.setMember_id(member_id);	// TODO 합치고나서 principal에서 뭐 가져오는지, member_id 어떻게 가져올 지 확인 후 변경 
 		tmdto.setTeam_id(dto.getTeam_id());
 		tmdto.setTm_grade(TM_Grade.ROLE_TEAM_MASTER.getValue()); // enums의 TM_Grade 확인
-		tmdto.setTm_nickname("");
+		tmdto.setTm_nickname(memdto.getMember_userid());
 		// team을 생성한 member를 해당 team의 team_member로 추가
-		teamMemberMapper.insertTeamMember(tmdto);
+		tmMapper.insertTeamMember(tmdto);
 		
 		return true;
 	}
 
+	// 그룹 정보 읽기
 	public TeamDTO teamInfo(long team_id) {
 		return teamMapper.teamInfo(team_id);
 	}
 
+	// 이미지 파일 읽기
 	public ResponseEntity<Resource> teamImg(String imgName) {
-		// 이미지 파일 읽기
 		String pathName = uploadPath + imgName;
 		Resource re = new FileSystemResource(pathName);
 		if(!re.exists()) { // 없으면 404
@@ -138,21 +144,30 @@ public class TeamService {
 		return new ResponseEntity<Resource>(re, head, HttpStatus.OK);
 	}
 
+	// 그룹 정보 수정
 	public void teamInfoUpdate(Principal principal, long team_id, String team_name, String team_explain,
 								MultipartFile team_image, String delimg) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
 		dto.setTeam_name(team_name);
 		dto.setTeam_explain(team_explain);
-		boolean del = delimg != null; // 기존 이미지 제거 체크했으면 true
+		boolean del = delimg.equals("delimg"); // 기존 이미지 제거 체크했으면 true
 		boolean newImg = !team_image.isEmpty(); // 교체할 이미지 있으면 true
 		if(del || newImg) { // 기존 이미지를 제거, 혹은 교체시
-			if(dto.getTeam_image() != null) {
-				this.delImg(dto, newImg);
-			}
-			if(!team_image.isEmpty()) {
+			this.delImg(dto);
+			if(newImg) {
 				this.setImg(dto, team_image);
+			}else if(del) {
+				dto.setTeam_image(null);
 			}
 		}
 		teamMapper.teamUpdate(dto);
+	}
+	
+	public void teamDelete(long team_id, long member_id) {
+		TeamDTO dto = teamMapper.teamInfo(team_id);
+		if(dto.getTeam_image() != null) {
+			this.delImg(dto);
+		}
+		teamMapper.teamDelete(team_id, member_id);
 	}
 }

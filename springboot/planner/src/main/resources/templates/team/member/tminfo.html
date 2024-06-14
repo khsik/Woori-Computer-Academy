@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>그룹 회원 정보</title>
+</head>
+<body>
+<table>
+	<tr>
+		<td>그룹 명
+		<td th:text="${tdto.team_name}">
+	<tr>
+		<td>별명
+		<td th:text="${tmdto.tm_nickname}">
+	<tr>
+		<td>등급
+		<td th:text="${tmdto.tm_grade}">
+	<tr>
+		<td>그룹 참가 일자
+		<td th:text="${#temporals.format(tmdto.tm_reg, 'yyyy-MM-dd')}">
+	<tr>
+		<td colspan="2">
+			<input type="hidden" name="team_id" id="team_id" th:value="${tmdto.team_id}">
+			<input type="hidden" name="member_id" id="member_id" th:value="${tmdto.member_id}">
+			<button type="button" name="update" onclick="btnf(this)">수정</button>
+			<button type="button" name="delete" onclick="btnf(this)">그룹 탈퇴</button>
+			<button type="button" onclick="window.location='/'">취소</button>
+</table>
+<script>
+	function btnf(btn){
+		let path = btn.name;
+		let team_id = document.getElementById("team_id").value;
+		let member_id = document.getElementById("member_id").value;
+			window.location=path+'?team_id='+team_id+'&member_id='+member_id;
+	}
+</script>
+</body>
+</html>

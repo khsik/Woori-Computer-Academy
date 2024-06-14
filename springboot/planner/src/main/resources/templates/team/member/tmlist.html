@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title>그룹 회원 목록</title>
+</head>
+<body>
+<table>
+	<tr>
+		<th>회원번호</th>
+		<th>별명</th>
+		<th>등급</th>
+		<th>가입일자</th>
+	</tr>
+	<tr th:each="dto : ${tmlist}">
+		<td th:text="${dto.member_id}"></td>
+		<td th:text="${dto.tm_nickname}"></td>
+		<td th:text="${dto.tm_grade}"></td>
+		<td th:text="${#temporals.format(dto.tm_reg, 'yyyy-MM-dd')}"></td>
+	</tr>
+</table>
+</body>
+</html>

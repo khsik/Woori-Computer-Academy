@@ -15,4 +15,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 
+	<select id="tmInfo" resultType="TeamMemberDTO">
+		select * from team_member where team_id=#{team_id} and member_id=#{member_id}
+	</select>
+
+	<select id="tmInfoList" resultType="TeamMemberDTO">
+		select * from team_member where team_id=#{team_id}
+	</select>
+	
+	<update id="tmUpdate">
+		update team_member set tm_nickname=#{tm_nickname} where team_id=#{team_id} and member_id=#{member_id}
+	</update>
+	
+	<delete id="tmDelete">
+		delete team_member where team_id=#{team_id} and member_id=#{member_id} and tm_grade != 'TEAM_MASTER'
+	</delete>
 </mapper>
