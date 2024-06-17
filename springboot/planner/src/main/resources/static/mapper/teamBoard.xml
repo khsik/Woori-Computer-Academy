@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.planner.mapper.TeamBoardMapper">
+
+	<select id="teamBoardCountAll" resultType="int">
+		select count(*) from team_board where team_id=#{team_id}
+	</select>
+<!-- 카테고리, 검색옵션 NumberFormatException 나와댐. char로 인식해대서. 수정해야됨. -->
+	<select id="teamBoardCount" resultType="int">
+		select count(*) from team_board
+			where team_id=#{team_id}
+			<if test='category!="전체"'>
+			and tb_category = #{category}
+			</if>
+			<if test="searchOption!='0'">
+				<if test="searchOption=='1'">
+				and tb_title like '%'||#{search}||'%'
+				</if>
+				<if test="searchOption=='2'">
+				and tb_content like '%'||#{search}||'%'
+				</if>
+				<if test="searchOption=='3'">
+				(and tb_title like '%'||#{search}||'%'
+				or tb_content like '%'||#{search}||'%')
+				</if>
+				<if test="searchOption=='4'">
+				and like (select tm_nickname from team_member where team_id=#{team_id} and tm_nickname like '%'||#{search}||'%')
+				</if>
+			</if>
+	</select>
+
+	<select id="teamBoardList" resultType="TeamBoardListDTO">
+		select * from 
+			(select tbs.*, rownum as rn from 
+				(select
+				    tb.TEAM_BOARD_ID ,
+				    tb.TEAM_MEMBER_ID ,
+				    tb.TB_CATEGORY ,
+				    tb.TB_TITLE ,
+				    tb.TB_REG,
+				    tm.TM_NICKNAME
+				    from team_board tb, team_member tm
+				    where tb.team_member_id = tm.team_member_id and tb.team_id=#{team_id}
+	    			<if test='category!="전체"'>
+						and tb.tb_category = #{category}
+					</if>
+					<if test="searchOption!='no'">
+						<if test="searchOption=='T'">
+							and tb.tb_title like '%'||#{search}||'%'
+						</if>
+						<if test="searchOption=='C'">
+							and tb.tb_content like '%'||#{search}||'%'
+						</if>
+						<if test="searchOption=='TC'">
+							(and tb.tb_title like '%'||#{search}||'%'
+							or tb.tb_content like '%'||#{search}||'%')
+						</if>
+						<if test="searchOption=='W'">
+							and like tm.tm_nickname like '%'||#{search}||'%'
+						</if>
+					</if>
+				    order by team_board_id desc) tbs)
+		where rn between #{start} and #{end}
+	</select>
+
+	<insert id="teamBoardInsert" parameterType="TeamBoardDTO">
+		<selectKey keyProperty="team_board_id" resultType="long" order="BEFORE">
+			select team_board_seq.nextval from dual
+		</selectKey>
+		insert into team_board values(
+			#{team_board_id}, #{team_id}, #{team_member_id}, 
+			#{vote_id, jdbcType=BIGINT}, #{schedule_id, jdbcType=BIGINT},
+			#{tb_category}, #{tb_title}, #{tb_content}, sysdate)
+	</insert>
+
+	<select id="view" resultType="TeamBoardDTO">
+		select * from team_board where team_board_id=#{team_board_id}
+	</select>
+
+</mapper>

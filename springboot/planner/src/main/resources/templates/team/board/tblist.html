@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8"/>
+	<title th:text="${teamDTO.team_name}+' 게시판'"></title>
+</head>
+<body>
+<th:block th:if="${list} == null">
+<h2>게시판에 작성된 글이 없습니다.</h2>
+
+</th:block>
+<div th:if="${list} != null">
+<p>총 게시글 : <span th:text="${tbcount}"></span></p>
+<div>
+	페이지 당 게시글 : 
+	<select name="ps" id="ps">
+		<option value="15" th:selected="${ps} == 15">15
+		<option value="30" th:selected="${ps} == 30">30
+		<option value="50" th:selected="${ps} == 50">50
+	</select>
+</div>
+<div>
+	카테고리 : (미완)
+	<select name="ca" id="ca">
+		<option value="전체" th:selected="${ca} == '전체'">전체
+		<option value="공지" th:selected="${ca} == '공지'">공지
+		<option value="일반" th:selected="${ca} == '일반'">일반
+		<option value="질문" th:selected="${ca} == '질문'">질문
+	</select>
+</div>
+<div>
+	<select name="so">
+		<option value="1">제목
+		<option value="2">내용
+		<option value="3">제목+내용
+		<option value="4">글쓴이
+	</select>
+	<input type="text" th:field="${search}" name="search" id="search" placeholder="아직 장식용">
+	<button type="button">검색</button>
+</div>
+	<table th:with="today=${#temporals.createToday()}">
+		<tr>
+			<th>카테고리
+			<th>글번호
+			<th>제목
+			<th>작성자
+			<th>작성일
+		</tr>
+		<tr th:each="dto : ${list}">
+			<td th:text="${dto.tb_category}">
+			<td th:text="${dto.team_board_id}">
+			<td><a th:text="${dto.tb_title}" 
+				th:href="@{|/team/board/view?team_id=${team_id}&ca=${ca}&ps=${ps}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
+			<td th:text="${dto.tm_nickname}">
+			<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
+			<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">
+		</tr>
+	</table>
+	
+	<div>
+		<a th:if="${pageNum} > ${pageBlock}" th:href="@{|/team/board/list?team_id=${team_id}&ca=${ca}&ps=${ps}&pageNum=${startPage - 1}|}">이전</a>
+		<th:block th:each="pnum : ${#numbers.sequence(startPage, endPage)}">
+			<a th:if="${pnum != pageNum}" th:href="@{|/team/board/list?team_id=${team_id}&ca=${ca}&ps=${ps}&pageNum=${pnum}|}" th:text="${pnum}"></a>
+			<b th:if="${pnum == pageNum}" th:href="@{/}" th:text="${pageNum}"></b>
+		</th:block>
+		<a th:if="${endPage} < ${totalPage}" th:href="@{|/team/board/list?team_id=${team_id}&ca=${ca}&ps=${ps}&pageNum=${startPage + pageBlock}|}">다음</a>
+	</div>
+</div>
+
+<script>
+	const ps = document.getElementById("ps")
+	ps.onchange = function(){
+		let val = ps.options[ps.selectedIndex].value;
+		window.location="list?team_id=[[${team_id}]]&ca=[[${ca}]]&ps="+val+"&pageNum=[[${pageNum}]]";
+	}
+</script>
+</body>
+</html>

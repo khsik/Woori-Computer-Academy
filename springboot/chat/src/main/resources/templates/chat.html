@@ -1,0 +1,62 @@
+<h3 id="room-name"></h3>
+<div id="conversation">
+	<div id="response"></div>
+	<form id="chat-form">
+		<h4> 이름: <span id="username-holder"  th:text="${username}"></span></h4>
+		<input type="text" id="message" placeholder="메시지를 입력하세요."/>
+		<button type="submit">전송</button>
+	</form>
+</div>
+
+<script>
+	const username = '[[${username}]]';
+	const webSocket = new WebSocket("ws://192.168.0.10:8080/ws/chat")  
+	// 웹소켓 연결 , ChatHandler 클래스의 afterConnectionEstablished() 메서드 호출 
+	// http:// 로 시작하면 웹서비스에 연결되며, ws:// 시작해야 웹소켓 서비스에 연결된다. 
+	// 웹서버 에서 웹서비스 와 소켓서비스가 따로 서비스되어 동작되기 때문이다.
+																												  
+	
+	// 채팅방 입장 시 바로 최초 1회 실행되는 이벤트  
+	// 채팅방 입장 시 현재 접속 되어있는 모든 사용자에게 [username 입장]이라는 메시지가 전달된다. 
+	webSocket.onopen = (event) => {
+		webSocket.send(JSON.stringify({	//  webSocket.send() 는 ChatHandler 클래스의 handleTextMessage() 메서드로 username , message 를 보낸다.   
+			username:username,			// key, value 형태 
+			message: username+'입장'
+		}))
+	}
+	
+	
+	// ChatHandler 클래스의 handleTextMessage() 메서드로 부터 메시지를 받아 출력한다. 
+	// 연결된 사용자가 메시지를 보낼 때마다. handleTextMessage() 메서드가 메시지를 받아 모든 웹소켓 세션(연결된 사용자)에게 메시지를 전달한다. 
+	webSocket.onmessage = (msg) => {
+		const data = JSON.parse(msg.data)	// 전달받은 메시지는 data 에 저장되어있다. 
+		const chatMessage = document.createElement("div")	// div 태그 생성
+		const message = document.createElement("p")  // p태그 생성
+		message.innerText = data.username + ": " + data.message;  // 생성된 p태그에 [이름,메시지] 넣는다. 
+		
+		chatMessage.appendChild(message)  // p태그를 생성한 div 태그에 넣는다. 
+		document.getElementById("response").appendChild(chatMessage)  // <div id="response"></div> 부분에 생성한 div 태그를 넣는다.
+		// 즉, 채팅메시지를 받을 때마다 <div><p>메세지</p></div> 형태로 출력한다. 
+	}
+	
+	
+	// 브라우저 종료 시 실행된다. 브라우저의 X 버튼을 누르면 실행
+	webSocket.onclose = (event) => {
+			webSocket.send(JSON.stringify({   // 퇴장 메시지를 보낸다. 접속된 모든 사용자에게 퇴장 메시지를 보낸다. 
+			username:username,
+			message: username+'퇴장'
+		}))
+	}
+
+	// form 태그의 submit 버튼 클릭 시 동작
+	document.getElementById("chat-form").addEventListener("submit", e => {
+		e.preventDefault()
+		const messageInput = document.getElementById("message")    //  <input type="text" id="message" > 태그의 객체
+		const message = messageInput.value	// <input type="text" id="message"> 태그의 입력값 
+		webSocket.send(JSON.stringify({   // ChatHandler 클래스의 handleTextMessage() 메서드로 입력값을 보낸다. 
+			username:username, 
+			message:message
+		}))
+		messageInput.value = ""  // 태그의 내용을 빈공백으로 만든다.
+	})
+</script>
