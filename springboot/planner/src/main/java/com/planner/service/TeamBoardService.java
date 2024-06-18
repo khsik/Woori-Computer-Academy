@@ -20,11 +20,11 @@ public class TeamBoardService {
 		return teamBoardMapper.teamBoardCountAll(team_id);
 	}
 	
-	public int tbCount(Long team_id, String category, int searchOption, String search) {
+	public int tbCount(Long team_id, String category, String searchOption, String search) {
 		return teamBoardMapper.teamBoardCount(team_id, category, searchOption, search);
 	}
 	
-	public List<TeamBoardListDTO> tblist(Long team_id, String category, int searchOption, String search, int pageNum, int pageSize){
+	public List<TeamBoardListDTO> tblist(Long team_id, String category, String searchOption, String search, int pageNum, int pageSize){
 		int start = (pageNum-1)*pageSize + 1;
 		int end = pageSize * pageNum;
 		return teamBoardMapper.teamBoardList(team_id, category, searchOption, search, start, end);

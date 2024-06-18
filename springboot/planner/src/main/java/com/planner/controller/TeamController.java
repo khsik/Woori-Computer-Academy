@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class TeamController {
-
+	
 	// TODO 합치고 나면 로그인 회원의 권한과 관련된 부분들 수정해야됨
 	// team 정보 수정, 삭제 같은것들.
 	// 주소창에 직접 적어서 임의로 접근하는 것들 대비해서 기본값 설정, 예외처리 필요함. 특히 team_id 관련된 부분

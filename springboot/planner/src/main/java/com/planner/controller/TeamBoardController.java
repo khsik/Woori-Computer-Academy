@@ -24,13 +24,13 @@ public class TeamBoardController {
 
 	private final TeamService teamService;
 	private final TeamBoardService teamBoardService;
-	
+
 	@GetMapping("/list")
 	public String tblist(Model model, @RequestParam(name = "team_id", defaultValue = "-1")Long team_id, 
 							@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
 							@RequestParam(name = "ca", defaultValue = "전체") String category,
 							@RequestParam(name = "ps", defaultValue = "15")int pageSize,
-							@RequestParam(name = "so", defaultValue = "0")int searchOption,
+							@RequestParam(name = "so", defaultValue = "NO")String searchOption,
 							@RequestParam(name = "search", defaultValue = "")String search) {
 		TeamDTO teamDTO = teamService.teamInfo(team_id);
 		if(teamDTO == null) {
@@ -61,6 +61,7 @@ public class TeamBoardController {
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("ps", pageSize);
+		model.addAttribute("so", searchOption);
 		model.addAttribute("search", search);
 		return "/team/board/tblist";
 	}

@@ -16,10 +16,10 @@ public interface TeamBoardMapper {
 	public int teamBoardCountAll(Long team_id);
 	
 	public int teamBoardCount(@Param("team_id")Long team_id, @Param("category")String category, 
-							@Param("searchOption")int searchOption, @Param("search")String search);
+							@Param("searchOption")String searchOption, @Param("search")String search);
 
 	public List<TeamBoardListDTO> teamBoardList(@Param("team_id")Long team_id,@Param("category")String category, 
-												@Param("searchOption")int searchOption, @Param("search")String search,
+												@Param("searchOption")String searchOption, @Param("search")String search,
 												@Param("start") int start,@Param("end") int end);
 
 	public Long teamBoardInsert(TeamBoardDTO dto);

@@ -7,26 +7,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="teamBoardCountAll" resultType="int">
 		select count(*) from team_board where team_id=#{team_id}
 	</select>
-<!-- 카테고리, 검색옵션 NumberFormatException 나와댐. char로 인식해대서. 수정해야됨. -->
+<!--
+	마이바티스 null 검사할 때 null, "" 두가지 각각 검사하는방법 외에도 자바의 static 함수를 가져다 쓸 수 있음.
+	함수를 직접 만들거나, 기존의 라이브러리에서 사용.
+	if test="@classpath@method(parameter)"
+	sql문에 직접 쓰면 ${@classpath@method(parameter)}
+	''는 char, ""는 String으로 취급해서 자바에서 특별히 char로 보내야 할 이유가 없으면 조건문 쓸때는 바깥에 ' ', 안쪽에 " " 쓰는게 좋음.
+	같음 : "".euqals(), eq, ==  / 다름 : neq, !"".euqals(), !=
+-->
 	<select id="teamBoardCount" resultType="int">
 		select count(*) from team_board
 			where team_id=#{team_id}
-			<if test='category!="전체"'>
+			<if test='category neq null and !"전체".equals(category)'>
 			and tb_category = #{category}
 			</if>
-			<if test="searchOption!='0'">
-				<if test="searchOption=='1'">
+			<if test='searchOption != null and !"".equals(searchOption) and searchOption neq "NO"'>
+				<if test='searchOption eq "T"'>
 				and tb_title like '%'||#{search}||'%'
 				</if>
-				<if test="searchOption=='2'">
+				<if test="searchOption=='C'.toString()">
 				and tb_content like '%'||#{search}||'%'
 				</if>
-				<if test="searchOption=='3'">
-				(and tb_title like '%'||#{search}||'%'
-				or tb_content like '%'||#{search}||'%')
+				<if test='searchOption.equals("TC")'>
+				and (tb_title like '%'||#{search}||'%'
+					or tb_content like '%'||#{search}||'%')
 				</if>
-				<if test="searchOption=='4'">
-				and like (select tm_nickname from team_member where team_id=#{team_id} and tm_nickname like '%'||#{search}||'%')
+				<if test='searchOption eq "W"'>
+				and team_member_id in
+					(select team_member_id from team_member where team_id=#{team_id} and tm_nickname like '%'||#{search}||'%')
 				</if>
 			</if>
 	</select>
@@ -44,21 +52,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				    from team_board tb, team_member tm
 				    where tb.team_member_id = tm.team_member_id and tb.team_id=#{team_id}
 	    			<if test='category!="전체"'>
-						and tb.tb_category = #{category}
+					and tb.tb_category = #{category}
 					</if>
-					<if test="searchOption!='no'">
-						<if test="searchOption=='T'">
-							and tb.tb_title like '%'||#{search}||'%'
+					<if test='searchOption != null and !"".equals(searchOption) and searchOption neq "NO"'>
+						<if test='searchOption eq "T"'>
+						and tb_title like '%'||#{search}||'%'
 						</if>
-						<if test="searchOption=='C'">
-							and tb.tb_content like '%'||#{search}||'%'
+						<if test="searchOption=='C'.toString()">
+						and tb_content like '%'||#{search}||'%'
 						</if>
-						<if test="searchOption=='TC'">
-							(and tb.tb_title like '%'||#{search}||'%'
-							or tb.tb_content like '%'||#{search}||'%')
+						<if test='searchOption.equals("TC")'>
+						and (tb_title like '%'||#{search}||'%'
+							or tb_content like '%'||#{search}||'%')
 						</if>
-						<if test="searchOption=='W'">
-							and like tm.tm_nickname like '%'||#{search}||'%'
+						<if test='searchOption eq "W"'>
+						and tm.tm_nickname like '%'||#{search}||'%'
 						</if>
 					</if>
 				    order by team_board_id desc) tbs)
