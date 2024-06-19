@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,7 +68,7 @@ public class TeamBoardController {
 	}
 	
 	@GetMapping("/write")
-	public String tbwrite(@RequestParam("team_id")Long team_id, @RequestParam("team_member_id")Long team_member_id) {
+	public String tbwrite(@ModelAttribute("team_id")Long team_id, @ModelAttribute("team_member_id")Long team_member_id) {
 		
 		return "/team/board/tbwrite";
 	}

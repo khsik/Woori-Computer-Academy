@@ -3,10 +3,30 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title th:text="${dto.tb_title}"></title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			width:1300px;
+			margin:0 auto;
+			padding-top:20px;
+		}
+		#title{
+			padding:5px 15px;
+		}
+		#content{
+			padding:15px;
+		}
+	</style>
 </head>
 <body>
-<h1 style="color:red; font-size:3em">아직 손봐야댐</h1>
-<h2 th:text="${dto.tb_title}"></h2>
-<p th:text=${dto.tb_content}></p>
+<h2 id="title" th:text="${dto.tb_title}"></h2>
+<hr>
+<div id="content">
+<th:block th:utext=${dto.tb_content}></th:block>
+</div>
+<hr>
 </body>
 </html>

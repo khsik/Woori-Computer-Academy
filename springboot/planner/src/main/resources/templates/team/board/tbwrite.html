@@ -3,22 +3,116 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>게시글 작성</title>
-	<!-- https://ui.toast.com/tui-editor -->
-	<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-	<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/summernote-lite.min.css}">
+	<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/summernote-ko-KR.min.js}"></script>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			width:1300px;
+			margin:0 auto;
+			padding-top:20px;
+		}
+		button[aria-label="글꼴"]{
+			width:100px;
+			overflow: hidden;
+		}
+		input[name="tb_title"]{
+			padding:10px;
+			width:700px;
+			margin-bottom:15px;
+			outline: none;
+		}
+		#ca {
+			float:right;
+		}
+		#ca select{
+			padding:2px 4px;
+		}
+		#btns button{
+			float:right;
+			padding:2px 8px;
+			margin-top:5px;
+			margin-left:4px;
+		}
+		#btns:after{
+		  content:'';
+		  display:block;
+		  clear:both;
+		}
+	</style>
 </head>
 <body>
-<div id="editorbox"></div>
+<form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
+	<input type="hidden" name="team_id" th:value="${team_id}">
+	<input type="hidden" name="team_member_id" th:value="${team_member_id}">
+	<input type="text" name="tb_title" placeholder="제목을 입력해 주세요." maxlength="50" required>
+	<span id="ca">
+		<span>카테고리 : </span>
+		<select name="tb_category">
+			<option value="일반" th:selected="${ca} == '일반'">일반
+			<option value="질문" th:selected="${ca} == '질문'">질문
+		</select>
+	</span>
+    <div id="summernote"></div>
+    <input type="hidden" name="tb_content">
+    <div id="btns">
+	    <button type="button" id="btn_save">저장</button>
+	    <button type="button" id="btn_reset">리셋</button>
+    </div>
+</form>
 <script>
-	let boardContent = "";
-	const contentEditor = new toastui.Editor({
-		el: document.querySelector('#editorbox'),
-		height:'650px',
-	    initialEditType: 'wysiwyg',
-	    initialValue: boardContent,
-	    previewStyle: 'vertical',
-	    placeholder: '내용을 입력해 주세요.'
-	})
+	$('#summernote').summernote({
+		placeholder: '내용을 작성해 주세요.',
+		tabDisable: true,
+		height: 450,
+		lang: 'ko-KR',
+		disableDragAndDrop: true,
+		toolbar: [
+			['fontname', ['fontname']],
+			['fontsize', ['fontsize']],
+			['style', ['style','bold', 'italic', 'underline','strikethrough', 'clear']],
+			['color', ['forecolor','color']],
+			['table', ['table']],
+			['para', ['ul', 'ol', 'paragraph']],
+			['height', ['height']],
+			['insert',['link']],
+			['view', ['fullscreen', 'help']]
+			],
+		fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+		fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+	});
+	
+	const boardform = document.getElementById('boardform');
+	
+	// html태그, 공백 제거 (유효성 검사용)
+	function isempty(str_code){
+	  var ptn = new RegExp("<\/?[^>]*>","gi");
+	  str_code = str_code.replace(ptn,"")
+	  str_code = str_code.replace(/&nbsp;/gi, "");
+	  return str_code.trim();
+	}
+	
+	// 유효성 검사 (내용이 있는지 없는지)
+	document.getElementById('btn_save').onclick = function(){
+		let content = document.querySelector('.note-editable').innerHTML
+		if(isempty(content).length == 0){
+			alert('내용을 입력해 주세요');
+		}else{
+			boardform.tb_content.value = content;
+			boardform.submit();
+		}
+	}
+	
+	// 리셋버튼
+	document.getElementById('btn_reset').onclick = function(){
+		boardform.reset();
+		$('#summernote').summernote('reset');
+	}
 </script>
 </body>
 </html>

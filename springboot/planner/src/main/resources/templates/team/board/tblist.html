@@ -42,9 +42,9 @@
 	<input type="hidden" name="ca" th:value="${ca}">
 	<input type="hidden" name="pageNum" th:value="${pageNum}">
 	<select id="so" name="so">
+		<option value="TC" th:selected="${so} == 'TC'">제목+내용
 		<option value="T" th:selected="${so} == 'T'">제목
 		<option value="C" th:selected="${so} == 'C'">내용
-		<option value="TC" th:selected="${so} == 'TC'">제목+내용
 		<option value="W" th:selected="${so} == 'W'">글쓴이
 	</select>
 	<input type="text" th:value="${search}" name="search" id="search" placeholder="검색어">
