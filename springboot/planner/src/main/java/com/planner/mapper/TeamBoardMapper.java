@@ -22,7 +22,11 @@ public interface TeamBoardMapper {
 												@Param("searchOption")String searchOption, @Param("search")String search,
 												@Param("start") int start,@Param("end") int end);
 
-	public Long teamBoardInsert(TeamBoardDTO dto);
+	public void teamBoardInsert(TeamBoardDTO dto);
 
-	public TeamBoardDTO view(Long team_board_id);
+	public TeamBoardDTO teamBoardView(Long team_board_id);
+	
+	public void teamBoardUpdate(TeamBoardDTO dto);
+	
+	public void teamBoardDelete(Long team_board_id);
 }

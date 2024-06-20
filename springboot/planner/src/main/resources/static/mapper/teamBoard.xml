@@ -95,8 +95,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			#{tb_category}, #{tb_title}, #{tb_content}, sysdate)
 	</insert>
 
-	<select id="view" resultMap="boardMap">
+	<select id="teamBoardView" resultMap="boardMap">
 		select * from team_board where team_board_id=#{team_board_id}
 	</select>
+
+	<update id="teamBoardUpdate" parameterType="TeamBoardDTO">
+		update team_board set
+			tb_category=#{tb_category},
+			tb_title=#{tb_title},
+			tb_content=#{tb_content},
+			vote_id=#{vote_id, jdbcType=BIGINT},
+			schedule_id=#{schedule_id, jdbcType=BIGINT}
+		where
+			team_board_id=#{team_board_id}
+	</update>
+	
+	<delete id="teamBoardDelete">
+		delete team_board where
+			team_board_id=#{team_board_id}
+	</delete>
 
 </mapper>

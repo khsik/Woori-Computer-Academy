@@ -47,17 +47,26 @@
 	</style>
 </head>
 <body>
-<form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
+<form id="boardform" method="post" th:action="${dto} ? @{modify} : @{write}" onsubmit="return false">
 	<input type="hidden" name="team_id" th:value="${team_id}">
 	<input type="hidden" name="team_member_id" th:value="${team_member_id}">
-	<input type="text" name="tb_title" placeholder="제목을 입력해 주세요." maxlength="50" required>
+	<input type="hidden" name="team_board_id" th:value="${dto?.team_board_id}">
+	<!--
+		${dto} ? ${dto.tb_title} : '' -> dto가 있으면 dto.tb_title 없으면 ''
+			${dto != null} ? ... 해도 됨.
+		thymeleaf에서 Elvis 연산자 지원해서 삼항연산자를 짧게 쓸 수 있음.
+		${dto?.tb_title}  -> dto가 있으면 dto.tb_title 출력
+		${data?} -> data가 있으면 data 출력
+		${data} ?: '' -> data가 있으면 data, 없으면 '' 출력
+	-->
 	<span id="ca">
 		<span>카테고리 : </span>
-		<select name="tb_category">
+		<select name="tb_category" th:with="ca=${dto?.tb_category}">
 			<option value="일반" th:selected="${ca} == '일반'">일반
 			<option value="질문" th:selected="${ca} == '질문'">질문
 		</select>
 	</span>
+	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
     <div id="summernote"></div>
     <input type="hidden" name="tb_content">
     <div id="btns">
@@ -81,9 +90,9 @@
 			['para', ['ul', 'ol', 'paragraph']],
 			['height', ['height']],
 			['insert',['link']],
-			['view', ['fullscreen', 'help']]
+			['view', [ 'help']]
 			],
-		fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+		fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','sans-serif','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
 		fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
 	});
 	
@@ -91,28 +100,43 @@
 	
 	// html태그, 공백 제거 (유효성 검사용)
 	function isempty(str_code){
-	  var ptn = new RegExp("<\/?[^>]*>","gi");
-	  str_code = str_code.replace(ptn,"")
+	  //var ptn = new RegExp("<\/?[^>]*>","gi");
+	  //str_code = str_code.replace(ptn,"")
+	  str_code = str_code.replace(/<\/?[^>]*>/gi,"")
 	  str_code = str_code.replace(/&nbsp;/gi, "");
 	  return str_code.trim();
 	}
 	
-	// 유효성 검사 (내용이 있는지 없는지)
+	// 유효성 검사 (내용이 있는지 없는지) 이후 submit
 	document.getElementById('btn_save').onclick = function(){
+		let title = document.getElementById('tb_title').value;
 		let content = document.querySelector('.note-editable').innerHTML
-		if(isempty(content).length == 0){
+		if(isempty(title).length < 2){
+			alert('2글자 이상 제목을 입력해 주세요');
+		}else if(isempty(content).length == 0){
 			alert('내용을 입력해 주세요');
 		}else{
 			boardform.tb_content.value = content;
 			boardform.submit();
 		}
 	}
-	
-	// 리셋버튼
-	document.getElementById('btn_reset').onclick = function(){
-		boardform.reset();
-		$('#summernote').summernote('reset');
-	}
+</script>
+<!--/* 새글쓰기일 때 리셋 */-->
+<script th:unless="${dto}">
+document.getElementById('btn_reset').addEventListener("click", function(){
+	boardform.reset();
+	$('#summernote').summernote('reset');
+})
+</script>
+<!--/* 수정일 때 리셋 + 기존 내용 삽입 */-->
+<script th:if="${dto}" th:inline="javascript">
+const orgContent = [[${dto?.tb_content}]];
+document.querySelector('.note-editable').innerHTML = orgContent;
+document.querySelector('.note-placeholder').style='display: none';
+document.getElementById('btn_reset').addEventListener("click", function(){
+	boardform.reset();
+	document.querySelector('.note-editable').innerHTML = orgContent;
+}); 
 </script>
 </body>
 </html>

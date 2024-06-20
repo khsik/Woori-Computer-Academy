@@ -5,12 +5,8 @@
 	<title th:text="${teamDTO.team_name}+' 게시판'"></title>
 </head>
 <body>
-
-<th:block th:if="${tbCountAll} == 0">
-<h2>게시판에 작성된 글이 없습니다.</h2>
-</th:block>
-
-<th:block th:if="${tbCountAll} > 0" th:with="params=|team_id=${team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}|">
+<!-- 댓글 추가하면 제목 옆에 댓글 개수 넣기. -->
+<th:block th:with="params=|team_id=${team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}|">
 <h3 th:text="${teamDTO.team_name}+' 게시판'" th:onclick="window.location='list?team_id=[[${team_id}]]'"></h3>
 <p>
 	총 게시글 : <span th:text="${tbCountAll}"></span> <br>
@@ -50,9 +46,8 @@
 	<input type="text" th:value="${search}" name="search" id="search" placeholder="검색어">
 	<button type="submit" id="search_btn">검색</button>
 </form>
-
-<h3 th:if="${tbCount} == 0">검색된 게시글이 없습니다.</h3>
-<table th:if="${tbCount} > 0" th:with="today=${#temporals.createToday()}">
+<button type="button" th:onclick="|window.location='write?team_id=${team_id}&team_member_id=2'|">글쓰기</button>
+<table th:with="today=${#temporals.createToday()}">
 	<tr>
 		<th>카테고리
 		<th>글번호
@@ -71,7 +66,7 @@
 	</tr>
 </table>
 
-<div th:if="${tbCount} > 0">
+<div id="pageBox" th:if="${tbCount} > 0">
 	<a th:if="${pageNum} > ${pageBlock}" th:href="@{|/team/board/list?${params}&pageNum=${startPage - 1}|}">이전</a>
 	<th:block th:each="pnum : ${#numbers.sequence(startPage, endPage)}">
 		<a th:if="${pnum != pageNum}" th:href="@{|/team/board/list?${params}&pageNum=${pnum}|}" th:text="${pnum}"></a>

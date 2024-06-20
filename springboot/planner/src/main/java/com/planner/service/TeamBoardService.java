@@ -34,10 +34,15 @@ public class TeamBoardService {
 		teamBoardMapper.teamBoardInsert(dto);
 	}
 
-	public TeamBoardDTO view(Long team_board_id) {
-		return teamBoardMapper.view(team_board_id);
+	public TeamBoardDTO teamBoardView(Long team_board_id) {
+		return teamBoardMapper.teamBoardView(team_board_id);
 	}
 
+	public void teamBoardUpdate(TeamBoardDTO dto) {
+		teamBoardMapper.teamBoardUpdate(dto);
+	}
 
-
+	public void teamBoardDelete(Long team_board_id) {
+		teamBoardMapper.teamBoardDelete(team_board_id);
+	}
 }
