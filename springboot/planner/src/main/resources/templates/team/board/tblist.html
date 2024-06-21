@@ -3,11 +3,27 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title th:text="${teamDTO.team_name}+' 게시판'"></title>
+	<style>
+		h3 img{
+			height:50px;
+		}
+		#pageBox a, b{
+			margin:2px 3px;
+		}
+		.reply_count {
+			color:gray;
+			font-size:0.8em;
+		}
+	</style>
 </head>
 <body>
 <!-- 댓글 추가하면 제목 옆에 댓글 개수 넣기. -->
 <th:block th:with="params=|team_id=${team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}|">
-<h3 th:text="${teamDTO.team_name}+' 게시판'" th:onclick="window.location='list?team_id=[[${team_id}]]'"></h3>
+<h3 th:onclick="window.location='list?team_id=[[${team_id}]]'">
+<img th:if="${teamDTO.team_image} != null" th:src="'/team/img?img='+${teamDTO.team_image}" th:alt="${teamDTO.team_name}+' 그룹의 이미지'" />
+<img th:if="${teamDTO.team_image} == null" src="/images/team_default.jpg" alt="기본이미지" />
+<span>[[${teamDTO.team_name}]] 게시판</span>
+</h3>
 <p>
 	총 게시글 : <span th:text="${tbCountAll}"></span> <br>
 	검색된 게시글 : <span th:text="${tbCount}"></span>
@@ -53,13 +69,14 @@
 		<th>글번호
 		<th>제목
 		<th>작성자
-		<th>작성일
+		<th>작성시간
 	</tr>
 	<tr th:if="${list} != null" th:each="dto : ${list}">
 		<td th:text="${dto.tb_category}">
 		<td th:text="${dto.team_board_id}">
 		<td><a th:text="${dto.tb_title}" 
 			th:href="@{|/team/board/view?${params}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
+			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
 		<td th:text="${dto.tm_nickname}">
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">
@@ -67,12 +84,8 @@
 </table>
 
 <div id="pageBox" th:if="${tbCount} > 0">
-	<a th:if="${pageNum} > ${pageBlock}" th:href="@{|/team/board/list?${params}&pageNum=${startPage - 1}|}">이전</a>
-	<th:block th:each="pnum : ${#numbers.sequence(startPage, endPage)}">
-		<a th:if="${pnum != pageNum}" th:href="@{|/team/board/list?${params}&pageNum=${pnum}|}" th:text="${pnum}"></a>
-		<b th:if="${pnum == pageNum}" th:href="@{/}" th:text="${pageNum}"></b>
-	</th:block>
-	<a th:if="${endPage} < ${totalPage}" th:href="@{|/team/board/list?${params}&pageNum=${startPage + pageBlock}|}">다음</a>
+	<!--/* 페이지 번호, 이전, 다음 사이에 공백 안나오게 하려고 한줄로 만듬 */-->
+	<a th:if="${pageNum} > ${pageBlock}" th:href="@{|/team/board/list?${params}&pageNum=${startPage - 1}|}">이전</a><th:block th:each="pnum : ${#numbers.sequence(startPage, endPage)}"><a th:if="${pnum != pageNum}" th:href="@{|/team/board/list?${params}&pageNum=${pnum}|}" th:text="${pnum}"></a><b th:if="${pnum == pageNum}" th:href="@{/}" th:text="${pageNum}"></b></th:block><a th:if="${endPage} < ${totalPage}" th:href="@{|/team/board/list?${params}&pageNum=${startPage + pageBlock}|}">다음</a>
 </div>
 
 <script>

@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+	<meta name="_csrf_token" th:content="${_csrf.token}">
+	<meta name="team_board_id" th:content="${dto.team_board_id}">
 	<title th:text="${dto.tb_title}"></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<style>
@@ -19,6 +22,10 @@
 		}
 		#content{
 			padding:15px;
+		}
+		#content table, tr, td{
+			border-collapse:collapse;
+			border:1px gray solid;
 		}
 		.linkbox a, #reply_refresh{
 			padding:1px;
@@ -70,13 +77,41 @@
 			top:70px;
 		}
 		#reply_form {
-			margin-top:8px;
+			margin-top:15px;
 		}
 		#reply_form textarea {
-			width:600px;
-			height:100px;
+			width:950px;
+			height:70px;
+			padding:5px 10px;
+			margin-left:10px;
 			overflow:hidden;
 			resize: none;
+		}
+		#reply_btn{
+			width:45px;
+			height:70px;
+			vertical-align:top;
+		}
+		.reply{
+			margin-top:15px;
+			padding:0 10px;
+		}
+		.float-right{
+			float:right;
+		}
+		button.float-right{
+			padding:2px 4px;
+			vertical-align:bottom;
+		}
+		div:has(.float-right):after{
+			content:'';
+			display:block;
+			clear:both;
+		}
+		.reply_content{
+			width:950px;
+			white-space: pre-wrap;
+			word-break: break-all;
 		}
 	</style>
 </head>
@@ -84,10 +119,10 @@
 <span th:text="${dto.tb_category}"></span>
 <h2 id="title" th:text="${dto.tb_title}"></h2>
 <p>
-	<!-- 작성자 이름/별명 -->
-	<span>작성시간 : [[${#temporals.format(dto.tb_reg, 'yyyy-MM-dd HH:mm:ss')}]]</span>
+	<span>작성자 : <span th:text="${dto.tm_nickname}"></span></span>
 	<span class="linkbox">
-		<a href="#replys">댓글로</a>
+		<span class="float-right">작성시간 : [[${#temporals.format(dto.tb_reg, 'yyyy-MM-dd HH:mm:ss')}]]</span>
+		<a href="#reply_box">댓글로</a>
 	</span>
 </p>
 <hr>
@@ -97,21 +132,23 @@
 </div>
 <div>
 	<span>
-		<b>댓글</b> : ~~개
 		<a id="reply_refresh" href="javascript:void(0);">댓글 새로고침</a>
 	</span>
 	<span class="linkbox"> <!--/* float:right 때문에 순서 반대 */-->
 		<a id="check_delete" href="javascript:void(0);">삭제</a> <!-- 모달 띄우고 예, 아니오, 예 누르면 요청 post로 처리 -->
 		<a th:href="@{|modify?team_id=${dto.team_id}&tb_id=${dto.team_board_id}&team_member_id=${dto.team_member_id}|}">수정</a>
-		<a href="#content">본문으로</a>
+		<a href="#title">본문으로</a>
 		<a th:href="@{|list?team_id=${dto.team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}&pageNum=${pageNum}|}">목록</a>
 	</span>
 </div>
 <hr>
-<div id="replys">
-	<div><em>th:each로 댓글 출력하기</em></div>
+<div id="reply_box">
+	<div id="reply_list">
+	</div>
 	<form id="reply_form" onsubmit="return false;">
-		<textarea rows="" cols=""></textarea>
+		<input type="hidden" name="team_board_id" th:value="${dto.team_board_id}">
+		<input type="hidden" name="team_member_id" value="2">
+		<textarea name="reply_content" placeholder="댓글을 작성해 주세요." maxlength="333"></textarea><button type="button" id="reply_btn">등록</button>
 	</form>
 </div>
 
@@ -119,25 +156,31 @@
 	<div id="modal_body">
 		<h2>게시글을 삭제하시겠습니까?</h2>
 		<p id="modal_btns">
-			<button type="button" id="board_delete" th:data-_csrf="${_csrf.token}" 
+			<button type="button" id="board_delete"
 			th:data-tb_id="${dto.team_board_id}" th:data-team_id="${dto.team_id}"
 			>삭제</button><button type="button" id="modal_close">취소</button>
 		</p>
 	</div>
 </div>
-<script>
+<script th:inline="javascript">
 	const modal = document.getElementById('modal');
 	const check_delete = document.getElementById('check_delete');
 	const modal_close = document.getElementById('modal_close');
-	
+	const team_board_id = document.querySelector('meta[name="team_board_id"]').getAttribute('content');
+	const header = $('meta[name="_csrf_header"]').attr("content");
+	const token = $('meta[name="_csrf_token"]').attr("content");
+	// 글삭제 modal창 on
 	check_delete.addEventListener('click', function(){
 		modal.style.display = 'block';
 	})
+	// 글삭제 modal창 off
 	modal_close.addEventListener('click', function(){
 		modal.style.display = 'none';
 	})
+	// 글 삭제
 	$("#board_delete").on("click", function(){
 		let data = $(this).data();
+		data._csrf = token;
 		$.ajax({
 			type:"post",
 			url:"/team/board/delete",
@@ -146,6 +189,50 @@
 				window.location = result;
 			},
 		});
+	});
+	// 댓글 불러오기
+	function getReply(){
+		$.ajax({
+			type:"get",
+			url:"/reply/list",
+			data:{team_board_id:team_board_id},
+			success:function(result){
+				$("#reply_list").html(result);
+			}
+		})
+	}
+	// 댓글 최초 로딩
+	$(function(){
+		getReply();
+	});
+	// 댓글 새로고침 (수동)
+	$("#reply_refresh").on("click", function(){
+		getReply();
+	});
+	// 댓글 등록
+	$("#reply_btn").on("click", function(){
+		let data = $("#reply_form").serializeArray();
+		// data에서 reply_content trim하기
+		// 댓글 내용 길이 확인 후 ajax 요청 보낼지 말지
+		if(false){
+			alert("댓글 내용을 입력해 주세요");
+		}else{
+			$.ajax({
+				type:"post",
+				url:"/reply/insert",
+				data:data,
+				beforeSend:function(xhr){
+					xhr.setRequestHeader(header, token);
+				},
+				success:function(){
+					getReply();
+					$("#reply_form").each(function(){this.reset();})
+				},
+				error:function(){
+					alert("댓글 등록을 실패했습니다.");
+				}
+			})
+		};
 	});
 </script>
 </body>

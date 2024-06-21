@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class ReplyDTO {
-	private Long reply_id;
-	private Long team_board_id;
-	private Long team_member_id;
-	private Long reply_group;
+public class ReplyViewDTO {
+	private long reply_id;
+	private long reply_group;
 	private String reply_content;
 	private LocalDateTime reply_reg;
+	private long team_member_id;
+	private String tm_nickname;
 }

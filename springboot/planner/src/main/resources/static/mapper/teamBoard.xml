@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="tb_title"		property="tb_title"			jdbcType="VARCHAR"	javaType="String"/>
 		<result column="tb_content"		property="tb_content"		jdbcType="CLOB"		javaType="String"/>
 		<result column="tb_reg"			property="tb_reg"			jdbcType="DATE"		javaType="java.time.LocalDateTime"/>
+		<result column="tm_nickname"	property="tm_nickname"		jdbcType="VARCHAR"		javaType="String"/>
 	</resultMap>
 
 	<select id="teamBoardCountAll" resultType="int">
@@ -52,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="teamBoardList" resultType="TeamBoardListDTO">
-		select * from 
+		select stb.*, re.reply_count from 
 			(select tbs.*, rownum as rn from 
 				(select
 				    tb.TEAM_BOARD_ID ,
@@ -62,7 +63,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				    tb.TB_REG,
 				    tm.TM_NICKNAME
 				    from team_board tb, team_member tm
-				    where tb.team_member_id = tm.team_member_id and tb.team_id=#{team_id}
+				    where tb.team_member_id = tm.team_member_id
+				    and tb.team_id=#{team_id}
 	    			<if test='category!="전체"'>
 					and tb.tb_category = #{category}
 					</if>
@@ -81,8 +83,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 						and tm.tm_nickname like '%'||#{search}||'%'
 						</if>
 					</if>
-				    order by team_board_id desc) tbs)
-		where rn between #{start} and #{end}
+			    order by team_board_id desc) tbs
+		    ) stb
+		left join(
+			select team_board_id, count(*) as reply_count
+			from reply
+			group by team_board_id
+		) re on stb.team_board_id = re.team_board_id
+		where stb.rn between #{start} and #{end}
+		order by stb.team_board_id desc
 	</select>
 
 	<insert id="teamBoardInsert" parameterType="TeamBoardDTO">
@@ -96,7 +105,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 
 	<select id="teamBoardView" resultMap="boardMap">
-		select * from team_board where team_board_id=#{team_board_id}
+		select tb.*, tm.tm_nickname from team_board tb, team_member tm 
+			where tb.team_board_id=#{team_board_id} and tb.team_member_id = tm.team_member_id
 	</select>
 
 	<update id="teamBoardUpdate" parameterType="TeamBoardDTO">

@@ -15,4 +15,5 @@ public class TeamBoardDTO {
 	private String tb_title;
 	private String tb_content;
 	private LocalDateTime tb_reg;
+	private String tm_nickname;
 }
