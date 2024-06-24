@@ -13,7 +13,7 @@
 			padding:0;
 		}
 		body{
-			width:1300px;
+			width:1200px;
 			margin:0 auto;
 			padding-top:20px;
 		}
@@ -64,6 +64,7 @@
 		<select name="tb_category" th:with="ca=${dto?.tb_category}">
 			<option value="일반" th:selected="${ca} == '일반'">일반
 			<option value="질문" th:selected="${ca} == '질문'">질문
+			<option value="공지사항" th:selected="${ca} == '공지사항'">공지사항
 		</select>
 	</span>
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">

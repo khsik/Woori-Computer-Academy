@@ -44,7 +44,10 @@ public class TeamBoardController {
 		if(tbCount != 0) {
 			list = teamBoardService.tblist(team_id, category, searchOption, search, pageNum, pageSize);
 		}
-		
+		List<TeamBoardListDTO> notice_list = null;
+		if(!category.equals("공지사항")) {
+			notice_list = teamBoardService.tblist(team_id, "공지사항", "NO", "", 1, 10);
+		}
 		int pageBlock = 10;
 		int startPage = ((pageNum-1)/pageBlock)*pageBlock + 1;
 		int endPage = startPage + pageBlock - 1;
@@ -54,6 +57,7 @@ public class TeamBoardController {
 		model.addAttribute("team_id", team_id);
 		model.addAttribute("teamDTO", teamDTO);
 		model.addAttribute("list", list);
+		model.addAttribute("notice_list", notice_list);
 		model.addAttribute("tbCountAll", tbCountAll);
 		model.addAttribute("tbCount", tbCount);
 		model.addAttribute("ca", category);

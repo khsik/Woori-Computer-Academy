@@ -34,6 +34,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			reply_id asc
 	</select>
 
+	<delete id="replyDelete">
+		delete reply where reply_id=#{reply_id}
+	</delete>
 
+	<update id="replyUpdate">
+		update reply
+		set reply_content=#{reply_content}
+		where reply_id=#{reply_id}
+	</update>
 
 </mapper>

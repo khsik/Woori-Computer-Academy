@@ -23,4 +23,12 @@ public class ReplyService {
 	public List<ReplyViewDTO> replyList(long team_board_id){
 		return replyMapper.replyList(team_board_id);
 	}
+
+	public void replyDelete(long reply_id) {
+		replyMapper.replyDelete(reply_id);
+	}
+	
+	public void replyUpdate(String reply_content, long reply_id) {
+		replyMapper.replyUpdate(reply_content, reply_id);
+	}
 }

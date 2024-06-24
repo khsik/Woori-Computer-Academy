@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum TM_Grade {
 	ROLE_TEAM_MASTER("TEAM_MASTER"),
 	ROLE_TEAM_SUB_MASTER("TEAM_SUB_MASTER"),
-	ROLE_TEAM_USER("TEAM_USER");
+	ROLE_TEAM_USER("TEAM_USER"),
+	ROLE_TEAM_WAIT("WAIT");
 
 	private TM_Grade(String value){
 		this.value = value;
