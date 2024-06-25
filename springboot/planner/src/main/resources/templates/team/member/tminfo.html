@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+	<meta name="_csrf_token" th:content="${_csrf.token}">
+	<meta name="team_id" th:content="${tmdto.team_id}">
 	<title>그룹 회원 정보</title>
 </head>
 <body>
@@ -26,6 +29,7 @@
 			<button type="button" name="delete" onclick="btnf(this)">그룹 탈퇴</button>
 			<button type="button" onclick="window.location='/'">취소</button>
 </table>
+<!-- TODO 탈퇴 mapping 수정했음. -->
 <script>
 	function btnf(btn){
 		let path = btn.name;

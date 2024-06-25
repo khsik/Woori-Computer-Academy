@@ -2,15 +2,20 @@ package com.planner.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.planner.dto.TeamDTO;
 import com.planner.dto.TeamMemberDTO;
+import com.planner.enums.TM_Grade;
 import com.planner.service.MemberService;
 import com.planner.service.TeamMemberService;
 import com.planner.service.TeamService;
@@ -28,11 +33,21 @@ public class TeamMemberController {
 	
 	@GetMapping("/insert")
 	public String tmInsert(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id, @RequestParam("member_id") Long member_id) {
-		TeamDTO dto = teamService.teamInfo(team_id);
-		String member_userid = memberService.getInfo(member_id).getMember_userid();
-		model.addAttribute("dto", dto);
-		model.addAttribute("member_userid", member_userid);
-		model.addAttribute("member_id", member_id);
+		// 중복 신청 검사
+		String grade = tmService.teamMemberOverlap(team_id, member_id);
+		if(grade != null && TM_Grade.grade_set.contains(grade)) {
+			if(TM_Grade.ROLE_TEAM_WAIT.getValue().equals(grade)) {
+				model.addAttribute("overlap", "이미 가입 신청중인 그룹입니다.");
+			}else {
+				model.addAttribute("overlap", "이미 가입된 그룹입니다.");
+			}
+		}else {
+			TeamDTO dto = teamService.teamInfo(team_id);
+			String member_userid = memberService.getInfo(member_id).getMember_userid();
+			model.addAttribute("dto", dto);
+			model.addAttribute("member_userid", member_userid);
+			model.addAttribute("member_id", member_id);
+		}
 		return "/team/member/tminsert";
 	}
 	
@@ -43,13 +58,45 @@ public class TeamMemberController {
 		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+member_id;
 	}
 	
+	@PatchMapping("/accept")
+	@ResponseBody
+	public HttpStatus tmaccept(@RequestParam("team_id") Long team_id,
+							@RequestParam("member_id") Long member_id) {
+		int result = tmService.accept(team_id, member_id, TM_Grade.ROLE_TEAM_USER.getValue());
+		if(result == 1) {
+			return HttpStatus.OK;
+		}else {
+			return HttpStatus.BAD_REQUEST;
+		}
+	}
+	
+	@PatchMapping("/grade-modify")
+	@ResponseBody
+	public HttpStatus tmGradeModify(@RequestParam("team_id") Long team_id,
+			@RequestParam("member_id") Long member_id,
+			@RequestParam("tm_grade") String tm_grade) {
+		if(TM_Grade.grade_set.contains(tm_grade)) {
+			int result = tmService.gradeModify(team_id, member_id, tm_grade);
+			if(result == 1) {
+				return HttpStatus.OK;
+			}
+		}
+		return HttpStatus.BAD_REQUEST;
+	}
+	
 	@GetMapping("/tmlist")
 	public String tmInfoList(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
 		List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
+		String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
+		long wait_count = tmlist.stream()
+				.filter(dto -> dto.getTm_grade().equals(wait))
+				.count();
 		model.addAttribute("tmlist", tmlist);
+		model.addAttribute("wait_count", wait_count);
 		return "/team/member/tmlist";
 	}
 	
+	// TODO 수정
 	@GetMapping("/info")
 	public String tmInfo(Model model, @RequestParam("member_id") Long member_id, 
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
@@ -78,10 +125,22 @@ public class TeamMemberController {
 		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+member_id;
 	}
 	
-	@GetMapping("/delete")
+	@DeleteMapping("/delete")
 	public String tmDelete(@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
 							@RequestParam("member_id") Long member_id) {
 		tmService.tmDelete(team_id, member_id);
 		return "redirect:/";
+	}
+	
+	@DeleteMapping("/kick")
+	@ResponseBody
+	public HttpStatus tmKick(@RequestParam("team_id") Long team_id,
+							@RequestParam("member_id") Long member_id) {
+		int result = tmService.tmDelete(team_id, member_id);
+		if(result == 1) {
+			return HttpStatus.OK;
+		}else {
+			return HttpStatus.BAD_REQUEST;
+		}
 	}
 }

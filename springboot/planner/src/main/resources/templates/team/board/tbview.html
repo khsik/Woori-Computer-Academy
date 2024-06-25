@@ -125,13 +125,13 @@
 	<span>작성자 : <span th:text="${dto.tm_nickname}"></span></span>
 	<span class="linkbox">
 		<span class="float-right">작성시간 : [[${#temporals.format(dto.tb_reg, 'yyyy-MM-dd HH:mm:ss')}]]</span>
-		<a href="#reply_box">댓글로</a>
+		<a href="#reply_refresh">댓글로</a>
 	</span>
 </p>
 <hr>
 <div id="content">
 <th:block th:utext="${dto.tb_content}"></th:block>
-<!-- 나중에 schedule_id, vote_id 있으면 출력 -->
+<!-- TODO 나중에 schedule_id, vote_id 있으면 출력 -->
 </div>
 <div>
 	<span>

@@ -105,12 +105,14 @@
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">
 	</tr>
+	<th:block th:if="${#lists.size(notice_list) > 3}">
 	<tr class="text-center pointer" id="unfold">
-		<td colspan="5">▼펼치기▼
+		<td colspan="5" style="width:100%">▼펼치기▼
 	</tr>
 	<tr class="text-center pointer fold" id="fold">
-		<td colspan="5">▲접기▲
+		<td colspan="5" style="width:100%">▲접기▲
 	</tr>
+	</th:block>
 </tbody>
 <tbody>
 	<tr th:if="${list} != null" th:each="dto : ${list}">
@@ -131,22 +133,30 @@
 	<a th:if="${pageNum} > ${pageBlock}" th:href="@{|/team/board/list?${params}&pageNum=${startPage - 1}|}">이전</a><th:block th:each="pnum : ${#numbers.sequence(startPage, endPage)}"><a th:if="${pnum != pageNum}" th:href="@{|/team/board/list?${params}&pageNum=${pnum}|}" th:text="${pnum}"></a><b th:if="${pnum == pageNum}" th:href="@{/}" th:text="${pageNum}"></b></th:block><a th:if="${endPage} < ${totalPage}" th:href="@{|/team/board/list?${params}&pageNum=${startPage + pageBlock}|}">다음</a>
 </div>
 
+<script th:if="${ca} != '공지사항' and ${#lists.size(notice_list)} > 3">
+const unfold = document.getElementById("unfold");
+const fold = document.getElementById("fold");
+// 공지사항 펼치기
+unfold.addEventListener("click", function(){
+	unfold.style.display = 'none';
+	fold_notice.forEach(element => {
+		element.style.display = 'table-row';
+	});
+});
+// 공지사항 접기
+fold.addEventListener("click", function(){
+	unfold.style.display = 'table-row';
+	fold_notice.forEach(element => {
+		element.style.display = 'none';
+	});
+});
+</script>
+
 <script>
 	const listForm = document.getElementById("listForm")
 	const ps = document.getElementById("ps")
 	const ca = document.getElementById("ca")
-	const notice_list = document.querySelectorAll(".fold");
-	
-	// 공지사항 펼치기
-	document.getElementById("unfold").addEventListener("click", function(){
-		notice_list.forEach(element => {
-			element.style.display = 'block';
-		});
-	});
-	// 공지사항 접기
-	document.getElementById("fold").addEventListener("click", function(){
-		
-	});
+	const fold_notice = document.querySelectorAll(".fold");
 	
 	// 페이지 사이즈 변경
 	ps.onchange = function(){

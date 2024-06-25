@@ -5,7 +5,8 @@
 	<title>그룹 참가</title>
 </head>
 <body>
-<table th:if="${dto} != null" th:object="${dto}">
+<th:block th:if="${dto} != null">
+<table th:object="${dto}">
 	<tr>
 		<td>그룹명</td>
 		<td th:text="*{team_name}"></td>
@@ -31,5 +32,14 @@
 	<input type="text" name="nickname" id="nickname" th:value="${member_userid}" required> <br>
 	<button type="submit">참가</button>	
 </form>
+</th:block>
+<th:block th:if="${overlap} != null">
+<input type="hidden" id="overlap" th:value="${overlap}">
+<script>
+	msg = document.getElementById("overlap").value;
+	alert(msg);
+	location.href="/";
+</script>
+</th:block>
 </body>
 </html>

@@ -165,9 +165,11 @@ public class TeamService {
 	
 	public void teamDelete(long team_id, long member_id) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
-		if(dto.getTeam_image() != null) {
-			this.delImg(dto);
+		int result = teamMapper.teamDelete(team_id, member_id);
+		if(result == 1) {
+			if(dto.getTeam_image() != null) {
+				this.delImg(dto);
+			}
 		}
-		teamMapper.teamDelete(team_id, member_id);
 	}
 }
