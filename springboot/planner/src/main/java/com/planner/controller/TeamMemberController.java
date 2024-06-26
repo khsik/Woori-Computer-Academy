@@ -1,8 +1,11 @@
 package com.planner.controller;
 
+import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.planner.dto.TeamDTO;
 import com.planner.dto.TeamMemberDTO;
+import com.planner.dto.TeamMyInfoDTO;
 import com.planner.enums.TM_Grade;
 import com.planner.service.MemberService;
 import com.planner.service.TeamMemberService;
@@ -70,6 +74,7 @@ public class TeamMemberController {
 		}
 	}
 	
+	// TODO tm_grade 변경인데 아직 사용 안했음.
 	@PatchMapping("/grade-modify")
 	@ResponseBody
 	public HttpStatus tmGradeModify(@RequestParam("team_id") Long team_id,
@@ -96,24 +101,19 @@ public class TeamMemberController {
 		return "/team/member/tmlist";
 	}
 	
-	// TODO 수정
 	@GetMapping("/info")
 	public String tmInfo(Model model, @RequestParam("member_id") Long member_id, 
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
-		TeamDTO tdto = teamService.teamInfo(team_id);
-		TeamMemberDTO tmdto = tmService.tminfo(team_id, member_id);
-		model.addAttribute("tdto", tdto);
-		model.addAttribute("tmdto", tmdto);
+		TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
+		model.addAttribute("dto", dto);
 		return "/team/member/tminfo";
 	}
 
 	@GetMapping("/update")
 	public String tmUpdate(Model model, @RequestParam("member_id") Long member_id,
 						@RequestParam("team_id") Long team_id) {
-		TeamDTO tdto = teamService.teamInfo(team_id);
-		TeamMemberDTO tmdto = tmService.tminfo(team_id, member_id);
-		model.addAttribute("tdto", tdto);
-		model.addAttribute("tmdto", tmdto);
+		TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
+		model.addAttribute("dto", dto);
 		return "/team/member/tmupdate";
 	}
 	
@@ -124,14 +124,20 @@ public class TeamMemberController {
 		tmService.tmUpdate(team_id, member_id, tm_nickname);
 		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+member_id;
 	}
-	
+
 	@DeleteMapping("/delete")
-	public String tmDelete(@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
-							@RequestParam("member_id") Long member_id) {
-		tmService.tmDelete(team_id, member_id);
-		return "redirect:/";
+	public ResponseEntity<Void> tmDelete(@RequestParam("team_id") Long team_id,
+										@RequestParam("member_id") Long member_id) {
+		int result = tmService.tmDelete(team_id, member_id);
+		if(result == 1) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(URI.create("/")); // redirect 시킬 경로 설정
+			return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
-	
+
 	@DeleteMapping("/kick")
 	@ResponseBody
 	public HttpStatus tmKick(@RequestParam("team_id") Long team_id,

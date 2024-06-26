@@ -4,7 +4,7 @@
 	<meta charset="UTF-8"/>
 	<title th:text="${teamDTO.team_name}+' 게시판'"></title>
 	<style>
-		h3 img{
+		#team-banner img{
 			height:50px;
 		}
 		#pageBox a, b{
@@ -35,14 +35,16 @@
 			text-align:center;
 			color:slategray;
 		}
+		td span img{
+			vertical-align:bottom;
+		}
 	</style>
 </head>
 <body>
-<!-- 댓글 추가하면 제목 옆에 댓글 개수 넣기. -->
 <th:block th:with="params=|team_id=${team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}|">
-<h3 th:onclick="window.location='list?team_id=[[${team_id}]]'">
+<h3 id="team-banner" th:onclick="window.location='list?team_id=[[${team_id}]]'">
 <img th:if="${teamDTO.team_image} != null" th:src="'/team/img?img='+${teamDTO.team_image}" th:alt="${teamDTO.team_name}+' 그룹의 이미지'" />
-<img th:if="${teamDTO.team_image} == null" src="/images/team_default.jpg" alt="기본이미지" />
+<img th:if="${teamDTO.team_image} == null" src="/images/team_default.png" alt="기본이미지" />
 <span>[[${teamDTO.team_name}]] 게시판</span>
 </h3>
 <p>
@@ -101,6 +103,8 @@
 		<td><a th:text="${dto.tb_title}" 
 			th:href="@{|/team/board/view?${params}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
 			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
+			<span th:if="${dto.vote_id != null}"><img src="/images/vote.png" alt="투표"></img></span>
+			<span th:if="${dto.schedule_id != null}"><img src="/images/schedule.png" alt="일정"></img></span>
 		<td th:text="${dto.tm_nickname}">
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">
@@ -121,6 +125,8 @@
 		<td><a th:text="${dto.tb_title}" 
 			th:href="@{|/team/board/view?${params}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
 			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
+			<span th:if="${dto.vote_id != null}"><img src="/images/vote.png" alt="투표"></img></span>
+			<span th:if="${dto.schedule_id != null}"><img src="/images/schedule.png" alt="일정"></img></span>
 		<td th:text="${dto.tm_nickname}">
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">

@@ -82,7 +82,7 @@ public class TeamController {
 	@PostMapping("/team/update")
 	public String teamUpdate(Principal principal, Model model, @RequestParam("team_id") long team_id,
 							@ModelAttribute("team_name") String team_name, @ModelAttribute("team_explain") String team_explain,
-							@RequestParam("team_image") MultipartFile team_image, @RequestParam("delimg") String delimg) {
+							@RequestParam("team_image") MultipartFile team_image, @RequestParam(name = "delimg", defaultValue = "") String delimg) {
 		teamService.teamInfoUpdate(principal, team_id, team_name, team_explain, team_image, delimg);
 		return "redirect:/team/info?team_id="+team_id;
 	}

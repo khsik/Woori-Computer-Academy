@@ -21,7 +21,7 @@
 			width:100px;
 			overflow: hidden;
 		}
-		input[name="tb_title"]{
+		#tb_title{
 			padding:10px;
 			width:700px;
 			margin-bottom:15px;
@@ -33,9 +33,12 @@
 		#ca select{
 			padding:2px 4px;
 		}
+		.btn {
+			padding:2px 8px;
+			vertical-align:middle;
+		}
 		#btns button{
 			float:right;
-			padding:2px 8px;
 			margin-top:5px;
 			margin-left:4px;
 		}
@@ -43,6 +46,43 @@
 		  content:'';
 		  display:block;
 		  clear:both;
+		}
+		#vote{
+			border:1px black solid;
+			margin-top:10px;
+			padding:10px;
+		}
+		#vote #head{
+			float:left;
+			width:48%;
+		}
+		.vote_text{
+			padding:5px;
+			margin-left:41px;
+			margin-bottom:10px;
+			width:460px;
+			outline:none;
+		}
+		label[for='vote_content']{
+			position:relative;
+			bottom:45px;
+		}
+		#vote_content{
+			resize:none;
+			width:460px;
+			height:100px;
+		}
+		#vote #item{
+			float:right;
+			width:48%;
+		}
+		#vote #item p{
+			margin-bottom:10px;
+		}
+		#vote:after{
+			content:'';
+			display:block;
+			clear:both;
 		}
 	</style>
 </head>
@@ -70,12 +110,92 @@
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
     <div id="summernote"></div>
     <input type="hidden" name="tb_content">
+    
+    <!-- display:none 으로 해두면 투표 없이 저장해도 공백으로 넘어가는 값이 많음 -->
+    <!-- input 에다가 disabled 해두면 해당 값은 제출 안됨. -->
+    <!-- 그러니까 display:none하고 disabled 둘다 하면 됨. 에디터에 있는 투표 버튼 누를때마다 전환. -->
+    <div id="vote" style="display:none;">
+	    <div id="head">
+	    	<label for="vote_title">제목</label>
+	    	<input type="text" name="vote_title" id="vote_title" class="vote_text" placeholder="투표 제목을 입력해주세요." maxlength="50"> <br>
+	    	<label for="vote_content">내용(설명)</label>
+	    	<textarea name="vote_content" id="vote_content" placeholder="어떠한 투표인지 적어주세요." maxlength="333"></textarea> <br>
+	    	<label for="vote_end">투표 종료 시간</label>
+	    	<!-- 최소값 현재시간+1시간, 최대값 현재시간+15일 정도로 -->
+	    	<input type="datetime-local" name="vote_end" id="vote_end" min="" max="">
+	    	
+	    </div>
+	    <div id="item">
+	    	<p>투표항목 <button type="button" id="new_item" class="btn">추가</button></p>
+	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요">
+	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요">
+	    </div>
+    </div>
+    
     <div id="btns">
-	    <button type="button" id="btn_save">저장</button>
-	    <button type="button" id="btn_reset">리셋</button>
+	    <button type="button" class="btn" id="btn_save">저장</button>
+	    <button type="button" class="btn" id="btn_reset">리셋</button>
     </div>
 </form>
 <script>
+	// 투표 활성화, 비활성화
+	function vote_toggle(){
+		$("#vote").toggle();
+ 		if($("#vote").css("display") == "none"){
+ 			$("#vote_content").attr("disabled", true); 
+			$("#vote input").each(function(){
+				$(this).attr("disabled", true); 
+			});
+		}else{
+ 			$("#vote_content").attr("disabled", false); 
+			$("#vote input").each(function(){
+				$(this).attr("disabled", false); 
+			});
+		}
+	}
+	var item_count = 2; // 투표 항목 개수
+	// 투표 항목 추가
+	$("#new_item").on("click", function(){
+		if(item_count < 10){
+			item_count++;
+			console.log(item_count);
+			$("#item").append('<input type="text" name="vote_item_name" class="vote_text vote_item new_item" placeholder="항목을 입력해주세요"><button type="button" class="btn del_item">제거</button>');
+		}else{
+			alert("투표 항목은 최대 10개 입니다.");
+		}
+	});
+	// 투표 추가 항목 제거
+	$(document).on("click", ".del_item", function(){
+		item_count--;
+	});
+	// 투표 버튼
+	var vote_btn = function (context) {
+		var ui = $.summernote.ui;
+
+		// create button
+		var button = ui.button({
+			contents: '<i/>투표',
+			click: function () {
+				context.invoke(vote_toggle());
+			}
+		});
+		return button.render();
+	}
+	
+	// 일정 버튼
+	var schedule_btn = function (context) {
+		var ui = $.summernote.ui;
+
+		// create button
+		var button = ui.button({
+			contents: '<i class="fa fa-child"/> 일정',
+			click: function () {
+				context.invoke(alert('미구현'));
+			}
+		});
+		return button.render();
+	}
+
 	$('#summernote').summernote({
 		placeholder: '내용을 작성해 주세요.',
 		tabDisable: true,
@@ -91,12 +211,17 @@
 			['para', ['ul', 'ol', 'paragraph']],
 			['height', ['height']],
 			['insert',['link']],
-			['view', [ 'help']]
+			['view', [ 'help']],
+			['mybutton', ['vote', 'schedule']]
 			],
+		buttons: {
+			vote: vote_btn,
+			schedule: schedule_btn
+		},
 		fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','sans-serif','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
 		fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
 	});
-	
+
 	const boardform = document.getElementById('boardform');
 	
 	// html태그, 공백 제거 (유효성 검사용)
@@ -108,7 +233,7 @@
 	  return str_code.trim();
 	}
 	
-	// 유효성 검사 (내용이 있는지 없는지) 이후 submit
+	// submit (유효성 검사 포함 (내용이 있는지 없는지))
 	document.getElementById('btn_save').onclick = function(){
 		let title = document.getElementById('tb_title').value;
 		let content = document.querySelector('.note-editable').innerHTML
@@ -121,6 +246,7 @@
 			boardform.submit();
 		}
 	}
+	
 </script>
 <!--/* 새글쓰기일 때 리셋 */-->
 <script th:unless="${dto}">

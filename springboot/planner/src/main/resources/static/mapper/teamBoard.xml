@@ -56,12 +56,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select stb.*, re.reply_count from 
 			(select tbs.*, rownum as rn from 
 				(select
-				    tb.TEAM_BOARD_ID ,
-				    tb.TEAM_MEMBER_ID ,
-				    tb.TB_CATEGORY ,
-				    tb.TB_TITLE ,
-				    tb.TB_REG,
-				    tm.TM_NICKNAME
+				    tb.team_board_id,
+				    tb.team_member_id,
+				    tb.vote_id,
+				    tb.schedule_id,
+				    tb.tb_category,
+				    tb.tb_title,
+				    tb.tb_reg,
+				    tm.tm_nickname
 				    from team_board tb, team_member tm
 				    where tb.team_member_id = tm.team_member_id
 				    and tb.team_id=#{team_id}

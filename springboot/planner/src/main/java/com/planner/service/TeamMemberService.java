@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.planner.dto.TeamMemberDTO;
+import com.planner.dto.TeamMyInfoDTO;
 import com.planner.enums.TM_Grade;
 import com.planner.mapper.TeamMemberMapper;
 
@@ -37,8 +38,8 @@ public class TeamMemberService {
 		return tmMapper.tmDelete(team_id, member_id);
 	}
 
-	public TeamMemberDTO tminfo(Long team_id, Long member_id) {
-		return tmMapper.tmInfo(team_id, member_id);
+	public TeamMyInfoDTO myinfo(Long team_id, Long member_id) {
+		return tmMapper.myinfo(team_id, member_id);
 	}
 
 	public void tmUpdate(Long team_id, Long member_id, String tm_nickname) {
@@ -52,5 +53,5 @@ public class TeamMemberService {
 	public int gradeModify(Long team_id, Long member_id, String tm_grade) {
 		return tmMapper.gradeModify(team_id, member_id, tm_grade);
 	}
-	
+
 }

@@ -27,7 +27,7 @@
 				<label for="delimg">이미지 제거</label><input type="checkbox" name="delimg" id="delimg" value="delimg">
 			</span>
 			<span th:if="*{team_image} == null">
-				<img src="/images/team_default.jpg" alt="기본이미지"></img>
+				<img src="/images/team_default.png" alt="기본이미지"></img>
 				<span style="font-size:0.8em; color:gray;">기본 이미지</span>
 				<input type="hidden" name="delimg">
 			</span>
@@ -74,8 +74,7 @@
 		}
 		// delimg 아예 안넘어가면 requestparam에서 오류생김.
 		if(delimg.checked == false){
-			delimg.value = '';
-			delimg.checked = true;
+			delimg.disabled = true;
 		}
 	}
 </script>

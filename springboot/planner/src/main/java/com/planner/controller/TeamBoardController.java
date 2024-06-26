@@ -81,6 +81,7 @@ public class TeamBoardController {
 	@PostMapping("/write")
 	public String tbwrite(TeamBoardDTO dto) {
 		teamBoardService.tbInsert(dto);
+		// TODO 투표 추가. 유효성 검사 후 문제있으면 메시지 추가하고 글작성 페이지로 return.
 		return "redirect:/team/board/view?team_id="+dto.getTeam_id()+"&tb_id="+dto.getTeam_board_id();
 	}
 	

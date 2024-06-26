@@ -76,10 +76,10 @@
 			position: absolute;
 			top:70px;
 		}
-		#reply_form {
+		.reply_form {
 			margin-top:15px;
 		}
-		#reply_form textarea {
+		.reply_form textarea {
 			width:900px;
 			height:70px;
 			padding:5px 10px;
@@ -87,17 +87,20 @@
 			overflow:hidden;
 			resize: none;
 		}
-		#reply_btn{
+		.reply_form button{
 			width:45px;
 			height:70px;
 			vertical-align:top;
 		}
+		#reply_box{
+			padding:5px 10px 15px;
+			background-color:whitesmoke;
+		}
 		.reply{
-			margin-top:15px;
-			padding:0 10px;
+			padding:15px 10px 0px;
 		}
 		.group{
-			margin-left:35px;
+			padding-left:35px;
 		}
 		.float-right{
 			float:right;
@@ -144,11 +147,11 @@
 		<a th:href="@{|list?team_id=${dto.team_id}&ca=${ca}&ps=${ps}&so=${so}&search=${search}&pageNum=${pageNum}|}">목록</a>
 	</span>
 </div>
-<hr>
+<hr color="darkgray">
 <div id="reply_box">
 	<div id="reply_list">
 	</div>
-	<form id="reply_form" onsubmit="return false;">
+	<form id="reply_form" class="reply_form" onsubmit="return false;">
 		<input type="hidden" name="team_board_id" th:value="${dto.team_board_id}">
 		<input type="hidden" name="team_member_id" value="2">
 		<textarea name="reply_content" id="reply_content" placeholder="댓글을 작성해 주세요." maxlength="333"></textarea><button type="button" id="reply_btn">등록</button>
@@ -238,7 +241,7 @@
 		$(".reply").css("display", "block");
 		let reply_id = $(this).data("reply_id");
 		let reply_content = $("#"+reply_id+" .reply_content").text();
-		let modify_div = $('<div class="modify"><textarea>'+reply_content+'</textarea></div>');
+		let modify_div = $('<div class="reply_form modify"><textarea>'+reply_content+'</textarea></div>');
 		modify_div.append('<button type="button" class="modify-btn">수정</button><button type="button" class="cancel-btn">취소</button>');
 		modify_div.insertAfter($("#"+reply_id));
 		$("#"+reply_id).css('display', 'none');
