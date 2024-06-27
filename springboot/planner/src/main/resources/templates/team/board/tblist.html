@@ -102,9 +102,9 @@
 		<td th:text="${dto.team_board_id}">
 		<td><a th:text="${dto.tb_title}" 
 			th:href="@{|/team/board/view?${params}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
-			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
 			<span th:if="${dto.vote_id != null}"><img src="/images/vote.png" alt="투표"></img></span>
 			<span th:if="${dto.schedule_id != null}"><img src="/images/schedule.png" alt="일정"></img></span>
+			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
 		<td th:text="${dto.tm_nickname}">
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">
@@ -124,9 +124,9 @@
 		<td th:text="${dto.team_board_id}">
 		<td><a th:text="${dto.tb_title}" 
 			th:href="@{|/team/board/view?${params}&pageNum=${pageNum}&tb_id=${dto.team_board_id}|}"></a>
-			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
 			<span th:if="${dto.vote_id != null}"><img src="/images/vote.png" alt="투표"></img></span>
 			<span th:if="${dto.schedule_id != null}"><img src="/images/schedule.png" alt="일정"></img></span>
+			<span th:if="${dto.reply_count != null}" class="reply_count" th:text="|(${dto.reply_count})|"></span>
 		<td th:text="${dto.tm_nickname}">
 		<td th:if="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'HH:mm')}">
 		<td th:unless="${dto.tb_reg.toLocalDate().isEqual(today)}" th:text="${#temporals.format(dto.tb_reg, 'MM-dd')}">

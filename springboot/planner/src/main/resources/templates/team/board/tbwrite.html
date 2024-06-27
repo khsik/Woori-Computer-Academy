@@ -3,102 +3,25 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>게시글 작성</title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/summernote-lite.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/board/summernote-lite.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/board/tbwrite.css}">
 	<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/summernote-ko-KR.min.js}"></script>
-	<style>
-		*{
-			margin:0;
-			padding:0;
-		}
-		body{
-			width:1200px;
-			margin:0 auto;
-			padding-top:20px;
-		}
-		button[aria-label="글꼴"]{
-			width:100px;
-			overflow: hidden;
-		}
-		#tb_title{
-			padding:10px;
-			width:700px;
-			margin-bottom:15px;
-			outline: none;
-		}
-		#ca {
-			float:right;
-		}
-		#ca select{
-			padding:2px 4px;
-		}
-		.btn {
-			padding:2px 8px;
-			vertical-align:middle;
-		}
-		#btns button{
-			float:right;
-			margin-top:5px;
-			margin-left:4px;
-		}
-		#btns:after{
-		  content:'';
-		  display:block;
-		  clear:both;
-		}
-		#vote{
-			border:1px black solid;
-			margin-top:10px;
-			padding:10px;
-		}
-		#vote #head{
-			float:left;
-			width:48%;
-		}
-		.vote_text{
-			padding:5px;
-			margin-left:41px;
-			margin-bottom:10px;
-			width:460px;
-			outline:none;
-		}
-		label[for='vote_content']{
-			position:relative;
-			bottom:45px;
-		}
-		#vote_content{
-			resize:none;
-			width:460px;
-			height:100px;
-		}
-		#vote #item{
-			float:right;
-			width:48%;
-		}
-		#vote #item p{
-			margin-bottom:10px;
-		}
-		#vote:after{
-			content:'';
-			display:block;
-			clear:both;
-		}
-	</style>
+	<script type="text/javascript" th:src="@{/js/board/summernote-lite.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/board/summernote-ko-KR.min.js}"></script>
 </head>
 <body>
-<form id="boardform" method="post" th:action="${dto} ? @{modify} : @{write}" onsubmit="return false">
+<form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
 	<input type="hidden" name="team_id" th:value="${team_id}">
 	<input type="hidden" name="team_member_id" th:value="${team_member_id}">
 	<input type="hidden" name="team_board_id" th:value="${dto?.team_board_id}">
-	<!--
+	<!--/*
 		${dto} ? ${dto.tb_title} : '' -> dto가 있으면 dto.tb_title 없으면 ''
 			${dto != null} ? ... 해도 됨.
 		thymeleaf에서 Elvis 연산자 지원해서 삼항연산자를 짧게 쓸 수 있음.
 		${dto?.tb_title}  -> dto가 있으면 dto.tb_title 출력
 		${data?} -> data가 있으면 data 출력
 		${data} ?: '' -> data가 있으면 data, 없으면 '' 출력
-	-->
+	*/-->
 	<span id="ca">
 		<span>카테고리 : </span>
 		<select name="tb_category" th:with="ca=${dto?.tb_category}">
@@ -111,24 +34,21 @@
     <div id="summernote"></div>
     <input type="hidden" name="tb_content">
     
-    <!-- display:none 으로 해두면 투표 없이 저장해도 공백으로 넘어가는 값이 많음 -->
-    <!-- input 에다가 disabled 해두면 해당 값은 제출 안됨. -->
-    <!-- 그러니까 display:none하고 disabled 둘다 하면 됨. 에디터에 있는 투표 버튼 누를때마다 전환. -->
     <div id="vote" style="display:none;">
 	    <div id="head">
 	    	<label for="vote_title">제목</label>
-	    	<input type="text" name="vote_title" id="vote_title" class="vote_text" placeholder="투표 제목을 입력해주세요." maxlength="50"> <br>
+	    	<input type="text" name="vote_title" id="vote_title" class="vote_text" placeholder="투표 제목을 입력해주세요." maxlength="50" disabled> <br>
 	    	<label for="vote_content">내용(설명)</label>
-	    	<textarea name="vote_content" id="vote_content" placeholder="어떠한 투표인지 적어주세요." maxlength="333"></textarea> <br>
+	    	<textarea name="vote_content" id="vote_content" placeholder="어떠한 투표인지 적어주세요." maxlength="333" disabled></textarea> <br>
 	    	<label for="vote_end">투표 종료 시간</label>
 	    	<!-- 최소값 현재시간+1시간, 최대값 현재시간+15일 정도로 -->
-	    	<input type="datetime-local" name="vote_end" id="vote_end" min="" max="">
-	    	
+	    	<input type="datetime-local" name="vote_end" id="vote_end" step="300" min="" max=""  disabled>
+	    	<br>
 	    </div>
 	    <div id="item">
 	    	<p>투표항목 <button type="button" id="new_item" class="btn">추가</button></p>
-	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요">
-	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요">
+	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요" disabled>
+	    	<input type="text" name="vote_item_name" class="vote_text vote_item" placeholder="항목을 입력해주세요" disabled>
 	    </div>
     </div>
     
@@ -137,7 +57,10 @@
 	    <button type="button" class="btn" id="btn_reset">리셋</button>
     </div>
 </form>
+<!-- TODO 글 수정일 때 투표, 일정은 못건드리고 출력만 가능하게 만들기. -->
 <script>
+	const boardform = document.getElementById('boardform');
+
 	// 투표 활성화, 비활성화
 	function vote_toggle(){
 		$("#vote").toggle();
@@ -151,22 +74,28 @@
 			$("#vote input").each(function(){
 				$(this).attr("disabled", false); 
 			});
+			let min = new Date(Date.now() + (60000*60*12)); // 한국 기준 현재 시간 + 3시간
+			$("#vote_end").val(min.toISOString().substring(0, 17)+'00'); // 초단위 제거
 		}
 	}
-	var item_count = 2; // 투표 항목 개수
 	// 투표 항목 추가
 	$("#new_item").on("click", function(){
-		if(item_count < 10){
-			item_count++;
-			console.log(item_count);
+		if($(".vote_item").length < 10){ // 항목 개수 제한
 			$("#item").append('<input type="text" name="vote_item_name" class="vote_text vote_item new_item" placeholder="항목을 입력해주세요"><button type="button" class="btn del_item">제거</button>');
 		}else{
 			alert("투표 항목은 최대 10개 입니다.");
 		}
 	});
+	/* 
+		index로 접근했을 때
+		$('선택자').eq(2); //jQuery객체 반환
+		$('선택자').get(2); //DOM개체 반환
+		$('선택자')[2]; //DOM개체 반환
+	*/
 	// 투표 추가 항목 제거
 	$(document).on("click", ".del_item", function(){
-		item_count--;
+		$(".new_item").get( $(".del_item").index(this) ).remove();
+		this.remove();
 	});
 	// 투표 버튼
 	var vote_btn = function (context) {
@@ -181,7 +110,7 @@
 		});
 		return button.render();
 	}
-	
+
 	// 일정 버튼
 	var schedule_btn = function (context) {
 		var ui = $.summernote.ui;
@@ -196,6 +125,7 @@
 		return button.render();
 	}
 
+	// 에디터 생성
 	$('#summernote').summernote({
 		placeholder: '내용을 작성해 주세요.',
 		tabDisable: true,
@@ -222,48 +152,72 @@
 		fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
 	});
 
-	const boardform = document.getElementById('boardform');
-	
 	// html태그, 공백 제거 (유효성 검사용)
-	function isempty(str_code){
+	function isEmpty(str_code){
 	  //var ptn = new RegExp("<\/?[^>]*>","gi");
 	  //str_code = str_code.replace(ptn,"")
 	  str_code = str_code.replace(/<\/?[^>]*>/gi,"")
 	  str_code = str_code.replace(/&nbsp;/gi, "");
 	  return str_code.trim();
 	}
-	
+	// 투표 종료 시간 검사
+	function timecheck(){
+		let vote_end = $("#vote_end");
+		let min = new Date(Date.now() + (60000*60*12)); // 현재시간 + 9시간(UTC+9) + 3시간
+		let max = new Date(Date.now() + (60000*60*177)); // 현재시간 + 9시간(UTC+9) + 7일 
+		if(vote_end.val() < min.toISOString()){
+			alert("투표 종료 시간은 최소 3시간 이후입니다.");
+			vote_end.val(min.toISOString().substring(0, 17)+'00');
+			return false;
+		}else if(vote_end.val() > max.toISOString()){
+			alert("투표 종료 시간은 최대 7일 이전입니다.");
+			vote_end.val(max.toISOString().substring(0, 17)+'00');
+			return false;
+		}
+		return true;
+	}
+
+	// 투표 종료 시간 변경할 때 검사
+	$("#vote_end").change( timecheck );
+
 	// submit (유효성 검사 포함 (내용이 있는지 없는지))
 	document.getElementById('btn_save').onclick = function(){
 		let title = document.getElementById('tb_title').value;
 		let content = document.querySelector('.note-editable').innerHTML
-		if(isempty(title).length < 2){
+		if(title.trim().length < 2){
 			alert('2글자 이상 제목을 입력해 주세요');
-		}else if(isempty(content).length == 0){
+		}else if(isEmpty(content).length == 0){
 			alert('내용을 입력해 주세요');
 		}else{
-			boardform.tb_content.value = content;
-			boardform.submit();
+			let vote_check = true;
+			// 투표 유효성 검사
+			if($("#vote").css("display") == "block"){
+				vote_check = timecheck();
+				$("#vote input").each(function(){
+					if($.trim($(this).val()) == 0){
+						alert('투표 제목 또는 항목을 입력해 주세요.');
+						vote_check = false;
+						return false; // each 탈출. 함수 전체를 탈출하는거 아님.
+					} 
+				});
+			}
+			if(vote_check){
+				boardform.tb_content.value = content;
+				boardform.submit();
+			}
 		}
 	}
-	
-</script>
-<!--/* 새글쓰기일 때 리셋 */-->
-<script th:unless="${dto}">
-document.getElementById('btn_reset').addEventListener("click", function(){
-	boardform.reset();
-	$('#summernote').summernote('reset');
-})
-</script>
-<!--/* 수정일 때 리셋 + 기존 내용 삽입 */-->
-<script th:if="${dto}" th:inline="javascript">
-const orgContent = [[${dto?.tb_content}]];
-document.querySelector('.note-editable').innerHTML = orgContent;
-document.querySelector('.note-placeholder').style='display: none';
-document.getElementById('btn_reset').addEventListener("click", function(){
-	boardform.reset();
-	document.querySelector('.note-editable').innerHTML = orgContent;
-}); 
+
+	// 리셋 버튼
+	document.getElementById('btn_reset').addEventListener("click", function(){
+		boardform.reset();
+		$('#summernote').summernote('reset');
+		$("#vote").hide();
+		$(".new_item").remove();
+		$(".del_item").remove();
+		$("#vote_content").attr("disabled", true); 
+		$("#vote input").attr("disabled", true);
+	});
 </script>
 </body>
 </html>

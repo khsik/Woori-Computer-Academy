@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="tb_title"		property="tb_title"			jdbcType="VARCHAR"	javaType="String"/>
 		<result column="tb_content"		property="tb_content"		jdbcType="CLOB"		javaType="String"/>
 		<result column="tb_reg"			property="tb_reg"			jdbcType="DATE"		javaType="java.time.LocalDateTime"/>
-		<result column="tm_nickname"	property="tm_nickname"		jdbcType="VARCHAR"		javaType="String"/>
+		<result column="tm_nickname"	property="tm_nickname"		jdbcType="VARCHAR"	javaType="String"/>
 	</resultMap>
 
 	<select id="teamBoardCountAll" resultType="int">

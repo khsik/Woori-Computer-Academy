@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.planner.mapper.VoteMapper">
+
+	<insert id="voteInsert" parameterType="VoteDTO">
+		<selectKey keyProperty="vote_id" resultType="long" order="BEFORE">
+			select vote_seq.nextval from dual
+		</selectKey>
+		insert into vote values(
+			#{vote_id},
+			#{vote_title},
+			#{vote_content},
+			#{vote_end}
+		)
+	</insert>
+	
+	<insert id="voteItemInsert">
+		<foreach collection="vote_item_names" item="vote_item_name" separator=";" open="BEGIN" close="; END;">
+			insert into vote_item values(
+				vote_item_seq.nextval,
+				#{vote_id},
+				#{vote_item_name}
+			)
+		</foreach>
+	</insert>
+
+	<delete id="voteDelete">
+		delete vote where vote_id=#{vote_id}
+	</delete>
+
+<!--
+	resultmap 써야될거로 보임.
+	1:1 관계는 그냥 쓰고
+	1:n 관계는 collection 사용.
+-->
+	<select id="voteInfo">
+		select v.vote_id, v.vote_title, v.vote_content, v.vote_end,
+		    vi.vote_item_id, vi.vote_item_name
+		    from vote v join vote_item vi
+		    on v.vote_id = vi.vote_id
+		    where v.vote_id = (select vote_id from team_board where team_board_id = #{team_board_id})
+		    order by vi.vote_item_id asc
+	</select>
+
+	<select id="voteMembers">
+	select vm.vote_item_id, vm.team_member_id, tm.tm_nickname
+		from vote_member vm
+		join team_member tm
+		on vm.team_member_id = tm.team_member_id
+		where vm.vote_item_id in
+		    (select vote_item_id from vote_item where vote_id = #{vote_id})
+	</select>
+
+</mapper>
