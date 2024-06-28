@@ -30,27 +30,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		delete vote where vote_id=#{vote_id}
 	</delete>
 
-<!--
-	resultmap 써야될거로 보임.
-	1:1 관계는 그냥 쓰고
-	1:n 관계는 collection 사용.
--->
-	<select id="voteInfo">
-		select v.vote_id, v.vote_title, v.vote_content, v.vote_end,
-		    vi.vote_item_id, vi.vote_item_name
-		    from vote v join vote_item vi
-		    on v.vote_id = vi.vote_id
-		    where v.vote_id = (select vote_id from team_board where team_board_id = #{team_board_id})
-		    order by vi.vote_item_id asc
+	<resultMap type="VoteInfoDTO" id="voteInfo">
+		<result column="vote_id"		property="vote_id"/>
+		<result column="vote_title"		property="vote_title"/>
+		<result column="vote_content"	property="vote_content"/>
+		<result column="vote_end"		property="vote_end"/>
+		<collection column="vote_id" property="vote_items" javaType="List" ofType="VoteInfoDTO" select="voteItemList">
+		</collection>
+	</resultMap>
+
+	<select id="voteInfo" resultMap="voteInfo">
+		select vote_id, vote_title, vote_content, vote_end
+		    from vote
+		    where vote_id = #{vote_id}
 	</select>
 
-	<select id="voteMembers">
+	<select id="voteItemList" resultType="VoteItemDTO">
+		select vote_item_id, vote_item_name from vote_item where vote_id=#{vote_id}
+	</select>
+
+	<select id="voteMemberList" resultType="VoteMemberDTO">
 	select vm.vote_item_id, vm.team_member_id, tm.tm_nickname
 		from vote_member vm
 		join team_member tm
 		on vm.team_member_id = tm.team_member_id
 		where vm.vote_item_id in
-		    (select vote_item_id from vote_item where vote_id = #{vote_id})
+			(select vote_item_id from vote_item where vote_id=#{vote_id})
 	</select>
 
 </mapper>

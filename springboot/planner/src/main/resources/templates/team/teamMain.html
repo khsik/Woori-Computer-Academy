@@ -6,9 +6,8 @@
 </head>
 <body>
 <h1>임시 메인</h1>
-<label for="team_id">team_id </label><input type="number" name="team_id" id="team_id"> / 
-<label for="member_id">member_id </label><input type="number" name="member_id" id="member_id"> / 
-<label for="team_member_id">team_member_id </label><input type="number" name="team_member_id" id="team_member_id">
+<!-- TODO 그룹 생성, 가입된 그룹 목록 출력하게 바꾸기 -->
+<label for="team_id">team_id </label><input type="number" name="team_id" id="team_id">
 <br>
 <button type="button" name="create" onclick="btnf(this)">그룹 생성</button>
 <button type="button" name="info" onclick="btnf(this)">그룹 정보</button>
@@ -25,7 +24,7 @@
 		let team_id = document.getElementById("team_id").value;
 		let member_id = document.getElementById("member_id").value;
 		let team_member_id = document.getElementById("team_member_id").value;
-			window.location=path+'?team_id='+team_id+'&member_id='+member_id+'&team_member_id='+team_member_id;
+			window.location=path+'?team_id='+team_id;
 	}
 </script>
 </body>

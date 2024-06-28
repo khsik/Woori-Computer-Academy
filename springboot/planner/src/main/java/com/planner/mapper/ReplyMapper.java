@@ -6,8 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import com.planner.dto.ReplyDTO;
-import com.planner.dto.ReplyViewDTO;
+import com.planner.dto.request.team.board.ReplyDTO;
+import com.planner.dto.request.team.board.ReplyViewDTO;
+
 
 @Mapper
 @Repository

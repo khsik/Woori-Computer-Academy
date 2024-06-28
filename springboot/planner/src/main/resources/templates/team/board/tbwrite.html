@@ -12,7 +12,7 @@
 <body>
 <form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
 	<input type="hidden" name="team_id" th:value="${team_id}">
-	<input type="hidden" name="team_member_id" th:value="${team_member_id}">
+	<input type="hidden" name="team_member_id" th:value="${'1'}">
 	<input type="hidden" name="team_board_id" th:value="${dto?.team_board_id}">
 	<!--/*
 		${dto} ? ${dto.tb_title} : '' -> dto가 있으면 dto.tb_title 없으면 ''

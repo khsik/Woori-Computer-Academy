@@ -2,6 +2,7 @@ const modal = document.getElementById('modal');
 const check_delete = document.getElementById('check_delete');
 const modal_close = document.getElementById('modal_close');
 const team_board_id = document.querySelector('meta[name="team_board_id"]').getAttribute('content');
+const vote_id = document.querySelector('meta[name="vote_id"]').getAttribute('content');
 const header = $('meta[name="_csrf_header"]').attr("content");
 const token = $('meta[name="_csrf_token"]').attr("content");
 // 글삭제 modal창 on
@@ -178,3 +179,19 @@ $("#reply_btn").on("click", function(){
 		})
 	};
 });
+// 투표 출력
+if(vote_id != null){
+	// 투표 정보
+	$.ajax({
+		type:'POST',
+		url:'/vote/info',
+		data:{'vote_id':vote_id},
+		beforeSend:function(xhr){
+			xhr.setRequestHeader(header, token);
+		},
+		success:function(result){
+			$("#vote").html(result);
+		}
+	});
+	// 투표 회원 정보
+}

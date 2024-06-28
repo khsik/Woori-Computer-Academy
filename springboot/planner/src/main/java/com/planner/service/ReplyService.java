@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.planner.dto.ReplyDTO;
-import com.planner.dto.ReplyViewDTO;
+import com.planner.dto.request.team.board.ReplyDTO;
+import com.planner.dto.request.team.board.ReplyViewDTO;
 import com.planner.mapper.ReplyMapper;
 
 import lombok.RequiredArgsConstructor;

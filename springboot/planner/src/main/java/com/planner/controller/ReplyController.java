@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.planner.dto.ReplyDTO;
-import com.planner.dto.ReplyViewDTO;
+import com.planner.dto.request.team.board.ReplyDTO;
+import com.planner.dto.request.team.board.ReplyViewDTO;
 import com.planner.service.ReplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/reply")
+@PreAuthorize("isAuthenticated()")
 public class ReplyController {
 
 	private final ReplyService replyService;

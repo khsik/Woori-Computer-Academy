@@ -2,6 +2,7 @@ package com.planner.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,19 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.planner.dto.TeamBoardDTO;
-import com.planner.dto.TeamBoardListDTO;
-import com.planner.dto.TeamDTO;
-import com.planner.dto.VoteDTO;
+import com.planner.dto.request.team.TeamDTO;
+import com.planner.dto.request.team.board.TeamBoardDTO;
+import com.planner.dto.request.team.board.TeamBoardListDTO;
+import com.planner.dto.request.team.vote.VoteDTO;
+import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.service.TeamBoardService;
 import com.planner.service.TeamService;
 import com.planner.service.VoteService;
+import com.planner.util.UserData;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/team/board")
+@PreAuthorize("isAuthenticated()")
 public class TeamBoardController {
 
 	private final TeamService teamService;
@@ -31,13 +35,14 @@ public class TeamBoardController {
 	private final VoteService voteService;
 
 	@GetMapping("/list")
-	public String tblist(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
+	public String tblist(Model model, @UserData ResMemberDetail detail,
+			@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
 			@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
 			@RequestParam(name = "ca", defaultValue = "전체") String category,
 			@RequestParam(name = "ps", defaultValue = "15") int pageSize,
 			@RequestParam(name = "so", defaultValue = "NO") String searchOption,
 			@RequestParam(name = "search", defaultValue = "") String search) {
-		TeamDTO teamDTO = teamService.teamInfo(team_id);
+		TeamDTO teamDTO = teamService.teamInfo(detail.getMember_id(), team_id);
 		if (teamDTO == null) {
 			return "redirect:/";
 		}

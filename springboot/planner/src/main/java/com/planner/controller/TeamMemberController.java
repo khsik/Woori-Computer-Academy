@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,29 +17,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.planner.dto.TeamDTO;
-import com.planner.dto.TeamMemberDTO;
-import com.planner.dto.TeamMyInfoDTO;
+import com.planner.dto.request.team.TeamDTO;
+import com.planner.dto.request.team.TeamMemberDTO;
+import com.planner.dto.request.team.TeamMyInfoDTO;
+import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.TM_Grade;
-import com.planner.service.MemberService;
 import com.planner.service.TeamMemberService;
 import com.planner.service.TeamService;
+import com.planner.util.UserData;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/team/member")
+@PreAuthorize("isAuthenticated()")
 public class TeamMemberController {
 
 	private final TeamService teamService;
 	private final TeamMemberService tmService;
-	private final MemberService memberService;
 	
 	@GetMapping("/insert")
-	public String tmInsert(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id, @RequestParam("member_id") Long member_id) {
+	public String tmInsert(Model model, @UserData ResMemberDetail detail,
+						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
 		// 중복 신청 검사
-		String grade = tmService.teamMemberOverlap(team_id, member_id);
+		String grade = tmService.teamMemberOverlap(team_id, detail.getMember_id());
 		if(grade != null && TM_Grade.grade_set.contains(grade)) {
 			if(TM_Grade.ROLE_TEAM_WAIT.getValue().equals(grade)) {
 				model.addAttribute("overlap", "이미 가입 신청중인 그룹입니다.");
@@ -47,10 +50,9 @@ public class TeamMemberController {
 			}
 		}else {
 			TeamDTO dto = teamService.teamInfo(team_id);
-			String member_userid = memberService.getInfo(member_id).getMember_userid();
 			model.addAttribute("dto", dto);
-			model.addAttribute("member_userid", member_userid);
-			model.addAttribute("member_id", member_id);
+			model.addAttribute("member_name", detail.getMember_name());
+			model.addAttribute("member_id", detail.getMember_id());
 		}
 		return "/team/member/tminsert";
 	}

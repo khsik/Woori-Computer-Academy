@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import com.planner.dto.TeamMemberDTO;
-import com.planner.dto.TeamMyInfoDTO;
+import com.planner.dto.request.team.TeamMemberDTO;
+import com.planner.dto.request.team.TeamMyInfoDTO;
 
 @Mapper
 @Repository

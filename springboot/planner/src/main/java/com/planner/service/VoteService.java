@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.planner.dto.VoteDTO;
+import com.planner.dto.request.team.vote.VoteDTO;
+import com.planner.dto.request.team.vote.VoteInfoDTO;
+import com.planner.dto.request.team.vote.VoteMemberDTO;
 import com.planner.mapper.VoteMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -31,4 +33,11 @@ public class VoteService {
 		voteMapper.voteDelete(vote_id);
 	}
 
+	public VoteInfoDTO voteInfo(Long vote_id) {
+		return voteMapper.voteInfo(vote_id);
+	}
+	
+	public List<VoteMemberDTO> voteMemberList(Long vote_id){
+		return voteMapper.voteMemberList(vote_id);
+	}
 }

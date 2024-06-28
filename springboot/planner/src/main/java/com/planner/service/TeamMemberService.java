@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.planner.dto.TeamMemberDTO;
-import com.planner.dto.TeamMyInfoDTO;
+import com.planner.dto.request.team.TeamMemberDTO;
+import com.planner.dto.request.team.TeamMyInfoDTO;
 import com.planner.enums.TM_Grade;
 import com.planner.mapper.TeamMemberMapper;
 

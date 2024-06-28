@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.planner.dto.TeamBoardDTO;
-import com.planner.dto.TeamBoardListDTO;
+import com.planner.dto.request.team.board.TeamBoardDTO;
+import com.planner.dto.request.team.board.TeamBoardListDTO;
 import com.planner.mapper.TeamBoardMapper;
 
 import lombok.RequiredArgsConstructor;

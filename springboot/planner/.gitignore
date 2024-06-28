@@ -18,7 +18,8 @@ src/main/resources/static/upload/**
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
+*.properties
+*yml
 ### IntelliJ IDEA ###
 .idea
 *.iws

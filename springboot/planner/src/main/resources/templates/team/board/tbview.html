@@ -5,6 +5,7 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}">
 	<meta name="_csrf_token" th:content="${_csrf.token}">
 	<meta name="team_board_id" th:content="${dto.team_board_id}">
+	<meta name="vote_id" th:content="${dto.vote_id}">
 	<title th:text="${dto.tb_title}"></title>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/board/tbview.css}">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -28,7 +29,6 @@
 	<!--/* 일정 출력 */-->
 </div>
 <div id="vote" th:if="${dto.vote_id}">
-	<!--/* 투표 출력 */-->
 </div>
 </div>
 <div>

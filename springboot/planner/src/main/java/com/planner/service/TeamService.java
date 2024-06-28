@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.planner.dto.MemberDTO;
-import com.planner.dto.TeamDTO;
-import com.planner.dto.TeamMemberDTO;
+import com.planner.dto.request.team.TeamDTO;
+import com.planner.dto.request.team.TeamMemberDTO;
+import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.TM_Grade;
-import com.planner.mapper.MemberMapper;
 import com.planner.mapper.TeamMapper;
 import com.planner.mapper.TeamMemberMapper;
 
@@ -37,17 +35,16 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class TeamService {
 
-	private final MemberMapper memberMapper;
 	private final TeamMapper teamMapper;
 	private final TeamMemberMapper tmMapper;
 	private final String uploadPath = new File("").getAbsolutePath() +"\\src\\main\\resources\\static\\upload\\";
 	private final List<String> exts = Arrays.asList(ImageIO.getReaderFormatNames()); 
-	
+
 	// 그룹 이름 중복 검사
 	public boolean teamNameOverlap(String team_name) {
 		return teamMapper.teamNameOverlap(team_name) == 1 ? false : true;
 	}
-	
+
 	// 그룹 이미지 리사이즈 후 저장
 	public boolean setImg(TeamDTO dto, MultipartFile team_image) {
 		String team_name = dto.getTeam_name();
@@ -87,15 +84,15 @@ public class TeamService {
 		}
 		return true;
 	}
-	
+
 	// 그룹 이미지 제거
 	public void delImg(TeamDTO dto) {
 		File img = new File(uploadPath+dto.getTeam_image());
 		img.delete();
 	}
-	
+
 	// 그룹 생성
-	public boolean teamCreate(Long member_id, String team_name, String team_explain, MultipartFile team_image) {
+	public boolean teamCreate(ResMemberDetail detail, String team_name, String team_explain, MultipartFile team_image) {
 		TeamDTO dto = new TeamDTO();
 		dto.setTeam_name(team_name);
 		dto.setTeam_explain(team_explain);
@@ -108,12 +105,11 @@ public class TeamService {
 		teamMapper.teamInsert(dto); // team 생성
 		
 		TeamMemberDTO tmdto = new TeamMemberDTO();
-		MemberDTO memdto = memberMapper.getInfo(member_id);
 		
-		tmdto.setMember_id(member_id);	// TODO 합치고나서 principal에서 뭐 가져오는지, member_id 어떻게 가져올 지 확인 후 변경 
+		tmdto.setMember_id(detail.getMember_id());	// TODO 합치고나서 principal에서 뭐 가져오는지, member_id 어떻게 가져올 지 확인 후 변경 
 		tmdto.setTeam_id(dto.getTeam_id());
 		tmdto.setTm_grade(TM_Grade.ROLE_TEAM_MASTER.getValue()); // enums의 TM_Grade 확인
-		tmdto.setTm_nickname(memdto.getMember_userid());
+		tmdto.setTm_nickname(detail.getMember_name());
 		// team을 생성한 member를 해당 team의 team_member로 추가
 		tmMapper.insertTeamMember(tmdto);
 		
@@ -145,7 +141,7 @@ public class TeamService {
 	}
 
 	// 그룹 정보 수정
-	public void teamInfoUpdate(Principal principal, long team_id, String team_name, String team_explain,
+	public void teamInfoUpdate(ResMemberDetail detail, long team_id, String team_name, String team_explain,
 								MultipartFile team_image, String delimg) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
 		dto.setTeam_name(team_name);
@@ -162,10 +158,10 @@ public class TeamService {
 		}
 		teamMapper.teamUpdate(dto);
 	}
-	
-	public void teamDelete(long team_id, long member_id) {
+
+	public void teamDelete(long member_id, long team_id) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
-		int result = teamMapper.teamDelete(team_id, member_id);
+		int result = teamMapper.teamDelete(member_id, team_id);
 		if(result == 1) {
 			if(dto.getTeam_image() != null) {
 				this.delImg(dto);
