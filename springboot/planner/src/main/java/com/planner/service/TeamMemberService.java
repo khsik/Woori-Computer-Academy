@@ -17,8 +17,8 @@ public class TeamMemberService {
 
 	private final TeamMemberMapper tmMapper;
 
-	public String teamMemberOverlap(long team_id, long member_id) {
-		return tmMapper.teamMemberOverlap(team_id, member_id);
+	public String teamMemberGrade(long team_id, long member_id) {
+		return tmMapper.teamMemberGrade(team_id, member_id);
 	}
 	
 	public void tmInsert(Long team_id, Long member_id, String nickname) {
@@ -54,4 +54,8 @@ public class TeamMemberService {
 		return tmMapper.gradeModify(team_id, member_id, tm_grade);
 	}
 
+	public long teamMemberId(long team_id, long member_id) {
+		return tmMapper.myTeamMemberId(team_id, member_id);
+	}
+	
 }

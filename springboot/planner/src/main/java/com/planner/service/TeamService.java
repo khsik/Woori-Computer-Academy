@@ -22,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.planner.dto.request.team.MyTeamListDTO;
 import com.planner.dto.request.team.TeamDTO;
+import com.planner.dto.request.team.TeamListDTO;
 import com.planner.dto.request.team.TeamMemberDTO;
 import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.TM_Grade;
@@ -92,14 +94,14 @@ public class TeamService {
 	}
 
 	// 그룹 생성
-	public boolean teamCreate(ResMemberDetail detail, String team_name, String team_explain, MultipartFile team_image) {
+	public long teamCreate(ResMemberDetail detail, String team_name, String team_explain, MultipartFile team_image) {
 		TeamDTO dto = new TeamDTO();
 		dto.setTeam_name(team_name);
 		dto.setTeam_explain(team_explain);
 		dto.setTeam_image("");
 		boolean imgResult = this.setImg(dto, team_image);
 		if(!imgResult) { // team_image가 검사를 통과 못했으면
-			return false;
+			return -1;
 		}
 		
 		teamMapper.teamInsert(dto); // team 생성
@@ -113,7 +115,7 @@ public class TeamService {
 		// team을 생성한 member를 해당 team의 team_member로 추가
 		tmMapper.insertTeamMember(tmdto);
 		
-		return true;
+		return dto.getTeam_id();
 	}
 
 	// 그룹 정보 읽기
@@ -141,7 +143,7 @@ public class TeamService {
 	}
 
 	// 그룹 정보 수정
-	public void teamInfoUpdate(ResMemberDetail detail, long team_id, String team_name, String team_explain,
+	public void teamInfoUpdate(long team_id, String team_name, String team_explain,
 								MultipartFile team_image, String delimg) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
 		dto.setTeam_name(team_name);
@@ -159,6 +161,7 @@ public class TeamService {
 		teamMapper.teamUpdate(dto);
 	}
 
+	// 그룹 제거
 	public void teamDelete(long member_id, long team_id) {
 		TeamDTO dto = teamMapper.teamInfo(team_id);
 		int result = teamMapper.teamDelete(member_id, team_id);
@@ -167,5 +170,19 @@ public class TeamService {
 				this.delImg(dto);
 			}
 		}
+	}
+
+	public List<MyTeamListDTO> myTeamList(Long member_id) {
+		return teamMapper.myTeamList(member_id);
+	}
+
+	public List<TeamListDTO> teamListSearch(int pageSize, long page, String searchOption, String search) {
+		long start = (page-1)*pageSize + 1;
+		long end = page*pageSize;
+		return teamMapper.teamListSearch(start, end, searchOption, search);
+	}
+
+	public long teamCount(String searchOption, String search) {
+		return teamMapper.teamCount(searchOption, search);
 	}
 }

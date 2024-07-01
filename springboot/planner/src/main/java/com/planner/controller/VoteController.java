@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.planner.dto.request.team.vote.VoteInfoDTO;
 import com.planner.dto.request.team.vote.VoteMemberDTO;
+import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.service.VoteService;
+import com.planner.util.UserData;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,11 +40,11 @@ public class VoteController {
 		return list;
 	}
 	
-	public void voteMemberInsert() {
+	public void voteMemberInsert(@UserData ResMemberDetail detail) {
 		
 	}
 	
-	public void voteMemberDelete() {
+	public void voteMemberUpdate(@UserData ResMemberDetail detail) {
 		
 	}
 

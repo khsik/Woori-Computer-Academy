@@ -36,12 +36,13 @@ public class TeamMemberController {
 
 	private final TeamService teamService;
 	private final TeamMemberService tmService;
-	
+
+	// 그룹 가입 신청
 	@GetMapping("/insert")
 	public String tmInsert(Model model, @UserData ResMemberDetail detail,
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
 		// 중복 신청 검사
-		String grade = tmService.teamMemberOverlap(team_id, detail.getMember_id());
+		String grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
 		if(grade != null && TM_Grade.grade_set.contains(grade)) {
 			if(TM_Grade.ROLE_TEAM_WAIT.getValue().equals(grade)) {
 				model.addAttribute("overlap", "이미 가입 신청중인 그룹입니다.");
@@ -56,24 +57,28 @@ public class TeamMemberController {
 		}
 		return "/team/member/tminsert";
 	}
-	
+
+	// 가입 신청
 	@PostMapping("/insert")
 	public String tmInsert(@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
-							@RequestParam("member_id") Long member_id, @RequestParam("nickname") String nickname) {
-		tmService.tmInsert(team_id, member_id, nickname);
-		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+member_id;
+							@UserData ResMemberDetail detail, @RequestParam("nickname") String nickname) {
+		tmService.tmInsert(team_id, detail.getMember_id(), nickname);
+		return "redirect:/team/member/info?team_id="+team_id;
 	}
-	
+
+	// 가입 수락
 	@PatchMapping("/accept")
 	@ResponseBody
-	public HttpStatus tmaccept(@RequestParam("team_id") Long team_id,
+	public HttpStatus tmaccept(@UserData ResMemberDetail detail, @RequestParam("team_id") Long team_id,
 							@RequestParam("member_id") Long member_id) {
-		int result = tmService.accept(team_id, member_id, TM_Grade.ROLE_TEAM_USER.getValue());
-		if(result == 1) {
-			return HttpStatus.OK;
-		}else {
-			return HttpStatus.BAD_REQUEST;
+		String grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
+		if(grade != null && grade.indexOf("MASTER") != -1) {
+			int result = tmService.accept(team_id, member_id, TM_Grade.ROLE_TEAM_USER.getValue());
+			if(result == 1) {
+				return HttpStatus.OK;
+			}
 		}
+		return HttpStatus.BAD_REQUEST;
 	}
 	
 	// TODO tm_grade 변경인데 아직 사용 안했음.
@@ -90,65 +95,86 @@ public class TeamMemberController {
 		}
 		return HttpStatus.BAD_REQUEST;
 	}
-	
+
+	// 그룹 회원 목록
 	@GetMapping("/tmlist")
-	public String tmInfoList(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
-		List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
-		String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
-		long wait_count = tmlist.stream()
-				.filter(dto -> dto.getTm_grade().equals(wait))
-				.count();
-		model.addAttribute("tmlist", tmlist);
-		model.addAttribute("wait_count", wait_count);
-		return "/team/member/tmlist";
+	public String tmInfoList(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
+							@UserData ResMemberDetail detail) {
+		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
+		if(TM_Grade.grade_set.contains(tm_grade) && !TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
+			List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
+			String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
+			long wait_count = tmlist.stream()
+					.filter(dto -> dto.getTm_grade().equals(wait))
+					.count();
+			model.addAttribute("tmlist", tmlist);
+			model.addAttribute("wait_count", wait_count);
+			model.addAttribute("tm_grade", tm_grade);
+			return "/team/member/tmlist";
+		}else {
+			return "redirect:/team/main";
+		}
 	}
-	
+
+	// 그룹 회원 정보
 	@GetMapping("/info")
-	public String tmInfo(Model model, @RequestParam("member_id") Long member_id, 
+	public String tmInfo(Model model, @UserData ResMemberDetail detail, 
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
-		TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
+		TeamMyInfoDTO dto = tmService.myinfo(team_id, detail.getMember_id());
+		if(dto == null) {
+			return "redirect:/team/info?team_id="+team_id;
+		}
 		model.addAttribute("dto", dto);
 		return "/team/member/tminfo";
 	}
 
+	// 그룹 회원 정보 수정
 	@GetMapping("/update")
-	public String tmUpdate(Model model, @RequestParam("member_id") Long member_id,
+	public String tmUpdate(Model model, @UserData ResMemberDetail detail,
 						@RequestParam("team_id") Long team_id) {
-		TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
+		TeamMyInfoDTO dto = tmService.myinfo(team_id, detail.getMember_id());
+		if(dto == null) {
+			return "redirect:/team/info?team_id="+team_id;
+		}
 		model.addAttribute("dto", dto);
 		return "/team/member/tmupdate";
 	}
-	
+
+	// 그룹 회원 정보 수정
 	@PostMapping("/update")
-	public String tmUpdate(Model model, @RequestParam("member_id") Long member_id,
+	public String tmUpdate(Model model,@UserData ResMemberDetail detail,
 						@RequestParam("team_id") Long team_id,
 						@RequestParam("tm_nickname") String tm_nickname){
-		tmService.tmUpdate(team_id, member_id, tm_nickname);
-		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+member_id;
+		tmService.tmUpdate(team_id, detail.getMember_id(), tm_nickname);
+		return "redirect:/team/member/info?team_id="+team_id;
 	}
 
+	// 그룹 탈퇴
 	@DeleteMapping("/delete")
 	public ResponseEntity<Void> tmDelete(@RequestParam("team_id") Long team_id,
 										@RequestParam("member_id") Long member_id) {
 		int result = tmService.tmDelete(team_id, member_id);
 		if(result == 1) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(URI.create("/")); // redirect 시킬 경로 설정
+			headers.setLocation(URI.create("/planner/main")); // redirect 시킬 경로 설정
 			return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	// 그룹 추방
 	@DeleteMapping("/kick")
 	@ResponseBody
-	public HttpStatus tmKick(@RequestParam("team_id") Long team_id,
+	public HttpStatus tmKick(@UserData ResMemberDetail detail, @RequestParam("team_id") Long team_id,
 							@RequestParam("member_id") Long member_id) {
-		int result = tmService.tmDelete(team_id, member_id);
-		if(result == 1) {
-			return HttpStatus.OK;
-		}else {
-			return HttpStatus.BAD_REQUEST;
+		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
+		if(TM_Grade.ROLE_TEAM_MASTER.getValue().equals(tm_grade)) {
+			int result = tmService.tmDelete(team_id, member_id);
+			if(result == 1) {
+				return HttpStatus.OK;
+			}
 		}
+		return HttpStatus.BAD_REQUEST;
 	}
 }

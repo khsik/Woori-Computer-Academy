@@ -24,14 +24,6 @@ body{
 	cursor:pointer;
 	text-decoration: none;
 }
-.linkbox a{
-	float:right;
-}
-.linkbox:after{
-  content:'';
-  display:block;
-  clear:both;
-}
 #modal {
 	display:none;
 	width:100vw;
@@ -99,7 +91,7 @@ button.float-right{
 	padding:2px 4px;
 	vertical-align:bottom;
 }
-div:has(.float-right):after{
+.float-clear{
 	content:'';
 	display:block;
 	clear:both;

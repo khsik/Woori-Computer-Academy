@@ -1,6 +1,7 @@
 const modal = document.getElementById('modal');
 const check_delete = document.getElementById('check_delete');
 const modal_close = document.getElementById('modal_close');
+const team_id = document.querySelector('meta[name="team_id"]').getAttribute('content');
 const team_board_id = document.querySelector('meta[name="team_board_id"]').getAttribute('content');
 const vote_id = document.querySelector('meta[name="vote_id"]').getAttribute('content');
 const header = $('meta[name="_csrf_header"]').attr("content");
@@ -39,7 +40,10 @@ function getReply(){
 	$.ajax({
 		type:"get",
 		url:"/reply/list",
-		data:{team_board_id:team_board_id},
+		data:{
+			team_id:team_id,
+			team_board_id:team_board_id
+		},
 		success:function(result){
 			// 댓글 목록
 			$("#reply_list").html(result);

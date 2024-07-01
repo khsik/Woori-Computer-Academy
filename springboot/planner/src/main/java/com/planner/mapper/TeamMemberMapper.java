@@ -12,7 +12,7 @@ import com.planner.dto.request.team.TeamMyInfoDTO;
 @Mapper
 @Repository
 public interface TeamMemberMapper {
-	public String teamMemberOverlap(@Param("team_id")long team_id, @Param("member_id")long member_id);
+	public String teamMemberGrade(@Param("team_id")long team_id, @Param("member_id")long member_id);
 	
 	public void insertTeamMember(TeamMemberDTO dto);
 
@@ -31,5 +31,8 @@ public interface TeamMemberMapper {
 	
 	public int gradeModify(@Param("team_id")Long team_id, @Param("member_id")Long member_id, 
 							@Param("tm_grade")String tm_grade);
+
+	public long myTeamMemberId(@Param("team_id")long team_id, @Param("member_id")long member_id);
+
 
 }
