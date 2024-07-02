@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.planner.dto.request.team.MyTeamListDTO;
 import com.planner.dto.request.team.TeamDTO;
-import com.planner.dto.request.team.TeamListDTO;
+import com.planner.dto.request.team.TeamInfoDTO;
 import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.TM_Grade;
 import com.planner.service.TeamMemberService;
@@ -41,6 +42,18 @@ public class TeamController {
 		return "/team/teamMain";
 	}
 
+	// 그룹 이름 중복 검사
+	@GetMapping("/team/overlap")
+	@ResponseBody
+	public int teamNameOverlap(@RequestParam("team_name") String team_name) {
+		boolean result = teamService.teamNameOverlap(team_name);
+		if(result) { // 중복 아니면
+			return 1;
+		}else { // 중복이면
+			return -1;
+		}
+	}
+
 	// 그룹 생성
 	@GetMapping("/team/create")
 	public String teamCreate() {
@@ -52,14 +65,14 @@ public class TeamController {
 	public String teamCreate(Model model, @UserData ResMemberDetail detail,
 							@ModelAttribute("team_name") String team_name, @ModelAttribute("team_explain") String team_explain,
 							@RequestParam("team_image") MultipartFile team_image) {
-		boolean result = teamService.teamNameOverlap(team_name); // 중복 검사. 중복이면 false
+		boolean result = teamService.teamNameOverlap(team_name);
 		if(!result) { // 중복이면
-			model.addAttribute("result", "중복된 그룹 이름입니다.");
+			model.addAttribute("msg", "중복된 그룹 이름입니다.");
 			return "/team/teamCreate";
 		}
-		long team_id = teamService.teamCreate(detail, team_name, team_explain, team_image); // 등록 실패시 false
-		if(team_id == -1) {
-			model.addAttribute("result", "지원하지 않는 형식의 이미지입니다.");
+		long team_id = teamService.teamCreate(detail, team_name, team_explain, team_image);
+		if(team_id == -1) { // 이미지 저장 실패시 -1
+			model.addAttribute("msg", "지원하지 않는 형식의 이미지입니다.");
 			return "/team/teamCreate";
 		}
 		
@@ -70,12 +83,12 @@ public class TeamController {
 	@GetMapping("/team/info")
 	public String teamInfo(Model model, @UserData ResMemberDetail detail,
 						@RequestParam(name="team_id", defaultValue = "-1") long team_id) {
-		TeamDTO dto = teamService.teamInfo(team_id);
+		TeamInfoDTO dto = teamService.teamAndMasterInfo(team_id);
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
 		model.addAttribute("dto", dto);
 		model.addAttribute("tm_grade", tm_grade);
 		if(dto == null) {
-			model.addAttribute("nodto", "잘못된 접근입니다.");
+			model.addAttribute("msg", "잘못된 접근입니다.");
 		}
 		return "/team/teamInfo";
 	}
@@ -100,7 +113,15 @@ public class TeamController {
 							@RequestParam("team_image") MultipartFile team_image, @RequestParam(name = "delimg", defaultValue = "") String delimg) {
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
 		if(TM_Grade.ROLE_TEAM_MASTER.getValue().equals(tm_grade)) {
-			teamService.teamInfoUpdate(team_id, team_name, team_explain, team_image, delimg);
+			boolean result = teamService.teamNameOverlap(team_name);
+			if(result) {
+				TeamDTO dto = teamService.teamInfo(team_id);
+				model.addAttribute("dto", dto);
+				model.addAttribute("msg", "중복된 그룹 이름입니다.");
+				return "/team/teamUpdate";
+			}else {
+				teamService.teamInfoUpdate(team_id, team_name, team_explain, team_image, delimg);
+			}
 		}
 		return "redirect:/team/info?team_id="+team_id;
 	}
@@ -115,6 +136,7 @@ public class TeamController {
 		return "redirect:/team/main";
 	}
 
+	// 그룹 찾기
 	@GetMapping("/team/search")
 	public String teamSearch(Model model, @RequestParam(name = "page", defaultValue = "1") int page,
 			@RequestParam(name = "so", defaultValue = "NO") String searchOption,
@@ -132,7 +154,7 @@ public class TeamController {
 		if(pageEnd > pageCount) {
 			pageEnd = pageCount;
 		}
-		List<TeamListDTO> list = teamService.teamListSearch(pageSize, page, searchOption, search); // 팀 정보 list
+		List<TeamInfoDTO> list = teamService.teamListSearch(pageSize, page, searchOption, search); // 팀 정보 list
 		// page 번호 주소창에서 임의로 변경했을 때, 있는 페이지인지 검사
 		if(list.size()==0 && count > 0) {
 			return "redirect:/team/search";

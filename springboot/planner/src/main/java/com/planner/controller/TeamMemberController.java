@@ -53,7 +53,6 @@ public class TeamMemberController {
 			TeamDTO dto = teamService.teamInfo(team_id);
 			model.addAttribute("dto", dto);
 			model.addAttribute("member_name", detail.getMember_name());
-			model.addAttribute("member_id", detail.getMember_id());
 		}
 		return "/team/member/tminsert";
 	}
@@ -63,7 +62,7 @@ public class TeamMemberController {
 	public String tmInsert(@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
 							@UserData ResMemberDetail detail, @RequestParam("nickname") String nickname) {
 		tmService.tmInsert(team_id, detail.getMember_id(), nickname);
-		return "redirect:/team/member/info?team_id="+team_id;
+		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+detail.getMember_id();
 	}
 
 	// 가입 수락
@@ -80,16 +79,20 @@ public class TeamMemberController {
 		}
 		return HttpStatus.BAD_REQUEST;
 	}
-	
-	// TODO tm_grade 변경인데 아직 사용 안했음.
+
+	// tm_grade 변경
 	@PatchMapping("/grade-modify")
 	@ResponseBody
-	public HttpStatus tmGradeModify(@RequestParam("team_id") Long team_id,
-			@RequestParam("member_id") Long member_id,
-			@RequestParam("tm_grade") String tm_grade) {
+	public HttpStatus tmGradeModify(@UserData ResMemberDetail detail,
+									@RequestParam("team_id") Long team_id,
+									@RequestParam("member_id") Long member_id,
+									@RequestParam("tm_grade") String tm_grade) {
 		if(TM_Grade.grade_set.contains(tm_grade)) {
 			int result = tmService.gradeModify(team_id, member_id, tm_grade);
 			if(result == 1) {
+				if(TM_Grade.ROLE_TEAM_MASTER.getValue().equals(tm_grade)) { // 그룹장 양도시 user로 내려옴
+					tmService.gradeModify(team_id, detail.getMember_id(), TM_Grade.ROLE_TEAM_USER.getValue());
+				}
 				return HttpStatus.OK;
 			}
 		}
@@ -118,13 +121,19 @@ public class TeamMemberController {
 
 	// 그룹 회원 정보
 	@GetMapping("/info")
-	public String tmInfo(Model model, @UserData ResMemberDetail detail, 
+	public String tmInfo(Model model, @UserData ResMemberDetail detail,
+						@RequestParam(name = "member_id", defaultValue = "-1") Long member_id,
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
-		TeamMyInfoDTO dto = tmService.myinfo(team_id, detail.getMember_id());
-		if(dto == null) {
+		if(member_id > 0) {
+			TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
+			if(dto == null) {
+				return "redirect:/team/info?team_id="+team_id;
+			}
+			model.addAttribute("dto", dto);
+		}else {
 			return "redirect:/team/info?team_id="+team_id;
 		}
-		model.addAttribute("dto", dto);
+		model.addAttribute("member_id", detail.getMember_id());
 		return "/team/member/tminfo";
 	}
 
@@ -157,9 +166,9 @@ public class TeamMemberController {
 		if(result == 1) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setLocation(URI.create("/planner/main")); // redirect 시킬 경로 설정
-			return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+			return new ResponseEntity<Void>(headers, HttpStatus.SEE_OTHER);
 		}else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 		}
 	}
 

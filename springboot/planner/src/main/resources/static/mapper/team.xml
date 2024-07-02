@@ -28,6 +28,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	select * from team where team_id=#{team_id}
 </select>
 
+<select id="teamAndMasterInfo" resultType="TeamInfoDTO">
+	select t.team_id, t.team_name, t.team_explain, t.team_image, m.member_email
+	from team t, member m
+	where t.team_id=#{team_id}
+	and m.member_id = 
+		(select tm.member_id 
+		from team_member tm 
+		where tm.team_id = t.team_id 
+		and tm_grade='TEAM_MASTER')
+</select>
+
 <select id="myTeamList" resultType="MyTeamListDTO">
 	select t.team_id, t.team_name, t.team_image, tm.tm_grade
 	from team t, team_member tm
@@ -35,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	and t.team_id = tm.team_id
 </select>
 
-<select id="teamListSearch" resultType="TeamListDTO">
+<select id="teamListSearch" resultType="TeamInfoDTO">
 	select tls.* from
 		(select tl.*, rownum as rn from
 			(select t.team_id, t.team_name, t.team_explain, t.team_image, m.member_email
