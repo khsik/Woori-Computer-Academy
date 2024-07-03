@@ -1,0 +1,9 @@
+package justTest;
+
+import java.time.LocalDateTime;
+
+public class Tttt {
+	public static void main(String[] args) {
+		System.out.println(LocalDateTime.now());
+	}
+}

@@ -5,6 +5,7 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}">
 	<meta name="_csrf_token" th:content="${_csrf.token}">
 	<meta name="team_id" th:content="${dto.team_id}">
+	<meta name="team_member_id" th:content="${team_member_id}">
 	<meta name="team_board_id" th:content="${dto.team_board_id}">
 	<meta name="vote_id" th:content="${dto.vote_id}">
 	<title th:text="${dto.tb_title}"></title>
@@ -16,7 +17,7 @@
 <span th:text="${dto.tb_category}"></span>
 <h2 id="title" th:text="${dto.tb_title}"></h2>
 <div class="float-clear">
-	<span>작성자 : <span th:text="${dto.tm_nickname}"></span></span>
+	<span>작성자 : <span th:text="${dto.tm_nickname}" th:data-team_member_id="${dto.team_member_id}" class="team_member"></span></span>
 	<span class="linkbox float-right">
 		<span>작성시간 : [[${#temporals.format(dto.tb_reg, 'yyyy-MM-dd HH:mm:ss')}]]</span>
 		<a href="#reply_refresh">댓글로</a>

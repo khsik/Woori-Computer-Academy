@@ -1,5 +1,0 @@
-package mvc.board.action;
-
-public class DeleteFormAction {
-
-}

@@ -107,3 +107,9 @@ button.float-right{
 	padding:5px;
 	border:1px solid rgba(0, 0, 0, 0.2);
 }
+.dpn{
+	display:none;
+}
+.team_member{
+	cursor:pointer;
+}

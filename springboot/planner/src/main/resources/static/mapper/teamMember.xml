@@ -33,6 +33,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		and tm.member_id=#{member_id}
 </select>
 
+<select id="myinfo2" resultType="TeamMyInfoDTO">
+	select t.team_id,
+		t.team_name,
+		tm.member_id,
+		tm.tm_grade,
+		tm.tm_nickname,
+		tm.tm_reg
+	from team t, team_member tm 
+	where t.team_id=tm.team_id
+		and t.team_id=#{team_id} 
+		and tm.team_member_id=#{team_member_id}
+</select>
+
 <select id="tmInfoList" resultType="TeamMemberDTO">
 	select * from team_member where team_id=#{team_id} order by tm_reg asc
 </select>

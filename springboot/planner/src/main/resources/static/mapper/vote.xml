@@ -35,27 +35,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<result column="vote_title"		property="vote_title"/>
 	<result column="vote_content"	property="vote_content"/>
 	<result column="vote_end"		property="vote_end"/>
-	<collection column="vote_id" property="vote_items" javaType="List" ofType="VoteInfoDTO" select="voteItemList">
+	<collection column="vote_id" property="vote_items" javaType="List" ofType="VoteItemDTO">
+		<id		column="vote_item_id"	property="vote_item_id"></id>
+		<result column="vote_item_name"	property="vote_item_name"></result>
+		<collection column="vote_item_id" property="vote_members" javaType="List" ofType="VoteMemberDTO">
+			<id column="team_member_id"	property="team_member_id"></id>
+		</collection>
 	</collection>
 </resultMap>
 
 <select id="voteInfo" resultMap="voteInfo">
-	select vote_id, vote_title, vote_content, vote_end
-	    from vote
-	    where vote_id = #{vote_id}
+	select v.vote_id, v.vote_title, v.vote_content, v.vote_end,
+		vi.vote_item_id, vi.vote_item_name, vi.vote_item_name,
+		vm.team_member_id
+	    from vote v
+	    join vote_item vi
+	    on v.vote_id = vi.vote_id
+	    left outer join vote_member vm
+	    on vm.vote_item_id in vi.vote_item_id
+	    where v.vote_id = #{vote_id}
 </select>
 
-<select id="voteItemList" resultType="VoteItemDTO">
-	select vote_item_id, vote_item_name from vote_item where vote_id=#{vote_id}
+<select id="voteCheck">
+	select count(*)
+	from vote_member
+	where vote_item_id in
+	        (select vote_item_id from vote_item where vote_id = #{vote_id})
+		and team_member_id=#{team_member_id}
 </select>
 
-<select id="voteMemberList" resultType="VoteMemberDTO">
-select vm.vote_item_id, vm.team_member_id, tm.tm_nickname
-	from vote_member vm
-	join team_member tm
-	on vm.team_member_id = tm.team_member_id
-	where vm.vote_item_id in
-		(select vote_item_id from vote_item where vote_id=#{vote_id})
-</select>
+<insert id="voteMemberInsert">
+	insert into vote_member values(#{vote_item_id}, #{team_member_id})
+</insert>
 
 </mapper>

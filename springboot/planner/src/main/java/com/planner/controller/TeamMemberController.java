@@ -123,16 +123,18 @@ public class TeamMemberController {
 	@GetMapping("/info")
 	public String tmInfo(Model model, @UserData ResMemberDetail detail,
 						@RequestParam(name = "member_id", defaultValue = "-1") Long member_id,
+						@RequestParam(name = "team_member_id", defaultValue = "-1") Long team_member_id,
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
+		TeamMyInfoDTO dto = null;
 		if(member_id > 0) {
-			TeamMyInfoDTO dto = tmService.myinfo(team_id, member_id);
-			if(dto == null) {
-				return "redirect:/team/info?team_id="+team_id;
-			}
-			model.addAttribute("dto", dto);
-		}else {
+			dto = tmService.myinfo(team_id, member_id);
+		}else if(team_member_id > 0){
+			dto = tmService.myinfo2(team_id, team_member_id);
+		}
+		if(dto == null) {
 			return "redirect:/team/info?team_id="+team_id;
 		}
+		model.addAttribute("dto", dto);
 		model.addAttribute("member_id", detail.getMember_id());
 		return "/team/member/tminfo";
 	}

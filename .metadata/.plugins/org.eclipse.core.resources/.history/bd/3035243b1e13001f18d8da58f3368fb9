@@ -1,5 +1,0 @@
-# key=value
-# uri=action
-! member
-/mvc/member/main.me = mvc.member.action.MainAction
-/mvc/member/insertForm.me = mvc.member.action.InsertFormAction
