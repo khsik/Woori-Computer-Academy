@@ -3,12 +3,14 @@ package com.planner.service;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planner.dto.request.friend.FriendRequestDTO;
 import com.planner.dto.request.member.MemberDTO;
+import com.planner.dto.request.member.ReqChangePassword;
 import com.planner.dto.request.member.ReqMemberRestore;
 import com.planner.dto.request.member.ReqMemberUpdate;
 import com.planner.dto.response.member.ResMemberDetail;
@@ -16,11 +18,14 @@ import com.planner.enums.MemberRole;
 import com.planner.enums.MemberStatus;
 import com.planner.exception.CustomException;
 import com.planner.exception.ErrorCode;
+import com.planner.exception.RestCustomException;
 import com.planner.mapper.FriendMapper;
 import com.planner.mapper.MemberMapper;
 import com.planner.util.CommonUtils;
 import com.planner.util.UserData;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -49,19 +54,50 @@ public class MemberService {
 		return detail;
 	}
 
+	/* 소셜로그인시 내 정보가져오기 */
+	@Transactional(readOnly = true)
+	public ResMemberDetail memberDetailForSocial(String member_email, String oauth_type) {
+		ResMemberDetail detail = memberMapper.findByEmailAndOAuthType(member_email, oauth_type);
+		return detail;
+	}
+	
+	/*일반로그인회원 정보가져오기*/
+	@Transactional(readOnly = true)
+	public ResMemberDetail formMember(String toEmail) {
+		ResMemberDetail detail = memberMapper.formMember(toEmail);
+		return detail;
+	}
+	
+
 	/* 회원 정보 수정 */
 	@Transactional
 	public void memberUpdate(ReqMemberUpdate req) {
 		memberMapper.memberUpdate(req);
 	}
 
-	/* 비번체크 */
+	/* 로그인시 회원 상태 코드 체크 */
 	@Transactional(readOnly = true)
+	public void memberStatusChk(String statusCode, HttpServletRequest request, HttpServletResponse response) {
+		if (statusCode.equals(MemberStatus.DELETE.getCode())) {
+			CommonUtils.removeCookiesAndSession(request, response);
+			throw new CustomException(ErrorCode.WITHDRAWN_MEMBER);
+		}
+		if (statusCode.equals(MemberStatus.RESTORE.getCode())) {
+			CommonUtils.removeCookiesAndSession(request, response);
+			throw new CustomException(ErrorCode.ACCOUNT_RESTORE_PENDING);
+		}
+	}
+
+	/* 비번체크 */
 	public int passwordChk(String currnetPw, ResMemberDetail member) {
 		int result = 0;
-		if (member != null && !member.getOauth_id().equals("none")) {
+
+		// 소셜로그인일때
+		if (member != null && !member.getOauth_id().equals("none") && CommonUtils.isEmpty(currnetPw)) {
 			return result = 1;
 		}
+
+		// 일반로그인일때
 		if (member != null && passwordEncoder.matches(currnetPw, member.getMember_password())) {
 			return result = 1;
 		}
@@ -75,75 +111,66 @@ public class MemberService {
 	}
 
 	/* 회원복구시 회원 상태코드별 반환 예외 */
-	private int statusToCode(String status) {
-		int code = 1;
+	private void throwForStatus(String status) {
 		switch (status) {
 		case "R": // 이미 신청상태
-			code = 2;
-			break;
+			throw new RestCustomException(ErrorCode.REQUEST_DUPLICATE);
 		case "B": // 신청대상아님
 		case "N":
-			code = 3;
-			break;
+			throw new RestCustomException(ErrorCode.INELIGIBLE_REQUEST);
 		}
-		return code;
 	}
 
 	/* 회원 복구 */
 	@Transactional
 	public int memberRestore(ReqMemberRestore req) {
 		int result = 0;
-		int code = 0;
-		
-		 // 소셜 로그인일때
+		// 소셜 로그인일때
 		if (!CommonUtils.isEmpty(req.getOauth_type())) {
-			ResMemberDetail memberDetail = memberMapper.findByEmailAndOAuthType(req.getCurrentEmail(),req.getOauth_type());
+			ResMemberDetail memberDetail = memberMapper.findByEmailAndOAuthType(req.getCurrentEmail(),
+					req.getOauth_type());
 
 			// member 값이 없으면 0 반환
 			if (CommonUtils.isEmpty(memberDetail)) {
 				return result;
 			}
-			
-			// member_status 별 숫자 코드 반환 
-			code = statusToCode(memberDetail.getMember_status());
-			
-			// statusToCode에서 해당하는 조건이 없으면 1 반환 == 신청가능
-			if (code == 1) {
-				// 상태코드 변경(R)
-				result = memberMapper.changeMemberStatus(memberDetail.getMember_id(), MemberStatus.RESTORE.getCode());
-				return result;
-			}
-			//statusToCode 해당되는조건 발생 해당하는 숫자코드 반환 == 신청불가
-			return code;
+
+			// member_status 별 숫자 코드 반환
+			throwForStatus(memberDetail.getMember_status());
+
+			// 상태코드 변경(R)
+			result = memberMapper.changeMemberStatus(memberDetail.getMember_id(), MemberStatus.RESTORE.getCode());
+			return result;
 		}
-		
+
 		// 일반로그인일때
 		if (CommonUtils.isEmpty(req.getOauth_type())) {
-			ResMemberDetail memberDetail = memberMapper.findByEmail(req.getCurrentEmail());
-			
-			// member 값이 없으면 0 반환
-			if (CommonUtils.isEmpty(memberDetail)) {
-				return result;
+			try {
+				ResMemberDetail memberDetail = memberMapper.findByEmail(req.getCurrentEmail());
+				// member 값이 없으면 0 반환
+				if (CommonUtils.isEmpty(memberDetail)) {
+					return result;
+				}
+				throwForStatus(memberDetail.getMember_status());
+
+				// 비번일치한지 안한지 검사
+				int pwChk = passwordChk(req.getCurrentPassword(), memberDetail);
+
+				if (pwChk == 1) {
+					result = memberMapper.changeMemberStatus(memberDetail.getMember_id(),
+							MemberStatus.RESTORE.getCode());
+					return result;
+				}
+			} catch (MyBatisSystemException e) {
+				throw new RestCustomException(ErrorCode.NO_ACCOUNT);
 			}
 
-			// 비번일치한지 안한지 검사
-			int pwChk = passwordChk(req.getCurrentPassword(), memberDetail);
-		
-			// member_status 별 숫자 코드 반환 
-			code = statusToCode(memberDetail.getMember_status());
-
-			// statusToCode에서 해당하는 조건이 없으면 1 반환, 비번체크성공 시  == 신청가능
-			if (pwChk == 1 && code == 1) {
-				result = memberMapper.changeMemberStatus(memberDetail.getMember_id(), MemberStatus.RESTORE.getCode());
-				return result;
-			}
-			
-			//statusToCode 해당되는조건 발생 해당하는 숫자코드 반환 == 신청불가
-			return code;
 		}
 		return result;
 	}
 
+
+	
 	/* 회원체크 */
 	@Transactional
 	public boolean isMember(String email) {
@@ -157,7 +184,36 @@ public class MemberService {
 			throw new CustomException(ErrorCode.WITHDRAWN_MEMBER);
 		}
 		return result;
+	}
 
+	/* 이메일 인증시 회원검사 */
+	public void memberChk(String toEmail, String type) {
+		if(type.equals("findPw")) {
+			ResMemberDetail memberDetail = memberMapper.formMember(toEmail);
+			// 소셜로그인시
+			if (CommonUtils.isEmpty(memberDetail)) {
+				throw new RestCustomException(ErrorCode.NO_ACCOUNT);
+			}
+			if (memberDetail != null) {
+				String status = memberDetail.getMember_status();
+				if (status.equals(MemberStatus.DELETE.getCode()) || status.equals(MemberStatus.RESTORE.getCode())) {
+					throw new RestCustomException(ErrorCode.INELIGIBLE_REQUEST);
+				}
+			}
+		}
+		// 회원가입페이지에서 넘어올때
+		if (type.equals("insert") && isMember(toEmail)) {
+			throw new RestCustomException(ErrorCode.ID_DUPLICATE);
+		}
+	}
+
+	/* 비밀번호 변경 */
+	public void changePassword(ReqChangePassword req) {
+		req.setNewPassword(passwordEncoder.encode(req.getNewPassword()));
+		int result = memberMapper.changePassword(req);
+		if (result != 1) {
+			throw new RestCustomException(ErrorCode.FAIL_CHANGE_PASSWORD);
+		}
 	}
 
 	/*
@@ -207,6 +263,10 @@ public class MemberService {
 	
 //	회원 검색
 	public List<MemberDTO> search(String member_email, String keyword, int start, int end){
+		if (CommonUtils.isEmpty(member_email)) {
+			throw new CustomException(ErrorCode.NO_ACCOUNT);
+		}
+		
 		Long myId = memberMapper.findByMemberId(member_email);
 		List<MemberDTO> list = memberMapper.search(myId, keyword, start, end);
 		List<MemberDTO> sendIdList = memberMapper.findBySendId(myId, keyword);
@@ -221,9 +281,10 @@ public class MemberService {
 		return list;
 	}
 	
-//	친구신청 보낸 아이디 찾기
-	public List<MemberDTO> findBySendId(String member_email, @Param("keyword") String keyword) {
-		Long member_id = memberMapper.findByMemberId(member_email);
-		return memberMapper.findBySendId(member_id, keyword);
+//	전체회원 수
+	public int searchCount(Long member_id, String keyword) {
+		int count = memberMapper.searchCount(member_id, keyword);
+		
+		return count;
 	}
 }

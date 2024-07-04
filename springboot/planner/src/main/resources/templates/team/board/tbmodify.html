@@ -3,14 +3,16 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>게시글 작성</title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/board/summernote-lite.min.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/board/tbwrite.css}">
-	<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/summernote-lite.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/summernote-ko-KR.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/tbmodify.js}" defer></script>
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/tema/board/tbwrite.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/board/summernote-lite.min.css">
+	<script type="text/javascript" src="/js/jquery-3.7.1.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/summernote-lite.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/summernote-ko-KR.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/tbmodify.js" defer></script>
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <form id="boardform" method="post" th:action="@{modify}" onsubmit="return false">
 	<input type="hidden" name="team_board_id" th:value="${dto.team_board_id}">
 	<input type="hidden" name="team_id" th:value="${dto.team_id}">
@@ -19,7 +21,7 @@
 		<select name="tb_category" th:with="ca=${dto?.tb_category}">
 			<option value="일반" th:selected="${ca} == '일반'">일반
 			<option value="질문" th:selected="${ca} == '질문'">질문
-			<option th:if="${tm_grade} == 'TEAM_MASTER'" value="공지사항" th:selected="${ca} == '공지사항'">공지사항
+			<option th:if="${#strings.contains(tm_grade, 'MASTER')}" value="공지사항" th:selected="${ca} == '공지사항'">공지사항
 		</select>
 	</span>
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
@@ -34,5 +36,6 @@
     </div>
 </form>
 <div id="orgContent" style="display:none" th:utext="${dto?.tb_content}"></div>
+</div> <!-- main-container 끝 -->
 </body>
 </html>

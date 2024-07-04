@@ -3,14 +3,16 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>게시글 작성</title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/board/summernote-lite.min.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/board/tbwrite.css}">
-	<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/summernote-lite.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/summernote-ko-KR.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/board/tbwrite.js}" defer></script>
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/board/tbwrite.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/board/summernote-lite.min.css">
+	<script type="text/javascript" src="/js/jquery-3.7.1.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/summernote-lite.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/summernote-ko-KR.min.js"></script>
+	<script type="text/javascript" src="/js/team/board/tbwrite.js" defer></script>
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
 	<input type="hidden" name="team_id" th:value="${team_id}">
 	<input type="hidden" name="team_board_id" th:value="${dto?.team_board_id}">
@@ -27,7 +29,7 @@
 		<select name="tb_category" th:with="ca=${dto?.tb_category}">
 			<option value="일반" th:selected="${ca} == '일반'">일반
 			<option value="질문" th:selected="${ca} == '질문'">질문
-			<option th:if="${tm_grade} == 'TEAM_MASTER'" value="공지사항" th:selected="${ca} == '공지사항'">공지사항
+			<option th:if="${#strings.contains(tm_grade, 'MASTER')}" value="공지사항" th:selected="${ca} == '공지사항'">공지사항
 		</select>
 	</span>
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
@@ -56,5 +58,6 @@
 	    <button type="button" class="btn" id="btn_reset">리셋</button>
     </div>
 </form>
+</div> <!-- main-container 끝 -->
 </body>
 </html>

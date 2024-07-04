@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{layout/layout}">
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-<link rel="stylesheet" type="text/css" href="/css/oauth2insert.css">
+<link rel="stylesheet" type="text/css" href="/css/member/oauth2insert.css">
+<link rel="stylesheet" type="text/css" href="/css/header.css"	/>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-	<div layout:fragment="content">
+<header th:replace="~{/fragments/header :: header}"></header>
 		<main class="oauth2Main">
 			<form  action="/oauth2/auth/signup" method="post" class="oauth2Form" onsubmit="return validateOauth2Insert()">
 				<input type="hidden" th:name="_csrf" th:value="${_csrf.token}"/>
@@ -42,19 +42,19 @@
 			<div class="signChkModal" id="signModal">
 				<div class="modalBody">
 					<div class="Modaltop">
-						<button type="button" class="Xbtn" onclick="closeModal()">X</button>
+						<button type="button" class="Xbtn" onclick="closeModal('signChkModal')">X</button>
 					</div>
 					<div class="modalMain">
 						<h1>이용약관</h1>
 						<span>대충이용약관임</span>
 					</div>
 					<div class="btns">
-						<button type="button" class="closeBtn" onclick="closeModal()">확인</button>
+						<button type="button" class="closeBtn" onclick="closeModal('signChkModal')">확인</button>
 					</div>
 				</div>
 			</div>
 		</main>
+		<script src="/js/modal.js"></script>
 		<script type="text/javascript" src="/js/member/oauth2_insert.js"></script>
-	</div>
 </body>
 </html>

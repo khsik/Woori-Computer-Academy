@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.planner.mapper.MemberMapper">
 	
 	<!-- 소셜로그인 회원생성 -->
@@ -108,11 +108,19 @@
 	</select>
 	
 	<!-- 내 정보 -->
-	<select id="findByEmail">
+	<select id="findByEmail" resultType="ResMemberDetail">
 		SELECT * 
 		FROM member
 		WHERE
 			member_email = #{member_email}
+	</select>
+		<!-- 내 정보 -->
+	<select id="formMember" resultType="ResMemberDetail">
+		SELECT * 
+		FROM member
+		WHERE
+			member_email = #{member_email}
+			AND oauth_id = 'none'
 	</select>
 	
 	<!-- 회원이메일, 소셜로그인 타입으로 유저 정보 가져오기 -->
@@ -125,7 +133,19 @@
 			oauth_type = #{oauth_type}
 	</select>
 	
+	<select id="accountCount">
+		SELECT 	count(*)
+		FROM	member
+		WHERE
+			member_email = #{toEmail}
+	</select>
 	
+	<update id="changePassword" parameterType="ReqChangePassword">
+		UPDATE 	member 
+		SET		member_password = #{newPassword}
+		WHERE
+			member_id = #{member_id}
+	</update>
 	
 	<!-- ================== 주성이햄========================= -->
 
@@ -176,6 +196,25 @@
 			where fr.friend_request_status != 'F'
 			or fr.member_receive_id is null)
 			where r between #{start} and #{end}
+		]]>
+	</select>
+	
+	<!-- 모든 회원 수 -->
+	<select id="searchCount" resultType="int">
+		<![CDATA[
+			select count(*)
+			from (
+				select *
+				from member
+				where member_id != #{member_id}
+				and substr (member_email, 1, instr(member_email, '@') - 1) like '%' || #{keyword} || '%'
+				and member_status = 'B'
+			)m
+			left outer join friend_request fr
+			on m.member_id = fr.member_send_id
+			and m.member_id = fr.member_receive_id
+			where fr.friend_request_status != 'F'
+			or fr.member_receive_id is null
 		]]>
 	</select>
 	

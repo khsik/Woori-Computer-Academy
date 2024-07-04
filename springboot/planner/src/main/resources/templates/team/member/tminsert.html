@@ -3,8 +3,10 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>그룹 참가</title>
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <th:block th:if="${dto} != null">
 <table th:object="${dto}">
 	<tr>
@@ -32,6 +34,8 @@
 	<button type="submit">참가</button>	
 </form>
 </th:block>
+</div> <!-- main-container 끝 -->
+
 <th:block th:if="${overlap} != null">
 <input type="hidden" id="overlap" th:value="${overlap}">
 <script>

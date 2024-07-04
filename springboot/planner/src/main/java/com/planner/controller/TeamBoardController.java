@@ -67,7 +67,7 @@ public class TeamBoardController {
 			}
 		}
 		List<TeamBoardListDTO> notice_list = null;
-		if (!category.equals("공지사항")) {
+		if (!category.equals("공지사항") && search.length() == 0) {
 			notice_list = tbService.tblist(team_id, "공지사항", "NO", "", 1, 10);
 		}
 		int pageBlock = 10;
@@ -129,6 +129,9 @@ public class TeamBoardController {
 			@RequestParam(name = "so", defaultValue = "NO") String searchOption,
 			@RequestParam(name = "search", defaultValue = "") String search) {
 		TeamBoardDTO dto = tbService.teamBoardView(team_board_id);
+		if(dto == null) {
+			return "redirect:/team/main";
+		}
 		String tm_grade = tmService.teamMemberGrade(dto.getTeam_id(), detail.getMember_id());
 		if(tm_grade == null || TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
 			return "redirect:/team/main";

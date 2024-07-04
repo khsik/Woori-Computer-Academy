@@ -9,11 +9,13 @@
 	<meta name="team_board_id" th:content="${dto.team_board_id}">
 	<meta name="vote_id" th:content="${dto.vote_id}">
 	<title th:text="${dto.tb_title}"></title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/board/tbview.css}">
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/board/tbview.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="/js/board/tbview.js" defer></script>
+	<script src="/js/team/board/tbview.js" defer></script>
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <span th:text="${dto.tb_category}"></span>
 <h2 id="title" th:text="${dto.tb_title}"></h2>
 <div class="float-clear">
@@ -64,5 +66,6 @@
 		</div>
 	</div>
 </div>
+</div> <!-- main-container 끝 -->
 </body>
 </html>

@@ -3,55 +3,12 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>그룹 찾기</title>
-	<style>
-	*{
-		margin:0;
-		padding:0;
-	}
-	body{
-		width:1200px;
-		margin:0 auto;
-	}
-	.float-right{
-		float:right;
-	}
-	.float-left{
-		float:left;
-	}
-	.float-clear:after{
-		content:'';
-		display:block;
-		clear:both;
-	}
-	.team{
-		width:590px;
-		height:120px;
-		margin:3px;
-		cursor:pointer;
-	}
-	.team img{
-		padding-top:10px;
-	}
-	.team .thead{
-		width:90px;
-	}
-	.team .tbody{
-		width:390px;
-	}
-	#pagebar{
-		width:max-content;
-		margin:10px auto;
-	}
-	.explain{
-		height:65px;
-		overflow:hidden;
-	}
-	.font-gray{
-		color:gray;
-	}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/teamSearch.css">
+	<script type="text/javascript" src="/js/team/teamSearch.js" defer></script>
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <p>검색된 그룹 개수: <span th:text="${count}"></span></p>
 <form method="get" id="searchForm" onsubmit="return submitCheck()"><!-- 글자수 2글자 이상으로 검사 -->
 <input type="hidden" name="page" value="1">
@@ -92,35 +49,6 @@
 	</th:block>
 	<a th:if="${pageEnd} < ${pageCount}" class="page" th:data-page="${pageEnd} + 1" href="javascript:void(0);">다음</a>
 </nav>
-<script>
-const form = document.getElementById("searchForm");
-const pages = document.querySelectorAll(".page");
-const teams = document.querySelectorAll(".team");
-// 검색 글자수 2글자 이상
-function submitCheck(){
-	if(form.search.value.trim().length >= 2){
-		return true;
-	}else{
-		alert("검색어는 2글자 이상 입력해주세요.");
-		return false;
-	}
-}
-
-// 페이지 번호 누르면 form에 page 값 변경하고 submit
-pages.forEach(page => {
-	page.addEventListener("click", function(){
-		form.page.value = this.dataset.page;
-		form.submit();
-	});
-});
-
-// team 누르면 info 페이지로 이동
-teams.forEach(team => {
-	team.addEventListener("click", function(){
-		let team_id = this.dataset.team_id;
-		window.location = "/team/info?team_id="+team_id;
-	});
-});
-</script>
+</div> <!-- main-container 끝 -->
 </body>
 </html>

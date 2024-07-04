@@ -3,44 +3,11 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>그룹 정보</title>
-	<style>
-	#modal {
-		display:none;
-		width:100vw;
-		height:100vh;
-		background-color:rgba(0, 0, 0, 0.25);
-		position:fixed;
-		top:0;
-		left:0;
-	}
-	#modal_body {
-		width:400px;
-		height:300px;
-		position:absolute;
-		top:calc(50vh - 150px);
-		left:calc(50% - 200px);
-		background-color: white;
-	}
-	#modal_btns{
-		width:100%;
-		text-align:center;
-		position: absolute;
-		bottom:50px;
-		
-	}
-	#modal_btns button{
-		padding:2px 4px;
-		margin:5px;
-	}
-	#modal_body h2{
-		width:100%;
-		text-align:center;
-		position: absolute;
-		top:70px;
-	}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/teamInfo.css">
 </head>
 <body>
+<div id="main-container"> <!-- main-container 시작 -->
 <h2 th:if="${dto} == null" th:text="${msg}"></h2>
 <table th:if="${dto} != null" th:object="${dto}">
 	<tr>
@@ -55,6 +22,7 @@
 		<td>그룹장 이메일</td>
 		<td th:text="*{member_email}"></td>
 	</tr>
+	<!-- 그룹 인원 수 출력? -->
 	<tr>
 		<td>이미지</td>
 		<td>
@@ -64,6 +32,8 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="right">
+			<!-- 그룹 인원 목록 링크? -->
+			<button th:if="${tm_grade} != null AND ${tm_grade} != 'WAIT'" type="button" th:onclick="|window.location='/team/member/tmlist?team_id=*{team_id}'|">구성원 목록</button>
 			<th:block th:if="${tm_grade == 'TEAM_MASTER'}">
 				<button type="button" th:onclick="|window.location='/team/update?team_id=*{team_id}'|">수정하기</button>
 				<button type="button" id="check_delete">그룹삭제</button>
@@ -72,6 +42,8 @@
 		</td>
 	</tr>
 </table>
+</div> <!-- main-container 끝 -->
+
 <th:block th:if="${tm_grade == 'TEAM_MASTER'}">
 <div id="modal">
 	<div id="modal_body">

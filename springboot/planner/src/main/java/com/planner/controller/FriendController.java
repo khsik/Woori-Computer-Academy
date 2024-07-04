@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.planner.dto.request.friend.FriendDTO;
 import com.planner.dto.request.friend.FriendRequestDTO;
+import com.planner.dto.request.member.MemberDTO;
 import com.planner.dto.response.member.ResMemberDetail;
+import com.planner.enums.Gender;
+import com.planner.enums.Masking;
 import com.planner.service.FriendService;
 import com.planner.service.MemberService;
 import com.planner.util.CommonUtils;
@@ -34,11 +37,9 @@ public class FriendController {
 	@PostMapping("/request")
 	@ResponseBody
 	public String friendRequest(@RequestParam("member_id") Long member_id,
-								@UserData ResMemberDetail dtail, Model model) {
-		friendService.friendRequest(member_id, dtail);									// 친구신청 void 메서드
-		
-		Long myid = memberService.findByMemberId(dtail.getMember_email());
-		String friendStatus = friendService.friendRequestStatus(member_id, myid);		// 친구신청 상태 찾는 메서드 / (받는 아이디, 보낸 아이디)
+								@UserData ResMemberDetail detail, Model model) {
+		friendService.friendRequest(member_id, detail.getMember_id());			// 친구신청 void 메서드
+		String friendStatus = friendService.friendRequestStatus(member_id, detail.getMember_id());	// 친구신청 상태 찾는 메서드 / (받는 아이디, 보낸 아이디)
 		
 		return friendStatus;
 	}
@@ -53,7 +54,7 @@ public class FriendController {
 		Long friend_id;
 		
 		if (friend_request_status.equals("search")) {
-			friendService.friendRequest(member_id, detail);		// 친구신청 void 메서드
+			friendService.friendRequest(member_id, detail.getMember_id());		// 친구신청 void 메서드
 		}else if (friend_request_status.equals("receive")) {
 			if (delete_who.equals("receive")) {					// 보낸 신청목록에서 온 경우
 				friendService.requestDelete(member_id, detail.getMember_id());	// 취소 메서드
@@ -64,11 +65,11 @@ public class FriendController {
 				friendService.requestDelete(detail.getMember_id(), member_id);	// 거절 메서드
 				return String.format("redirect:/member/auth/info/%d", member_id);
 			}
-				friendService.friendAccept(detail, member_id);	// 수락 메서드
-				friend_id = friendService.findByFriendSeq(detail.getMember_id(), member_id);
-				
-				return String.format("redirect:/friend/info?friend_id=%d&friend_status=%s", friend_id, "B");	// 친구정보로 리턴
-			}
+			friendService.friendAccept(detail, member_id);		// 수락 메서드
+			friend_id = friendService.findByFriendSeq(detail.getMember_id(), member_id);
+			
+			return String.format("redirect:/friend/info?friend_id=%d&friend_status=%s", friend_id, "B");	// 친구정보로 리턴
+		}
 		return String.format("redirect:/member/auth/info/%d", member_id);
 	}
 	
@@ -78,9 +79,11 @@ public class FriendController {
 	public String receiveList(@UserData ResMemberDetail dtail, Model model) {
 		List<FriendRequestDTO> receiveList = friendService.receiveRequestList(dtail.getMember_email());
 		int receive_count = friendService.receiveRequestCount(dtail.getMember_email());	// 받은 친구신청 수
-		System.out.println(receive_count);
+		
 		model.addAttribute("receive_count", receive_count);
 		model.addAttribute("receiveList", receiveList);
+		
+		model.addAttribute("NAME", Masking.NAME);		// 타임리프로 마스킹 처리를 하기위해 넘겨줌
 		
 		return "friend/friend_receive";
 	}
@@ -93,6 +96,8 @@ public class FriendController {
 		int receive_count = friendService.receiveRequestCount(dtail.getMember_email());	// 받은 친구신청 수
 		model.addAttribute("receive_count", receive_count);
 		model.addAttribute("sendList", sendList);
+		
+		model.addAttribute("NAME", Masking.NAME);		// 타임리프로 마스킹 처리를 하기위해 넘겨줌
 		
 		return "friend/friend_send";
 	}
@@ -166,15 +171,28 @@ public class FriendController {
 	public String friendInfo(@RequestParam(name = "friend_id", defaultValue = "") Long friend_id, @UserData ResMemberDetail detail,
 							 @RequestParam("friend_status") String friend_status, Model model,
 							 @RequestParam(name = "member_id", defaultValue = "") Long member_id) {
-		if (CommonUtils.isEmpty(friend_id)) {
-			friend_id = friendService.findByFriendSeq(member_id, detail.getMember_id());
-		}
-		FriendDTO friendDTO = friendService.friendInfo(friend_id, friend_status);
-		int receive_count = friendService.receiveRequestCount(detail.getMember_email());	// 받은 친구신청 수
+		String phone;
+		String gender;
 		
+		if (CommonUtils.isEmpty(friend_id)) {
+			friend_id = friendService.findByFriendSeq(member_id, detail.getMember_id());	// 친구 시퀀스 찾는 메서드
+		}
+		
+		FriendDTO friendDTO = friendService.friendInfo(friend_id, friend_status);			// 친구정보 메서드
+		for (MemberDTO memberDTO : friendDTO.getMemberInfo()) {
+			gender = Gender.findNameByCode(memberDTO.getMember_gender());
+			model.addAttribute("gender", gender);
+		}
+		int receive_count = friendService.receiveRequestCount(detail.getMember_email());	// 받은 친구신청 수
+
 		model.addAttribute("friendDTO", friendDTO);
 		model.addAttribute("receive_count", receive_count);
 		
+		for (MemberDTO memberDTO : friendDTO.getMemberInfo()) {
+			phone = Masking.maskAs(memberDTO.getMember_phone(), Masking.PHONE);				// 마스킹 처리
+			
+			model.addAttribute("phone", phone);
+		}
 		return "friend/friend_info";
 	}
 	

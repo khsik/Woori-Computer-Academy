@@ -104,7 +104,7 @@ public class TeamMemberController {
 	public String tmInfoList(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
 							@UserData ResMemberDetail detail) {
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
-		if(TM_Grade.grade_set.contains(tm_grade) && !TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
+		if(tm_grade != null && !TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
 			List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
 			String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
 			long wait_count = tmlist.stream()
@@ -130,6 +130,8 @@ public class TeamMemberController {
 			dto = tmService.myinfo(team_id, member_id);
 		}else if(team_member_id > 0){
 			dto = tmService.myinfo2(team_id, team_member_id);
+		}else {
+			dto = tmService.myinfo(team_id, detail.getMember_id());
 		}
 		if(dto == null) {
 			return "redirect:/team/info?team_id="+team_id;
