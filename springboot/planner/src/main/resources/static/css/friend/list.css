@@ -46,7 +46,9 @@
 	text-align: center;
 	width: 30%;
 }
-
+.nameI:disabled{
+   border: 2px solid #ddd;
+}
 .nameT {
 	width: 120px;
 	white-space: nowrap;

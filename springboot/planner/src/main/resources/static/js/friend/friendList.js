@@ -23,10 +23,10 @@ hideBtns.forEach(button => {
 		if (nameT) {
 			nameT.style.display = 'none';
 		}
-		if (nameI && submitBtn) {
-			submitBtn.style.display = 'inline-block';
-			nameI.style.display = 'inline-block';
-		}
+	      if (nameI && submitBtn) {
+	         submitBtn.style.display = 'inline-block';
+	         nameI.disabled = false;
+	      }
 		
 		/* 버튼타입을 직접 서밋 */
 		submitBtn.addEventListener('click', () => {

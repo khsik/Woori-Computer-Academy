@@ -37,9 +37,6 @@ public class ReplyController {
 	@ResponseBody
 	public int replyInsert(ReplyDTO dto, @UserData ResMemberDetail detail,
 			@RequestParam("team_id")long team_id) {
-		System.out.println("zzzzzzzz");
-		System.out.println("zzzzzzzz");
-		System.out.println("zzzzzzzz");
 		dto.setReply_reg(LocalDateTime.now());
 		dto.setTeam_member_id(tmService.teamMemberId(team_id, detail.getMember_id()));
 		return replyService.replyInsert(dto);

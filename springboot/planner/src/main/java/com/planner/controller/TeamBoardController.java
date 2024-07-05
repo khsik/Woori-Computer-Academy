@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.planner.dto.request.schedule.ScheduleDTO;
 import com.planner.dto.request.team.TeamDTO;
 import com.planner.dto.request.team.board.TeamBoardDTO;
 import com.planner.dto.request.team.board.TeamBoardListDTO;
@@ -19,6 +20,7 @@ import com.planner.dto.request.team.board.TeamBoardUpdateDTO;
 import com.planner.dto.request.team.vote.VoteDTO;
 import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.TM_Grade;
+import com.planner.service.ScheduleService;
 import com.planner.service.TeamBoardService;
 import com.planner.service.TeamMemberService;
 import com.planner.service.TeamService;
@@ -37,6 +39,7 @@ public class TeamBoardController {
 	private final TeamMemberService tmService;
 	private final TeamBoardService tbService;
 	private final VoteService voteService;
+	private final ScheduleService scheduleService;
 
 	// 게시글 목록
 	@GetMapping("/list")
@@ -137,6 +140,10 @@ public class TeamBoardController {
 			return "redirect:/team/main";
 		}
 		long team_member_id = tmService.teamMemberId(dto.getTeam_id(), detail.getMember_id());
+		if(dto.getSchedule_id() != null) {
+			ScheduleDTO scheduleDTO = scheduleService.schedule_select_one(dto.getSchedule_id());
+			model.addAttribute("scheduleDTO", scheduleDTO);
+		}
 		model.addAttribute("dto", dto);
 		model.addAttribute("tm_grade", tm_grade);
 		model.addAttribute("team_member_id", team_member_id);

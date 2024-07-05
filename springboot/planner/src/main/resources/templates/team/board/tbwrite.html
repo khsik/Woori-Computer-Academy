@@ -13,9 +13,11 @@
 </head>
 <body>
 <div id="main-container"> <!-- main-container 시작 -->
+
 <form id="boardform" method="post" th:action="@{write}" onsubmit="return false">
 	<input type="hidden" name="team_id" th:value="${team_id}">
 	<input type="hidden" name="team_board_id" th:value="${dto?.team_board_id}">
+	
 	<!--/*
 		${dto} ? ${dto.tb_title} : '' -> dto가 있으면 dto.tb_title 없으면 ''
 			${dto != null} ? ... 해도 됨.
@@ -24,6 +26,7 @@
 		${data?} -> data가 있으면 data 출력
 		${data} ?: '' -> data가 있으면 data, 없으면 '' 출력
 	*/-->
+	
 	<span id="ca">
 		<span>카테고리 : </span>
 		<select name="tb_category" th:with="ca=${dto?.tb_category}">
@@ -35,6 +38,15 @@
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
     <div id="summernote"></div>
     <input type="hidden" name="tb_content">
+   	
+   	<input type="hidden" name="schedule_id" disabled>
+   	
+   	<div class="float-clear">
+	    <div id="cal_print" class="float-left">
+	    
+	    </div>
+	    <button type="button" id="cal_del" class="float-left" style="display:none">제거</button>
+    </div>
     
     <div id="vote" style="display:none;">
 	    <div id="head">
@@ -58,6 +70,28 @@
 	    <button type="button" class="btn" id="btn_reset">리셋</button>
     </div>
 </form>
+
+<div id="modal">
+	<div id="modal_body">
+		<div id="modal_search">
+			<select id="so" name="so">
+				<option value="T" selected>제목
+				<option value="S">시작
+				<option value="E">종료
+			</select>
+			<input type="text" name="cal_title" maxlength="50" style="width: 111.33px; height: 21.33px" placeholder="일정 검색">
+			<input type="date" name="cal_date" style="display:none;">
+			<button type="button" id="cal_search">검색</button>
+		</div>
+		<div id="modal_result">
+		</div>
+		<div id="modal_btns">
+			<button type="button" id="modal_close">닫기</button>
+		</div>
+	</div>
+</div>
+
+
 </div> <!-- main-container 끝 -->
 </body>
 </html>

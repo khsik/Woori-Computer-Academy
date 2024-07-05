@@ -67,3 +67,46 @@ label[for='vote_content']{
 	display:block;
 	clear:both;
 }
+#modal {
+	display:none;
+	width:100vw;
+	height:100vh;
+	background-color:rgba(0, 0, 0, 0.25);
+	position:fixed;
+	top:0;
+	left:0;
+}
+#modal_body {
+	width:500px;
+	height:600px;
+	position:absolute;
+	top:calc(50vh - 300px);
+	left:calc(50% - 250px);
+	background-color: white;
+}
+#modal_btns{
+	width:100%;
+	text-align:center;
+	position: absolute;
+	bottom:50px;
+}
+#modal_btns button{
+	padding:2px 4px;
+	margin:5px;
+}
+#modal_body h2{
+	width:100%;
+	text-align:center;
+	position: absolute;
+	top:70px;
+}
+#modal_search{
+	position: absolute;
+	top: 30px;
+	left: 148px;
+}
+#modal_result{
+	position: absolute;
+	top : 70px;
+	left: 100px;
+}

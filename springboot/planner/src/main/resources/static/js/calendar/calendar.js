@@ -10,6 +10,8 @@ let local_date_end;
 let clickedDate;				// 클릭한 날짜의 값을 저장해 두는것임.
 let id;									// form 의 번호임.
 
+const team_id = $("meta[name='team_id']").attr('content');
+const tm_grade = $("meta[name='tm_grade']").attr('content');
 const header = $("meta[name='_csrf_header']").attr('content');
 const token = $("meta[name='_csrf']").attr('content');
 
@@ -84,11 +86,15 @@ function createCalendar(month, year) {
 
 		local_date_start = clickDate.toISOString().slice(0, 16);
 		local_date_end = clickDateSec.toISOString().slice(0, 16);
-
+		let data = {
+			"date": clickedDate,
+			"team_id":team_id,
+			"tm_grade":tm_grade
+		};
 		$.ajax({
 			url: "schedule",
 			type: "get",
-			data: { "date": clickedDate },
+			data: data,
 			success: function(html) {
 
 				$(".schedule").empty();
@@ -152,6 +158,7 @@ window.onload = function() {
 
 // 여기는 버튼 클릭시 글작성 div 왔다 갔다 하는 스크립트
 function btnClick() {
+	
 	const mydiv = document.getElementById('my-div');
 
 	if (mydiv.style.display !== 'block') {
@@ -224,6 +231,10 @@ function writeSchedule() {
 		return;
 	}
 
+	if(team_id != null){
+		$("#form").append($('<input>', { type: 'hidden',name:'team_id', val: team_id }));
+	}
+
 	$.ajax({
 		url: 'schedule',
 		type: 'POST',
@@ -289,10 +300,15 @@ function editSchedule(btn) {
 
 // 처리 이후 페이지 새로고침 하는 ajax;
 function scheduleAjax() {
+	let data = {
+		"date": clickedDate,
+		"team_id":team_id,
+		"tm_grade":tm_grade
+	};
 	$.ajax({
 		url: "schedule",
 		type: "GET",
-		data: { "date": clickedDate },
+		data: data,
 		success: function(html) {
 			$(".schedule").empty();
 			$(".schedule").append(html);

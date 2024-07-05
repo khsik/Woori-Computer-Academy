@@ -29,7 +29,6 @@ function closeModal() {
 
 function openMapLikeModal() {
    const a = document.getElementById("mapLikePlace");
-   console.log(a);
    if(a == null  ){
       alert('즐겨찾기 목록이 없습니다!');
    }else{
@@ -38,6 +37,7 @@ function openMapLikeModal() {
    mapLikeModal.style.display = "block";
    }
 }
+
 function closeMapLikeModal() {
 	const mapLikeModal = document.getElementById("MpaLikeModal");
 	mapLikeModal.style.display = "none";

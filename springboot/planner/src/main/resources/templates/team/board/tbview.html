@@ -28,10 +28,24 @@
 <hr>
 <div id="content">
 <div id="board_content" th:utext="${dto.tb_content}"></div>
-<div id="schedule" th:if="${dto.schedule_id}">
-	<!--/* 일정 출력 */-->
+
+<div id="schedule" class="optional_content float-clear" th:if="${dto.schedule_id}" th:object="${scheduleDTO}">
+	<b th:text="*{schedule_title}"></b>
+	<p class="float-right">
+	기간 : 
+	<span th:text="*{#temporals.format(schedule_start, 'yyyy-MM-dd HH:mm')}"></span><b> ~ </b>
+	<span th:text="*{#temporals.format(schedule_end, 'yyyy-MM-dd HH:mm')}"></span>
+	</p>
+	<br>
+	<pre th:utext="*{schedule_content}"></pre>
+	
+	<div style="width:max-content; margin-left: 10px;">
+		<div th:text="*{address}"style="margin-top:5px; text-align: left;"></div>
+		<div th:text="*{place}"style="margin-left: 30px;text-align: right;"></div>
+	</div>
 </div>
-<div id="vote" th:if="${dto.vote_id}">
+
+<div id="vote" class="optional_content" th:if="${dto.vote_id}">
 </div>
 </div>
 <div class="float-clear">
