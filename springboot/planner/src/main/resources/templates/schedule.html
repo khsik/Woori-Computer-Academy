@@ -18,8 +18,8 @@
 				<input type="datetime-local" th:value="${scheduleDTO.schedule_start}" name="schedule_start" id="edtScheduleStart" readonly="readonly" />
 				<input type="datetime-local" th:value="${scheduleDTO.schedule_end}" name="schedule_end" id="edtScheduleEnd" readonly="readonly">				<br />
 				<input type="hidden" th:value="${scheduleDTO.schedule_id}" name="schedule_id" class="schedule_id" />
-				<input type="text"	th:value="${scheduleDTO.schedule_title}" name="schedule_title"	class="schedule_title" readonly="readonly" />				<br />
-				<textarea th:value="${scheduleDTO.schedule_content}" th:utext="${scheduleDTO.schedule_content}" name="schedule_content" class="text-con schedule_content" readonly="readonly"></textarea>	<br />
+				<input type="text"	th:value="${scheduleDTO.schedule_title}" name="schedule_title"	class="schedule_title" maxlength="16" readonly="readonly"  />				<br />
+				<textarea th:value="${scheduleDTO.schedule_content}" th:utext="${scheduleDTO.schedule_content}" name="schedule_content" class="text-con schedule_content" maxlength="166" readonly="readonly"></textarea>	<br />
 				<input type="text" th:value="${scheduleDTO.place}" name="place" class="mapPlace" readOnly="readOnly" />
 				<input type="text" th:value="${scheduleDTO.address}" name="address" class="mapAddress" readOnly="readOnly" />
 				<th:block  th:if="${tm_grade} == null  OR ${#strings.contains(tm_grade, 'MASTER')}">
@@ -43,12 +43,12 @@
 			<div id="my-div" class="my-div">
 				<form id="form" method="post" onsubmit="return false">
 					<input th:if="${team_id}" type="hidden" name="team_id" th:value="${team_id}">
-					<input type="text" placeholder="title" name="schedule_title" id="schedule_title" class="schedule_title" />
+					<input type="text" placeholder="title" name="schedule_title" id="schedule_title" class="schedule_title" maxlength="16"/>
 					<input type="hidden" th:value="${date}" name="date" id="date" />
 					<input type="datetime-local" name="schedule_start" class="dateTimeLocal">
 					<span>~</span> 
 					<input type="datetime-local" name="schedule_end" class="secondDateTimeLocal"> <br />
-					<textarea rows="10" cols="20" placeholder="content" name="schedule_content" id="schedule_content" class="text-con"></textarea> <br />
+					<textarea rows="10" cols="20" placeholder="content" name="schedule_content" id="schedule_content" maxlength="166" class="text-con"></textarea> <br />
 					<input type="text" th:value="${place}" name="place" id="mapPlace" readOnly="readOnly" />
 					<input type="text" th:value="${address}" name="address" id="mapAddress"	readOnly="readOnly" />
 					<button type="button" onclick="openModal(this)">장소추가</button>

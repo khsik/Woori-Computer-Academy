@@ -22,7 +22,7 @@ public interface TeamMemberMapper {
 	
 	public List<TeamMemberDTO> tmInfoList(long team_id);
 
-	public void tmUpdate(@Param("team_id")long team_id, @Param("member_id")long member_id,
+	public int tmUpdate(@Param("team_id")long team_id, @Param("member_id")long member_id,
 			@Param("tm_nickname") String tm_nickname);
 	
 	public int tmDelete(@Param("team_id")long team_id, @Param("member_id")long member_id);

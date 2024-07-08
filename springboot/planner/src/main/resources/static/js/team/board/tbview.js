@@ -134,13 +134,12 @@ $(document).on("click", ".rereply-cancel", function(){
 });
 // 대댓글 작성 저장
 $(document).on("click", ".rereply-insert", function(){
-	let data = {
-		reply_group:$(".rereply input[name='reply_group']").val(),
-		reply_content:$(".rereply textarea[name='reply_content']").val(),
-		team_board_id:team_board_id,
-		team_id:team_id
-	};
-	console.log(data);
+	   let data = {
+      reply_group:$(".rereply input[name='reply_group']").val(),
+      reply_content:$(".rereply textarea[name='reply_content']").val(),
+      team_board_id:team_board_id,
+      team_id:team_id
+   };
 	$.ajax({
 		type:"post",
 		url:"/reply/insert",

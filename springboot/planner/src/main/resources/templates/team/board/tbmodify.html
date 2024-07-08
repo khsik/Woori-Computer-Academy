@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>게시글 작성</title>
+	<link rel="stylesheet" type="text/css" href="/css/header.css">
 	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
 	<link rel="stylesheet" type="text/css" href="/css/tema/board/tbwrite.css">
 	<link rel="stylesheet" type="text/css" href="/css/team/board/summernote-lite.min.css">
@@ -12,6 +13,7 @@
 	<script type="text/javascript" src="/js/team/board/tbmodify.js" defer></script>
 </head>
 <body>
+<header th:replace="~{/fragments/header :: header}"></header>
 <div id="main-container"> <!-- main-container 시작 -->
 <form id="boardform" method="post" th:action="@{modify}" onsubmit="return false">
 	<input type="hidden" name="team_board_id" th:value="${dto.team_board_id}">

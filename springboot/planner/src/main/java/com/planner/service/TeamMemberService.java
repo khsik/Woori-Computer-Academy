@@ -46,8 +46,8 @@ public class TeamMemberService {
 		return tmMapper.myinfo2(team_id, team_member_id);
 	}
 
-	public void tmUpdate(Long team_id, Long member_id, String tm_nickname) {
-		tmMapper.tmUpdate(team_id, member_id, tm_nickname);
+	public int tmUpdate(Long team_id, Long member_id, String tm_nickname) {
+		return tmMapper.tmUpdate(team_id, member_id, tm_nickname);
 	}
 
 	public int accept(Long team_id, Long member_id, String tm_grade) {

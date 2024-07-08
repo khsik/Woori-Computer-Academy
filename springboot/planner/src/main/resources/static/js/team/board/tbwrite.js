@@ -5,7 +5,6 @@ const so = document.getElementById('so');
 const cal_search = document.getElementById('cal_search');
 const cal_title = document.querySelector('input[name="cal_title"]');
 const cal_date = document.querySelector('input[name="cal_date"]');
-const cal_del = document.getElementById('cal_del');
 // 글삭제 modal창 on
 function calendar_btn(){
 	modal.style.display = 'block';
@@ -74,24 +73,24 @@ cal_search.addEventListener("click", function(){
 	});
 });
 
+
 // scSearch 검색 후 추가 버튼
 $(document).on("click", ".cal_add", function(){
 	boardform.schedule_id.disabled = false;
 	boardform.schedule_id.value = $(this).closest("tr").data("scid")
-	$("#cal_print").prepend(
-		'<span>선택된 일정 : </span>' + 
+	$("#cal_print").html(
+		'<span>선택된 일정</span>' + 
+		'<button type="button" id="cal_del"> X </button> </br>'+
 		'<span>'+$(this).closest("tr").children("td:eq(0)").text()+'</span>' + 
-		'<span>'+$(this).closest("tr").children("td:eq(1)").text()+'</span>'+
-		'<span>'+$(this).closest("tr").children("td:eq(2)").text()+'</span>'
+		'<p class="float-right">'+$(this).closest("tr").children("td:eq(2)").html()+'</p>'+
+		'<pre>'+$(this).closest("tr").children("td:eq(1)").text()+'</pre>'
 	);
-	cal_del.style.display = 'block';
 	modal.style.display = 'none';
 });
 
-cal_del.addEventListener("click", function(){
+
+$(document).on("click", '#cal_del', function(){
 	$('#cal_print').html('');
-	$('#cal_print').closest('div').hide();
-	cal_del.style.display = 'none';
 	boardform.schedule_id.disabled = true;
 });
 

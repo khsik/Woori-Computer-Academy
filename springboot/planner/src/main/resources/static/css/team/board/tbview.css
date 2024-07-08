@@ -90,9 +90,6 @@ button.float-right{
 	padding:5px;
 	border:1px solid rgba(0, 0, 0, 0.2);
 }
-.dpn{
-	display:none;
-}
 .team_member{
 	cursor:pointer;
 }
@@ -101,7 +98,6 @@ button.float-right{
 	margin-left:10px;
 	width:400px;
 	white-space:pre-wrap;
-	/* font-size: 
-		font-family:
-	 */
+	font-size: 14px;
+	font-family: Malgun Gothic;
 }

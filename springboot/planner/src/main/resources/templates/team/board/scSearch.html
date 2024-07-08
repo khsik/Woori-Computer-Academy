@@ -1,15 +1,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<table>
+<table id="search-table">
 	<tr>
-		<th>제목
-		<th>시작
-		<th>끝
-		<th>
+		<th width="150px">제목
+		<th width="250px">내용
+		<th width="130px">시작 / 끝
+		<th width="40px">
 	<tr th:each="dto : ${list}" th:data-scid="${dto.schedule_id}">
-		<td th:text="${dto.schedule_title}">
-		<td th:text="${#temporals.format(dto.schedule_start, 'yyyy-MM-dd HH:mm')}">
-		<td th:text="${#temporals.format(dto.schedule_end, 'yyyy-MM-dd HH:mm')}">
+		<td><div th:text="${dto.schedule_title}" class="over-hide"></div></td>
+		<td><div th:utext="${dto.schedule_content}" class="over-hide"></div></td>
+		<td>
+			<span th:text="${#temporals.format(dto.schedule_start, 'yyyy-MM-dd HH:mm')}"></span> <br>
+			<span th:text="${#temporals.format(dto.schedule_end, 'yyyy-MM-dd HH:mm')}"></span>
 		<td><button type="button" class="cal_add">추가</button>
 </table>
 

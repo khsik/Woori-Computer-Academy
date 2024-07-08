@@ -183,10 +183,10 @@ public class MemberController {
 		ResMemberDetail memberDTO = null;
 		String gender;
 
-		if (detail.getOauth_id().equals("none")) {
+		if (CommonUtils.isEmpty(detail.getOauth_id())) {
 			memberDTO = memberService.memberDetail(detail.getMember_email()); // 나의 객체
 		}
-		if (!detail.getOauth_id().equals("none")) {
+		if (!CommonUtils.isEmpty(detail.getOauth_id())) {
 			memberDTO = memberService.memberDetailForSocial(detail.getMember_email(), detail.getOauth_type());
 		}
 		gender = Gender.findNameByCode(detail.getMember_gender());

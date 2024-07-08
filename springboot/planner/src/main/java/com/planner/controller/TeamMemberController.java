@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -142,24 +143,17 @@ public class TeamMemberController {
 	}
 
 	// 그룹 회원 정보 수정
-	@GetMapping("/update")
-	public String tmUpdate(Model model, @UserData ResMemberDetail detail,
-						@RequestParam("team_id") Long team_id) {
-		TeamMyInfoDTO dto = tmService.myinfo(team_id, detail.getMember_id());
-		if(dto == null) {
-			return "redirect:/team/info?team_id="+team_id;
-		}
-		model.addAttribute("dto", dto);
-		return "/team/member/tmupdate";
-	}
-
-	// 그룹 회원 정보 수정
-	@PostMapping("/update")
-	public String tmUpdate(Model model,@UserData ResMemberDetail detail,
+	@PutMapping("/update")
+	@ResponseBody
+	public HttpStatus tmUpdate(Model model,@UserData ResMemberDetail detail,
 						@RequestParam("team_id") Long team_id,
 						@RequestParam("tm_nickname") String tm_nickname){
-		tmService.tmUpdate(team_id, detail.getMember_id(), tm_nickname);
-		return "redirect:/team/member/info?team_id="+team_id;
+		int result = tmService.tmUpdate(team_id, detail.getMember_id(), tm_nickname);
+		if(result == 1) {
+			return HttpStatus.OK;
+		}else {
+			return HttpStatus.BAD_REQUEST;
+		}
 	}
 
 	// 그룹 탈퇴
