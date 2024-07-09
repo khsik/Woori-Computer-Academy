@@ -8,13 +8,15 @@
 	<title>그룹 회원 목록</title>
 	<link rel="stylesheet" type="text/css" href="/css/header.css">
 	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
+	<link rel="stylesheet" type="text/css" href="/css/team/member/tmlist.css">
 	<script type="text/javascript" src="/js/team/member/tmlist.js" defer></script>
 </head>
 <body>
 <header th:replace="~{/fragments/header :: header}"></header>
 <div id="main-container"> <!-- main-container 시작 -->
 <p>
-	그룹 회원 : <span th:text="${#lists.size(tmlist)} - ${wait_count}" id="member_count"></span>명 <br>
+	그룹 회원 : <span th:text="${#lists.size(tmlist)} - ${wait_count}" id="member_count"></span>명
+	&nbsp;/&nbsp;
 	가입 대기 : <span th:text="${wait_count}" id="wait_count"></span>명
 </p>
 <div class="nodrag" id="grades">
