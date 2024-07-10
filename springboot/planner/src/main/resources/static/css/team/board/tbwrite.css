@@ -130,36 +130,46 @@ label[for='vote_content'] {
 	position: absolute;
 	top: 70px;
 	left: 50px;
-	width:600px;
+	width: 600px;
 }
 
 #cal_del {
-	padding:2px 3px;
-	margin : 0px 5px;
+	padding: 2px 3px;
+	margin: 0px 5px;
 }
-.over-hide{
+
+.over-hide {
 	max-height: 45px;
 	overflow: hidden;
 }
 
-#cal_print pre{
-	margin-top:4px;
-	margin-left:10px;
-	width:400px;
-	white-space:pre-wrap;
+#cal_print {
+	display:none;
+	margin:5px auto;
+	padding:5px;
+	border:1px solid rgba(0, 0, 0, 0.2);
+}
+
+#cal_print pre {
+	margin-top: 4px;
+	margin-left: 10px;
+	width: 400px;
+	white-space: pre-wrap;
 	font-size: 14px;
 	font-family: Malgun Gothic;
 }
 
-#search-table{
-	width:600px;
+#search-table {
+	width: 600px;
 	border-collapse: collapse;
 }
-#search-table td{
+
+#search-table td {
 	border-bottom: 1px solid black;
-	padding:2px;
+	padding: 2px;
 }
-#search-table th{
+
+#search-table th {
 	border-bottom: 3px double black;
-	padding:2px;
+	padding: 2px;
 }

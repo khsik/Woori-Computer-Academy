@@ -1,11 +1,11 @@
 /* 노멀라이즈 */
-body, ul, li {
+.header > body, ul, li {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-a {
+.header a {
   text-decoration: none;	/* 해당 태그의 밑줄 제거 */
   color: #333;
 }
@@ -62,6 +62,7 @@ a {
 /* 부모 li 에 마우스 올리면 display -> block */
 .menu ul li:hover > ul {
 	display: block;
+	z-index: 9999;
 }
 
 /* 서브 메뉴 스타일 */

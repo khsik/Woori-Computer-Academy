@@ -113,7 +113,12 @@ public class TeamService {
 		tmdto.setTm_grade(TM_Grade.ROLE_TEAM_MASTER.getValue()); // enums의 TM_Grade 확인
 		tmdto.setTm_nickname(detail.getMember_name());
 		// team을 생성한 member를 해당 team의 team_member로 추가
-		tmMapper.insertTeamMember(tmdto);
+		try {
+			// 그룹 내에서 닉네임 중복일 때 예외 발생하는데, 그룹 생성시에는 중복일 수 없음.
+			tmMapper.insertTeamMember(tmdto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return dto.getTeam_id();
 	}

@@ -38,6 +38,15 @@ public class TeamMemberController {
 	private final TeamService teamService;
 	private final TeamMemberService tmService;
 
+	// 닉네임 중복 검사
+	@GetMapping("/nick-check")
+	@ResponseBody
+	public int nickCheck(@RequestParam("team_id")Long team_id,
+							@RequestParam("tm_nickname")String tm_nickname) {
+		// 1이면 중복, 0이면 사용가능
+		return tmService.nickCheck(team_id, tm_nickname);
+	}
+
 	// 그룹 가입 신청
 	@GetMapping("/insert")
 	public String tmInsert(Model model, @UserData ResMemberDetail detail,
@@ -60,10 +69,18 @@ public class TeamMemberController {
 
 	// 가입 신청
 	@PostMapping("/insert")
-	public String tmInsert(@RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
-							@UserData ResMemberDetail detail, @RequestParam("nickname") String nickname) {
-		tmService.tmInsert(team_id, detail.getMember_id(), nickname);
-		return "redirect:/team/member/info?team_id="+team_id+"&member_id="+detail.getMember_id();
+	public String tmInsert(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
+							@UserData ResMemberDetail detail, @RequestParam("tm_nickname") String tm_nickname) {
+		int result = tmService.tmInsert(team_id, detail.getMember_id(), tm_nickname);
+		if(result == 1) {
+			return "redirect:/team/member/info?team_id="+team_id+"&member_id="+detail.getMember_id();
+		}else {
+			TeamDTO dto = teamService.teamInfo(team_id);
+			model.addAttribute("dto", dto);
+			model.addAttribute("member_name", detail.getMember_name());
+			model.addAttribute("nick", tm_nickname);
+			return "/team/member/tminsert";
+		}
 	}
 
 	// 가입 수락
@@ -106,6 +123,7 @@ public class TeamMemberController {
 							@UserData ResMemberDetail detail) {
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
 		if(tm_grade != null && !TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
+			String team_name = tmService.myinfo(team_id, detail.getMember_id()).getTeam_name();
 			List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
 			String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
 			long wait_count = tmlist.stream()
@@ -113,6 +131,7 @@ public class TeamMemberController {
 					.count();
 			model.addAttribute("tmlist", tmlist);
 			model.addAttribute("wait_count", wait_count);
+			model.addAttribute("team_name", team_name);
 			model.addAttribute("tm_grade", tm_grade);
 			return "/team/member/tmlist";
 		}else {
@@ -151,7 +170,7 @@ public class TeamMemberController {
 		int result = tmService.tmUpdate(team_id, detail.getMember_id(), tm_nickname);
 		if(result == 1) {
 			return HttpStatus.OK;
-		}else {
+		}else{
 			return HttpStatus.BAD_REQUEST;
 		}
 	}
@@ -184,4 +203,5 @@ public class TeamMemberController {
 		}
 		return HttpStatus.BAD_REQUEST;
 	}
+	
 }

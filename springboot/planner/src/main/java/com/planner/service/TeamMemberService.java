@@ -20,14 +20,23 @@ public class TeamMemberService {
 	public String teamMemberGrade(long team_id, long member_id) {
 		return tmMapper.teamMemberGrade(team_id, member_id);
 	}
+	
+	public int nickCheck(Long team_id, String tm_nickname) {
+		return tmMapper.nickCheck(team_id, tm_nickname);
+	}
 
-	public void tmInsert(Long team_id, Long member_id, String nickname) {
+	public int tmInsert(Long team_id, Long member_id, String tm_nickname){
 		TeamMemberDTO dto = new TeamMemberDTO();
 		dto.setTeam_id(team_id);
 		dto.setMember_id(member_id);
-		dto.setTm_nickname(nickname);
+		dto.setTm_nickname(tm_nickname);
 		dto.setTm_grade(TM_Grade.ROLE_TEAM_WAIT.getValue());
-		tmMapper.insertTeamMember(dto);
+		try {
+			return tmMapper.insertTeamMember(dto);
+		}catch(Exception e) {
+			return -1;
+		}
+		// 무결성 제약 오류 => OracleDatabaseException
 	}
 
 	public List<TeamMemberDTO> tmInfoList(Long team_id) {
@@ -47,7 +56,11 @@ public class TeamMemberService {
 	}
 
 	public int tmUpdate(Long team_id, Long member_id, String tm_nickname) {
-		return tmMapper.tmUpdate(team_id, member_id, tm_nickname);
+		try {
+			return tmMapper.tmUpdate(team_id, member_id, tm_nickname);
+		} catch (Exception e) {
+			return -1;
+		}
 	}
 
 	public int accept(Long team_id, Long member_id, String tm_grade) {

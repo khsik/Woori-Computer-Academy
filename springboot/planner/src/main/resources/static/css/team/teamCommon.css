@@ -10,6 +10,7 @@
 #main-container table{
 	border-collapse: collapse;
 }
+/* 드래그 방지 */
 .nodrag{
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -50,6 +51,9 @@
 }
 .font-lsblue{
 	color:lightskyblue;
+}
+.font-bold{
+	font-weight:bold;
 }
 .pointer{
 	cursor:pointer;

@@ -59,7 +59,6 @@ public class TeamBoardController {
 			return "redirect:/team/board/list?team_id="+team_id;
 		}
 		TeamDTO teamDTO = teamService.teamInfo(team_id);
-		int tbCountAll = tbService.tbCountAll(team_id);
 		int tbCount = tbService.tbCount(team_id, category, searchOption, search);
 		List<TeamBoardListDTO> list = null;
 		if (tbCount > 0) {
@@ -85,7 +84,6 @@ public class TeamBoardController {
 		model.addAttribute("teamDTO", teamDTO);
 		model.addAttribute("list", list);
 		model.addAttribute("notice_list", notice_list);
-		model.addAttribute("tbCountAll", tbCountAll);
 		model.addAttribute("tbCount", tbCount);
 		model.addAttribute("ca", category);
 		model.addAttribute("pageBlock", pageBlock);

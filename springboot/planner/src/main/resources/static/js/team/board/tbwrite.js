@@ -2,9 +2,9 @@ const boardform = document.getElementById('boardform');
 const modal = document.getElementById('modal');
 const modal_close = document.getElementById('modal_close');
 const so = document.getElementById('so');
-const cal_search = document.getElementById('cal_search');
 const cal_title = document.querySelector('input[name="cal_title"]');
 const cal_date = document.querySelector('input[name="cal_date"]');
+const cal_search = document.getElementById('cal_search');
 // 글삭제 modal창 on
 function calendar_btn(){
 	modal.style.display = 'block';
@@ -14,7 +14,7 @@ modal_close.addEventListener('click', function(){
 	modal.style.display = 'none';
 })
 
-// 일정 버튼
+// 에디터 일정 버튼
 var schedule_btn = function (context) {
 	var ui = $.summernote.ui;
 
@@ -31,18 +31,18 @@ var schedule_btn = function (context) {
 // 검색 옵션 바꿀때.
 so.addEventListener("change", function(){
 	if(so.value == 'T'){
-		document.querySelector('input[name="cal_title"]').style.display = 'inline-block';
-		document.querySelector('input[name="cal_date"]').style.display = 'none';
+		cal_title.style.display = 'inline-block';
+		cal_date.style.display = 'none';
 	}else{
-		document.querySelector('input[name="cal_title"]').style.display = 'none';
-		document.querySelector('input[name="cal_date"]').style.display = 'inline-block';
+		cal_title.style.display = 'none';
+		cal_date.style.display = 'inline-block';
 	}
 });
 
-// 일정 검색 버튼
-cal_search.addEventListener("click", function(){
+// 일정 검색
+function cal_search_function(){
 	let data = {};
-	if(so.value == 'T'){
+	if(so.value == 'T'){ // 제목 검색일 때
 		if(cal_title.value.trim().length < 2){
 			alert('검색은 최소 2글자 이상입니다.');
 			return;
@@ -52,7 +52,7 @@ cal_search.addEventListener("click", function(){
 			so:so.value,
 			cal_title:cal_title.value
 		}
-	}else{
+	}else{ // 시작, 종료 날짜 검색일 때
 		if(cal_date.value.length == 0){
 			alert('날짜를 입력 해주세요.');
 			return;
@@ -71,8 +71,15 @@ cal_search.addEventListener("click", function(){
 			$("#modal_result").html(result);
 		}
 	});
+}
+// 일정 검색 버튼
+cal_search.addEventListener("click", cal_search_function);
+// 일정 제목 검색일 때 엔터눌러서 검색
+cal_title.addEventListener("keydown", function(e){
+	if(e.keyCode == 13){
+		cal_search_function();
+	}
 });
-
 
 // scSearch 검색 후 추가 버튼
 $(document).on("click", ".cal_add", function(){
@@ -85,15 +92,16 @@ $(document).on("click", ".cal_add", function(){
 		'<p class="float-right">'+$(this).closest("tr").children("td:eq(2)").html()+'</p>'+
 		'<pre>'+$(this).closest("tr").children("td:eq(1)").text()+'</pre>'
 	);
+	$('#cal_print').show();
 	modal.style.display = 'none';
 });
 
-
+// 추가된 일정 제거
 $(document).on("click", '#cal_del', function(){
+	$('#cal_print').hide();
 	$('#cal_print').html('');
 	boardform.schedule_id.disabled = true;
 });
-
 
 // 투표 활성화, 비활성화
 function vote_toggle(){
@@ -132,7 +140,7 @@ $(document).on("click", ".del_item", function(){
 	$(".new_item").get( $(".del_item").index(this) ).remove();
 	this.remove();
 });
-// 투표 버튼
+// 에디터 투표 버튼
 var vote_btn = function (context) {
 	var ui = $.summernote.ui;
 
@@ -201,7 +209,7 @@ function timecheck(){
 // 투표 종료 시간 변경할 때 검사
 $("#vote_end").change( timecheck );
 
-// submit (유효성 검사 포함 (내용이 있는지 없는지))
+// submit (유효성 검사 포함)
 document.getElementById('btn_save').onclick = function(){
 	let title = document.getElementById('tb_title').value;
 	let content = document.querySelector('.note-editable').innerHTML
@@ -214,7 +222,7 @@ document.getElementById('btn_save').onclick = function(){
 		// 투표 유효성 검사
 		if($("#vote").css("display") == "block"){
 			vote_check = timecheck();
-			$("#vote input").each(function(){
+			$("#vote input").each(function(){ // 제목, 항목 비어있으면 안됨
 				if($.trim($(this).val()) == 0){
 					alert('투표 제목 또는 항목을 입력해 주세요.');
 					vote_check = false;
@@ -238,4 +246,13 @@ document.getElementById('btn_reset').addEventListener("click", function(){
 	$(".del_item").remove();
 	$("#vote_content").attr("disabled", true); 
 	$("#vote input").attr("disabled", true);
+	$("#modal_result").html('');
+	$('#cal_print').hide();
+	$('#cal_print').html('');
+	so.value='T';
+	cal_title.style.display = 'inline-block';
+	cal_date.style.display = 'none';
+	cal_title.value = '';
+	cal_date.value = '';
+	boardform.schedule_id.disabled = true;
 });

@@ -18,6 +18,7 @@
 		<hr style="border-top:2px dashed gray; margin:0px 5px;">
 		<p><a href="/team/search">그룹찾기</a></p>
 	</div>
+	<!--/* 가입 대기중이거나 가입한 그룹 출력 */-->
 	<div class="float-left team-item " th:each="dto : ${teamList}">
 		<p th:text="${dto.team_name}" class="font-big text-center team-name"></p>
 		<div class="float-left text-center">
@@ -29,8 +30,9 @@
 			<span class="font-blue pointer" data-link="member/info">내 정보</span>
 			<span class="font-blue pointer" data-link="info">그룹 정보</span>
 			<th:block th:if="${dto.tm_grade} != 'WAIT'">
-			<span class="font-blue pointer" data-link="planner/calendar">그룹 일정</span>
-			<span class="font-blue pointer" data-link="board/list">그룹 게시판</span>
+				<!--/* 가입 대기중일 때 표시 안하는 부분 */-->
+				<span class="font-blue pointer" data-link="planner/calendar">그룹 일정</span>
+				<span class="font-blue pointer" data-link="board/list">그룹 게시판</span>
 			</th:block>
 		</div>
 	</div>

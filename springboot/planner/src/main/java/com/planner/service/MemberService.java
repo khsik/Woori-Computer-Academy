@@ -2,7 +2,6 @@ package com.planner.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

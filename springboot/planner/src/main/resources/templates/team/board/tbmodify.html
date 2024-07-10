@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8"/>
-	<title>게시글 작성</title>
+	<title>게시글 수정</title>
 	<link rel="stylesheet" type="text/css" href="/css/header.css">
 	<link rel="stylesheet" type="text/css" href="/css/team/teamCommon.css">
 	<link rel="stylesheet" type="text/css" href="/css/tema/board/tbwrite.css">
@@ -29,8 +29,6 @@
 	<input type="text" name="tb_title" id="tb_title" th:value="${dto?.tb_title}" placeholder="제목을 입력해 주세요." maxlength="50">
     <div id="summernote"></div>
     <input type="hidden" name="tb_content">
-
-    <!--/* TODO 투표, 일정 있으면 출력하기? */-->
 
     <div id="btns">
 	    <button type="button" class="btn" id="btn_save">저장</button>
