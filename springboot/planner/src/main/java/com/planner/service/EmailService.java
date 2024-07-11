@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.planner.exception.ErrorCode;
 import com.planner.exception.RestCustomException;
 import com.planner.mapper.EmailMapper;
+import com.planner.util.CommonUtils;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -39,6 +40,7 @@ public class EmailService {
 
 	//현재 이메일로 인증받았던 이전 인증코드들 삭제
 	// 해당이메일의 기존 인증기록이 남아있으면 이전 코드도 인증이 되어버리기때문에 인증코드 생성전에 삭제
+	@Transactional
 	private void deletePrevEmailAuthCode(String toEmail) {
 		int isExists = emailMapper.isExists(toEmail);
 		if(isExists >=1) {
@@ -47,6 +49,7 @@ public class EmailService {
 	}
 	
 	// 이메일 인증 코드 생성
+	@Transactional
 	private String createAuthCode(String toEmail) {
 		StringBuilder authCode = new StringBuilder();
 		Random ramdom = new Random();
@@ -56,9 +59,7 @@ public class EmailService {
 		deletePrevEmailAuthCode(toEmail); 				// 이전 기록삭제
 		
 		int result = emailMapper.saveAuthCode(toEmail, authCode.toString()); // 인증코드저장
-		if(result != 1) {
-			throw new RestCustomException(ErrorCode.FAIL_CREATE_AUTHCODE);
-		}
+		CommonUtils.throwRestCustomExceptionIf(result !=1,  ErrorCode.FAIL_CREATE_AUTHCODE);
 		return authCode.toString();
 	}
 
@@ -78,10 +79,9 @@ public class EmailService {
 	
 	//인증 번호 검증
 	@Transactional(readOnly = true)
-	public int authCodeChk(String toEmail, String authCode) {
-		int result = 0;
-		result = emailMapper.authCodeChk(toEmail, authCode);
-		return result;
+	public void authCodeChk(String toEmail, String authCode) {
+		int result = emailMapper.authCodeChk(toEmail, authCode);
+		CommonUtils.throwRestCustomExceptionIf(result !=1,  ErrorCode.FAIL_AUTHENTICATION);
 	}
 
 	// 스케쥴러로 정기적으로 잉여데이터 전부다 삭제

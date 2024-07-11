@@ -43,7 +43,7 @@ public class TeamMemberController {
 	@ResponseBody
 	public int nickCheck(@RequestParam("team_id")Long team_id,
 							@RequestParam("tm_nickname")String tm_nickname) {
-		// 1이면 중복, 0이면 사용가능
+	// 1이면 중복, 0이면 사용가능
 		return tmService.nickCheck(team_id, tm_nickname);
 	}
 
@@ -51,15 +51,17 @@ public class TeamMemberController {
 	@GetMapping("/insert")
 	public String tmInsert(Model model, @UserData ResMemberDetail detail,
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
-		// 중복 신청 검사
+		// 중복 신청 검사를 위해 tm_grade 읽기
 		String grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
 		if(grade != null && TM_Grade.grade_set.contains(grade)) {
-			if(TM_Grade.ROLE_TEAM_WAIT.getValue().equals(grade)) {
+			// 중복 신청인 경우
+			if(TM_Grade.ROLE_WAIT.getValue().equals(grade)) {
 				model.addAttribute("overlap", "이미 가입 신청중인 그룹입니다.");
 			}else {
 				model.addAttribute("overlap", "이미 가입된 그룹입니다.");
 			}
 		}else {
+			// 정상적인 가입 신청인 경우
 			TeamDTO dto = teamService.teamInfo(team_id);
 			model.addAttribute("dto", dto);
 			model.addAttribute("member_name", detail.getMember_name());
@@ -73,8 +75,10 @@ public class TeamMemberController {
 							@UserData ResMemberDetail detail, @RequestParam("tm_nickname") String tm_nickname) {
 		int result = tmService.tmInsert(team_id, detail.getMember_id(), tm_nickname);
 		if(result == 1) {
+			// 가입 신청 성공
 			return "redirect:/team/member/info?team_id="+team_id+"&member_id="+detail.getMember_id();
 		}else {
+			// 가입 신청 실패
 			TeamDTO dto = teamService.teamInfo(team_id);
 			model.addAttribute("dto", dto);
 			model.addAttribute("member_name", detail.getMember_name());
@@ -108,7 +112,8 @@ public class TeamMemberController {
 		if(TM_Grade.grade_set.contains(tm_grade)) {
 			int result = tmService.gradeModify(team_id, member_id, tm_grade);
 			if(result == 1) {
-				if(TM_Grade.ROLE_TEAM_MASTER.getValue().equals(tm_grade)) { // 그룹장 양도시 user로 내려옴
+				if(TM_Grade.ROLE_TEAM_MASTER.getValue().equals(tm_grade)) {
+					// 그룹장 양도시 user로 내려옴
 					tmService.gradeModify(team_id, detail.getMember_id(), TM_Grade.ROLE_TEAM_USER.getValue());
 				}
 				return HttpStatus.OK;
@@ -122,10 +127,11 @@ public class TeamMemberController {
 	public String tmInfoList(Model model, @RequestParam(name = "team_id", defaultValue = "-1") Long team_id,
 							@UserData ResMemberDetail detail) {
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
-		if(tm_grade != null && !TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
+		if(tm_grade != null && !TM_Grade.ROLE_WAIT.getValue().equals(tm_grade)) {
+			// 그룹 인원이 맞으면 페이지 정상적으로 출력
 			String team_name = tmService.myinfo(team_id, detail.getMember_id()).getTeam_name();
 			List<TeamMemberDTO> tmlist = tmService.tmInfoList(team_id);
-			String wait = TM_Grade.ROLE_TEAM_WAIT.getValue();
+			String wait = TM_Grade.ROLE_WAIT.getValue();
 			long wait_count = tmlist.stream()
 					.filter(dto -> dto.getTm_grade().equals(wait))
 					.count();
@@ -135,6 +141,7 @@ public class TeamMemberController {
 			model.addAttribute("tm_grade", tm_grade);
 			return "/team/member/tmlist";
 		}else {
+			// 그룹 인원이 아니면 redirect
 			return "redirect:/team/main";
 		}
 	}
@@ -146,14 +153,15 @@ public class TeamMemberController {
 						@RequestParam(name = "team_member_id", defaultValue = "-1") Long team_member_id,
 						@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
 		TeamMyInfoDTO dto = null;
-		if(member_id > 0) {
+		if(member_id > 0) { // member_id로 검색
 			dto = tmService.myinfo(team_id, member_id);
-		}else if(team_member_id > 0){
+		}else if(team_member_id > 0){ // team_member_id로 검색
 			dto = tmService.myinfo2(team_id, team_member_id);
-		}else {
+		}else { // 로그인 중인 회원의 member_id로 검색
 			dto = tmService.myinfo(team_id, detail.getMember_id());
 		}
 		if(dto == null) {
+			// 잘못된 접근시
 			return "redirect:/team/info?team_id="+team_id;
 		}
 		model.addAttribute("dto", dto);
@@ -164,14 +172,14 @@ public class TeamMemberController {
 	// 그룹 회원 정보 수정
 	@PutMapping("/update")
 	@ResponseBody
-	public HttpStatus tmUpdate(Model model,@UserData ResMemberDetail detail,
+	public ResponseEntity<Void> tmUpdate(Model model,@UserData ResMemberDetail detail,
 						@RequestParam("team_id") Long team_id,
 						@RequestParam("tm_nickname") String tm_nickname){
 		int result = tmService.tmUpdate(team_id, detail.getMember_id(), tm_nickname);
 		if(result == 1) {
-			return HttpStatus.OK;
+			return ResponseEntity.ok().build();
 		}else{
-			return HttpStatus.BAD_REQUEST;
+			return ResponseEntity.badRequest().build();
 		}
 	}
 
@@ -203,5 +211,5 @@ public class TeamMemberController {
 		}
 		return HttpStatus.BAD_REQUEST;
 	}
-	
+
 }

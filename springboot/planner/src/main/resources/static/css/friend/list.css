@@ -46,14 +46,19 @@
 	text-align: center;
 	width: 30%;
 }
+
 .nameI:disabled{
-   border: 2px solid #ddd;
-}
-.nameT {
-	width: 120px;
+	border: none;
+	margin: 2px;
+	background-color: white;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.nameI {
+	text-align: center;
+	font-size: 14px;
 }
 
 .list_td {

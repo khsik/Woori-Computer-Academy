@@ -39,6 +39,7 @@
 	border-radius: 7px;
 	width: 315px;
 	height: 45px;
+	cursor: pointer;
 }
 
 .btnBox {
@@ -62,4 +63,5 @@
 	font-size: 13px;
 	font-weight : bold;
 	color: #C8C6C8;
+	margin: 13px 0;
 }

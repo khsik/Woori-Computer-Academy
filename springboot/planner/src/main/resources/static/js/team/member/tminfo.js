@@ -49,9 +49,8 @@ if(show != null){
 			body:new FormData(form)
 		});
 		fetch(update_request)
-			.then(response => response.text())
-			.then(result => {
-				if(result == 200){
+			.then(response => {
+				if(response.status == 200){
 					org_nick = form.tm_nickname.value;
 					show.style.display = 'block';
 					hide.style.display = 'none';

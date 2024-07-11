@@ -44,7 +44,7 @@ public class TeamScheduleController {
 			@RequestParam(name = "team_id", defaultValue = "-1") Long team_id) {
 		// 등급 갖고와서 대기중 or 미가입일시 보내버림
 		String tm_grade = tmService.teamMemberGrade(team_id, detail.getMember_id());
-		if (tm_grade == null || TM_Grade.ROLE_TEAM_WAIT.getValue().equals(tm_grade)) {
+		if (tm_grade == null || TM_Grade.ROLE_WAIT.getValue().equals(tm_grade)) {
 			return "redirect:/team/main";
 		}
 		model.addAttribute("tm_grade", tm_grade);

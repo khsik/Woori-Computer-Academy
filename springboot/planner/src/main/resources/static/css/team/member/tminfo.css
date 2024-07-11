@@ -11,7 +11,8 @@
 	margin:-2px;
 }
 #info_update{
-	width:320px;
+	width:400px;
+	transform:translateX(80px);
 	margin:0 auto;
 }
 #info_update > tr, td{
@@ -22,4 +23,7 @@
 }
 #info_update button{
 	padding:2px 5px;
+}
+#nick_check{
+	margin-left:5px;
 }

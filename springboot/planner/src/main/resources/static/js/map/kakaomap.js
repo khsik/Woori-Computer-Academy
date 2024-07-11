@@ -13,7 +13,7 @@ var map = new kakao.maps.Map(mapContainer, mapOption);
 function resizemap() {
 	var mapContainer = document.getElementById('map');
 	mapContainer.style.width = "100%";
-	mapContainer.style.height = "100%";
+	mapContainer.style.height = "500px";
 }
 
 function relayout() {

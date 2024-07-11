@@ -66,7 +66,7 @@ function createCalendar(month, year) {
 		if (i === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
 			day.classList.add('today');
 		}
-		
+
 	}
 	$(document).off("click");
 
@@ -88,8 +88,8 @@ function createCalendar(month, year) {
 		local_date_end = clickDateSec.toISOString().slice(0, 16);
 		let data = {
 			"date": clickedDate,
-			"team_id":team_id,
-			"tm_grade":tm_grade
+			"team_id": team_id,
+			"tm_grade": tm_grade
 		};
 		$.ajax({
 			url: "schedule",
@@ -158,7 +158,7 @@ window.onload = function() {
 
 // 여기는 버튼 클릭시 글작성 div 왔다 갔다 하는 스크립트
 function btnClick() {
-	
+
 	const mydiv = document.getElementById('my-div');
 
 	if (mydiv.style.display !== 'block') {
@@ -231,8 +231,8 @@ function writeSchedule() {
 		return;
 	}
 
-	if(team_id != null){
-		$("#form").append($('<input>', { type: 'hidden',name:'team_id', val: team_id }));
+	if (team_id != null) {
+		$("#form").append($('<input>', { type: 'hidden', name: 'team_id', val: team_id }));
 	}
 
 	$.ajax({
@@ -257,16 +257,35 @@ function writeSchedule() {
 // 삭제 버튼
 function deleteScheduel(btn) {
 	const schedule_id = btn.value;
-	$.ajax({
-		url: 'schedule/del',
-		type: 'delete',
-		data: { schedule_id: schedule_id },
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader(header, token);
-		},
-		success: function() {
-			$(".schedule").load(window.location.href + "");
-			scheduleAjax();
+	Swal.fire({
+		title: "삭제 하시겠습니까?",
+		icon:"question",
+		showCancelButton: true,
+		confirmButtonText: "네",
+		denyButtonText: "아니요"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			Swal.fire({
+				title: "삭제 되었습니다.",
+				icon: "success"
+			});
+			$.ajax({
+				url: 'schedule/del',
+				type: 'delete',
+				data: { schedule_id: schedule_id },
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				success: function() {
+					$(".schedule").load(window.location.href + "");
+					scheduleAjax();
+				}
+			});
+		} else {
+			Swal.fire({
+				title: "삭제되지 않았습니다.",
+				icon: "error"
+			});
 		}
 	});
 }
@@ -302,8 +321,8 @@ function editSchedule(btn) {
 function scheduleAjax() {
 	let data = {
 		"date": clickedDate,
-		"team_id":team_id,
-		"tm_grade":tm_grade
+		"team_id": team_id,
+		"tm_grade": tm_grade
 	};
 	$.ajax({
 		url: "schedule",

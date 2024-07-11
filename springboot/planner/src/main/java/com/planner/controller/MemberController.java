@@ -1,10 +1,9 @@
 package com.planner.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.spring.MyBatisSystemException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,10 +26,10 @@ import com.planner.dto.response.member.ResMemberDetail;
 import com.planner.enums.FriendRole;
 import com.planner.enums.Gender;
 import com.planner.enums.Masking;
+import com.planner.enums.MemberRole;
 import com.planner.enums.MemberStatus;
 import com.planner.exception.CustomException;
 import com.planner.exception.ErrorCode;
-import com.planner.exception.RestCustomException;
 import com.planner.service.EmailService;
 import com.planner.service.FriendService;
 import com.planner.service.MemberService;
@@ -40,13 +39,16 @@ import com.planner.util.UserData;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-
+//TODO - 이메일 체크 JS 까지 서윗알러트 바꿈
 	private final MemberService memberService;
 	private final FriendService friendService;
 	private final EmailService emailService;
@@ -59,7 +61,7 @@ public class MemberController {
 
 	// 회원가입 Post
 	@PostMapping("/anon/insert")
-	public String memberInsert(MemberDTO memberDTO, RedirectAttributes rttr) {
+	public String memberInsert(@Valid MemberDTO memberDTO, RedirectAttributes rttr) {
 		int result = memberService.memberInsert(memberDTO);
 		rttr.addFlashAttribute("result", result);
 		return "redirect:/planner/main";
@@ -80,21 +82,12 @@ public class MemberController {
 	@ResponseBody
 	public ResponseEntity<Long> authCodeChk(@RequestParam(value = "toEmail") String toEmail,
 			@RequestParam(value = "authCode") String authCode) {
-		int result = 0;
-		ResMemberDetail member = null;
-		try {
-			member = memberService.memberDetail(toEmail);
-		}catch(MyBatisSystemException e){
-			member = memberService.formMember(toEmail);
-		}
-		result = emailService.authCodeChk(toEmail, authCode);
-		if (result != 1) {
-			throw new RestCustomException(ErrorCode.FAIL_AUTHENTICATION);
-		}
-		if (member != null) {
+		ResMemberDetail member = memberService.formMember(toEmail);
+		emailService.authCodeChk(toEmail, authCode);
+		if (!CommonUtils.isEmpty(member)) {
 			return ResponseEntity.ok(member.getMember_id());
 		}
-		return ResponseEntity.ok(1L);
+		return ResponseEntity.ok(1L); // 성공체크용으로 의미없는 값
 	}
 
 	/* 비밀번호 확인 폼 */
@@ -111,11 +104,8 @@ public class MemberController {
 	@ResponseBody
 	public ResponseEntity<String> passwordChk(@RequestParam(value = "currentPw") String currentPw,
 			@UserData ResMemberDetail member) {
-		int result = memberService.passwordChk(currentPw, member);
-		if (result == 1) {
-			return ResponseEntity.ok("성공");
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("실패");
+		memberService.isPasswordValid(currentPw, member);
+		return ResponseEntity.ok("성공");
 	}
 
 	/* 비밀번호 찾기 */
@@ -137,13 +127,13 @@ public class MemberController {
 	/* 비밀번호 변경 */
 	@PostMapping("/anon/pw/change")
 	@ResponseBody
-	public ResponseEntity<String> pwChange(ReqChangePassword req) {
+	public ResponseEntity<String> pwChange(@Valid ReqChangePassword req) {
 		if (req.getNewPassword().equals(req.getNewPassword2())) {
 			memberService.changePassword(req);
 		}
 		return ResponseEntity.ok("ok");
 	}
-
+	
 	// 로그인
 	@GetMapping("/anon/login")
 	public String memberLogin(@UserData ResMemberDetail detail, HttpServletRequest request,
@@ -159,6 +149,9 @@ public class MemberController {
 	@GetMapping("/auth")
 	public String memberStatusChk(@UserData ResMemberDetail detail, HttpServletRequest request,
 			HttpServletResponse response) {
+		if (MemberRole.SUPER_ADMIN.getType().equals(detail.getMember_role())) {
+			return "redirect:/admin/main";
+		}
 		memberService.memberStatusChk(detail.getMember_status(), request, response);
 		return "redirect:/planner/main";
 	}
@@ -180,15 +173,10 @@ public class MemberController {
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/auth/myInfo")
 	public String myInfo(@UserData ResMemberDetail detail, Model model) {
-		ResMemberDetail memberDTO = null;
+		ResMemberDetail memberDTO = memberService.findMemberByLoginType(detail.getOauth_type(),
+				detail.getMember_email());
 		String gender;
 
-		if (CommonUtils.isEmpty(detail.getOauth_id())) {
-			memberDTO = memberService.memberDetail(detail.getMember_email()); // 나의 객체
-		}
-		if (!CommonUtils.isEmpty(detail.getOauth_id())) {
-			memberDTO = memberService.memberDetailForSocial(detail.getMember_email(), detail.getOauth_type());
-		}
 		gender = Gender.findNameByCode(detail.getMember_gender());
 
 		model.addAttribute("memberDTO", memberDTO);
@@ -200,24 +188,24 @@ public class MemberController {
 //	회원정보
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/auth/info/{member_id}")
-	public String memberInfo(@PathVariable(value = "member_id") Long member_id,
-					   		 @UserData ResMemberDetail detail, Model model) {
+	public String memberInfo(@PathVariable(value = "member_id") Long member_id, @UserData ResMemberDetail detail,
+			Model model) {
 		String gender;
 		String name;
 		int receive_count = 0;
-		
+
 		MemberDTO memberDTO = memberService.info(member_id, detail);
 		gender = Gender.findNameByCode(memberDTO.getMember_gender());
-		receive_count = friendService.receiveRequestCount(detail.getMember_email());	// 받은 친구신청 수
-		
+		receive_count = friendService.receiveRequestCount(detail.getMember_email()); // 받은 친구신청 수
+
 		name = Masking.maskAs(memberDTO.getMember_name(), Masking.NAME);
-		model.addAttribute("name", name);		// 마스킹 처리
-		
+		model.addAttribute("name", name); // 마스킹 처리
+
 		model.addAttribute("receive_count", receive_count);
 		model.addAttribute("memberDTO", memberDTO);
 		model.addAttribute("gender", gender);
-		
-		return "/member/member_info"; 
+
+		return "/member/member_info";
 	}
 
 	/* 회원정보 수정 폼 */
@@ -231,7 +219,7 @@ public class MemberController {
 	/* 회원정보 수정 */
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/auth/update")
-	public String memberUpdate(ReqMemberUpdate req) {
+	public String memberUpdate(@Valid ReqMemberUpdate req) {
 		memberService.memberUpdate(req);
 		return "redirect:/member/auth/myInfo";
 	}
@@ -255,7 +243,7 @@ public class MemberController {
 	/* 회원 복구 */
 	@PostMapping("/anon/restore")
 	@ResponseBody
-	public ResponseEntity<Integer> memberRestore(ReqMemberRestore req) {
+	public ResponseEntity<Integer> memberRestore(@Valid ReqMemberRestore req) {
 		int result = memberService.memberRestore(req);
 		return ResponseEntity.ok(result);
 	}
@@ -276,13 +264,34 @@ public class MemberController {
 		int start = (currentPage - 1) * pageSize + 1;
 		int end = currentPage * pageSize;
 		int count = 0;
-		String gender;
 		
 		List<MemberDTO> list = memberService.search(detail.getMember_email(), keyword, start, end);
 		for (MemberDTO memberDTO : list) {
-			gender = Gender.findNameByCode(memberDTO.getMember_gender());
+			String statusB = "";
+			String statusC = "";
 			
-			model.addAttribute("gender", gender);
+			/* 친구 신청 상태 */
+			if (friendService.friendRequestStatus(memberDTO.getMember_id(), detail.getMember_id()) != null) {
+				statusB = friendService.friendRequestStatus(memberDTO.getMember_id(), detail.getMember_id());
+			}else if (friendService.friendRequestStatus(detail.getMember_id(), memberDTO.getMember_id()) != null) {
+				statusC = friendService.friendRequestStatus(detail.getMember_id(), memberDTO.getMember_id());
+			}
+			if (statusB.equals("S") && statusC.equals("S")) {
+				memberDTO.setFriend_request_status("");
+			}else if (statusB.equals("S")) {
+				memberDTO.setFriend_request_status("S");
+			}else if (statusC.equals("S")){
+				memberDTO.setFriend_request_status("R");
+			}
+			
+			/* 친구 상태 */
+			if (friendService.friendStatus(detail.getMember_id(), memberDTO.getMember_id()) != null &&
+				friendService.friendStatus(detail.getMember_id(), memberDTO.getMember_id()).equals("F")) {			// 내가 보낸 경우
+				memberDTO.setFriend_request_status("F");
+			}else if (friendService.friendStatus(memberDTO.getMember_id(), detail.getMember_id()) != null &&
+					  friendService.friendStatus(memberDTO.getMember_id(), detail.getMember_id()).equals("F")) {	// 내가 받은 경우
+				memberDTO.setFriend_request_status("F");
+			}
 		}
 		
 		if (list.size() > 0) {
@@ -296,6 +305,10 @@ public class MemberController {
 		
 		if (endPage >= pageCount) {
 			endPage = pageCount;
+		}
+		
+		if (keyword.length() < 3) {
+			return "redirect:/member/auth/search";
 		}
 		
 		model.addAttribute("count", count);
@@ -316,8 +329,9 @@ public class MemberController {
 		
 		model.addAttribute("NAME", Masking.NAME);		// 타임리프로 마스킹 처리를 하기위해 넘겨줌
 		
+		model.addAttribute("detail", detail);
+		
 		return "member/member_search";
 	}
-	
 
 }
