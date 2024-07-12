@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.planner.dto.request.schedule.CalendarDTO;
+import com.planner.dto.request.schedule.CalendarPrintDTO;
 import com.planner.dto.request.schedule.MapDTO;
 import com.planner.dto.request.schedule.ScheduleDTO;
 import com.planner.dto.request.schedule.ScheduleSearchDTO;
@@ -48,6 +50,10 @@ public class ScheduleService {
 	
 	public ScheduleDTO schedule_select_one(Long schedule_id) {
 		return scheduleMapper.schedule_select_one(schedule_id);
+	}
+
+	public List<CalendarPrintDTO> calendarPrint(CalendarDTO dto) {
+		return scheduleMapper.calendarPrint(dto);
 	}
 	
 	

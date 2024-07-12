@@ -78,7 +78,7 @@ public class MemberService {
 	/* 비번체크 */
 	public void isPasswordValid(String currnetPw, ResMemberDetail member) {
 		CommonUtils.throwRestCustomExceptionIf(CommonUtils.isEmpty(member), ErrorCode.NO_ACCOUNT);
-		CommonUtils.throwRestCustomExceptionIf(member.getOauth_id().equals("none") && !CommonUtils.isEmpty(currnetPw), ErrorCode.NO_ACCOUNT);
+		CommonUtils.throwRestCustomExceptionIf(member.getOauth_id().equals("none") && CommonUtils.isEmpty(currnetPw), ErrorCode.NO_ACCOUNT);
 		CommonUtils.throwRestCustomExceptionIf(!passwordEncoder.matches(currnetPw, member.getMember_password()), ErrorCode.NO_ACCOUNT);
 	}
 

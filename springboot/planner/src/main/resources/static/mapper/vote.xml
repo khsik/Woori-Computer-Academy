@@ -38,8 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<collection column="vote_id" property="vote_items" javaType="List" ofType="VoteItemDTO">
 		<id		column="vote_item_id"	property="vote_item_id"></id>
 		<result column="vote_item_name"	property="vote_item_name"></result>
-		<collection column="vote_item_id" property="vote_members" javaType="List" ofType="VoteMemberDTO">
-			<id column="team_member_id"	property="team_member_id"></id>
+		<collection column="vote_item_id" property="vote_members" javaType="List" ofType="Long">
+			<id column="team_member_id"></id>
 		</collection>
 	</collection>
 </resultMap>
