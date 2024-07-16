@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-//TODO - 이메일 체크 JS 까지 서윗알러트 바꿈
+	
 	private final MemberService memberService;
 	private final FriendService friendService;
 	private final EmailService emailService;
@@ -110,10 +110,8 @@ public class MemberController {
 
 	/* 비밀번호 찾기 */
 	@GetMapping("/anon/find/pw")
-	public String findPwForm(@UserData ResMemberDetail detail, Model model) {
-		if (!CommonUtils.isEmpty(detail)) {
-			model.addAttribute("member_email", detail.getMember_email());
-		}
+	public String findPwForm(HttpServletRequest request, HttpServletResponse response) {
+		CommonUtils.removeCookiesAndSession(request, response);
 		return "/member/member_find_pw";
 	}
 
@@ -146,13 +144,14 @@ public class MemberController {
 	}
 
 	/* 로그인시에 상태코드 검사 */
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/auth")
 	public String memberStatusChk(@UserData ResMemberDetail detail, HttpServletRequest request,
 			HttpServletResponse response) {
+		memberService.memberStatusChk(detail.getMember_status(), request, response);
 		if (MemberRole.SUPER_ADMIN.getType().equals(detail.getMember_role())) {
 			return "redirect:/admin/main";
 		}
-		memberService.memberStatusChk(detail.getMember_status(), request, response);
 		return "redirect:/planner/main";
 	}
 
@@ -163,7 +162,8 @@ public class MemberController {
 	}
 
 	/* 소셜로그인에서 생긴 쿠키 제거 후 로그아웃 */
-	@GetMapping("/anon/signout")
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/auth/signout")
 	public String signout(HttpServletRequest request, HttpServletResponse response) {
 		CommonUtils.removeCookiesAndSession(request, response);
 		return "redirect:/member/logout";
@@ -196,7 +196,7 @@ public class MemberController {
 
 		MemberDTO memberDTO = memberService.info(member_id, detail);
 		gender = Gender.findNameByCode(memberDTO.getMember_gender());
-		receive_count = friendService.receiveRequestCount(detail.getMember_email()); // 받은 친구신청 수
+		receive_count = friendService.receiveRequestCount(detail.getMember_id()); // 받은 친구신청 수
 
 		name = Masking.maskAs(memberDTO.getMember_name(), Masking.NAME);
 		model.addAttribute("name", name); // 마스킹 처리
@@ -265,7 +265,7 @@ public class MemberController {
 		int end = currentPage * pageSize;
 		int count = 0;
 		
-		List<MemberDTO> list = memberService.search(detail.getMember_email(), keyword, start, end);
+		List<MemberDTO> list = memberService.search(detail.getMember_id(), keyword, start, end);
 		for (MemberDTO memberDTO : list) {
 			String statusB = "";
 			String statusC = "";
@@ -324,7 +324,7 @@ public class MemberController {
 		
 		model.addAttribute("status", detail.getMember_status());
 		
-		int receive_count = friendService.receiveRequestCount(detail.getMember_email());	// 받은 친구신청 수
+		int receive_count = friendService.receiveRequestCount(detail.getMember_id());	// 받은 친구신청 수
 		model.addAttribute("receive_count", receive_count);
 		
 		model.addAttribute("NAME", Masking.NAME);		// 타임리프로 마스킹 처리를 하기위해 넘겨줌
@@ -333,5 +333,4 @@ public class MemberController {
 		
 		return "member/member_search";
 	}
-
 }

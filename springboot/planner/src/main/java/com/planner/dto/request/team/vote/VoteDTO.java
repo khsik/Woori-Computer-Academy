@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class VoteDTO {
 	private Long vote_id;
+	private Long team_board_id;
 	private String vote_title;
 	private String vote_content;
 	private LocalDateTime vote_end;

@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</selectKey>
 	insert into vote values(
 		#{vote_id},
+		#{team_board_id},
 		#{vote_title},
 		#{vote_content},
 		#{vote_end}
@@ -25,10 +26,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</foreach>
 </insert>
-
-<delete id="voteDelete">
-	delete vote where vote_id=#{vote_id}
-</delete>
 
 <resultMap type="VoteInfoDTO" id="voteInfo">
 	<result column="vote_id"		property="vote_id"/>
