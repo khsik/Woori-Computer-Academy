@@ -5,11 +5,11 @@ const so = document.getElementById('so');
 const cal_title = document.querySelector('input[name="cal_title"]');
 const cal_date = document.querySelector('input[name="cal_date"]');
 const cal_search = document.getElementById('cal_search');
-// 글삭제 modal창 on
+// 일정 modal창 on
 function calendar_btn(){
 	modal.style.display = 'block';
 }
-// 글삭제 modal창 off
+// 일정 modal창 off
 modal_close.addEventListener('click', function(){
 	modal.style.display = 'none';
 })
@@ -44,7 +44,12 @@ function cal_search_function(){
 	let data = {};
 	if(so.value == 'T'){ // 제목 검색일 때
 		if(cal_title.value.trim().length < 2){
-			alert('검색은 최소 2글자 이상입니다.');
+			Swal.fire({
+				title: "검색어 길이 제한",
+				text: "검색어는 2글자 이상 입력해주세요.",
+				icon: "warning",
+				confirmButtonText: "닫기"
+			});
 			return;
 		}
 		data = {
@@ -54,6 +59,12 @@ function cal_search_function(){
 		}
 	}else{ // 시작, 종료 날짜 검색일 때
 		if(cal_date.value.length == 0){
+			Swal.fire({
+				title: "검색어 길이 제한",
+				text: "검색어는 2글자 이상 입력해주세요.",
+				icon: "warning",
+				confirmButtonText: "닫기"
+			});
 			alert('날짜를 입력 해주세요.');
 			return;
 		}
