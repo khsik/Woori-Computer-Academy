@@ -7,8 +7,8 @@ check_delete.addEventListener('click', function(){
 		text: "삭제 후 되돌릴 수 없습니다.",
 		icon: "warning",
 		showCancelButton: true,
-		confirmButtonColor: "#3085d6",
-		cancelButtonColor: "#d33",
+		confirmButtonColor: "#d33",
+		cancelButtonColor: "#3085d6",
 		confirmButtonText: "삭제",
 		cancelButtonText: "취소"
 	})

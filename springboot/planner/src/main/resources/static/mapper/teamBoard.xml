@@ -82,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				<if test='searchOption != null and !"".equals(searchOption) and searchOption neq "NO"'>
 					<if test='searchOption.equals("TC")'>
 					and (tb_title like '%'||#{search}||'%'
-						or team_board_id in 
+						or tb.team_board_id in 
 					        (select team_board_id from
 					            (select team_board_id,<![CDATA[REGEXP_REPLACE(tb_content,'<[^>]*>','')]]> as tbc from team_board)
 					                where DBMS_LOB.instr(tbc, #{search}) > 0))
@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					and tb_title like '%'||#{search}||'%'
 					</if>
 					<if test="searchOption=='C'.toString()">
-					and team_board_id in 
+					and tb.team_board_id in 
 					        (select team_board_id from
 					            (select team_board_id,<![CDATA[REGEXP_REPLACE(tb_content,'<[^>]*>','')]]> as tbc from team_board)
 					                where DBMS_LOB.instr(tbc, #{search}) > 0)
@@ -100,7 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					and tm.tm_nickname like '%'||#{search}||'%'
 					</if>
 				</if>
-		    order by team_board_id desc) tbs
+		    order by tb.team_board_id desc) tbs
 	    ) stb
 	left join(
 		select team_board_id, count(*) as reply_count

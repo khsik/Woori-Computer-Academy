@@ -25,8 +25,8 @@ $("#check_delete").on("click", function(){
 		text: "삭제 후 되돌릴 수 없습니다.",
 		icon: "warning",
 		showCancelButton: true,
-		confirmButtonColor: "#3085d6",
-		cancelButtonColor: "#d33",
+		confirmButtonColor: "#d33",
+		cancelButtonColor: "#3085d6",
 		confirmButtonText: "삭제",
 		cancelButtonText: "취소"
 	})
@@ -41,10 +41,10 @@ $("#check_delete").on("click", function(){
 				success: function(result){
 					window.location = result;
 				},
-				error:function(request, status, error){
+				error:() => {
 					Swal.fire({
 						title: "게시글 삭제 실패",
-						text: "다시 시도해 주세요.",
+						text: "로그인 상태 확인 후 시도해 주세요.",
 						icon: "error",
 						confirmButtonText: "닫기"
 					});
@@ -63,10 +63,12 @@ function getReply(){
 			team_board_id:team_board_id
 		},
 		success:function(result){
+			is_redirected(result);
 			$("#reply_list").html(result);
 		}
 	})
 }
+
 // 댓글 삭제 버튼
 $(document).on("click",".re-del-btn", function(){
 	let data = $(this).data();
@@ -75,8 +77,8 @@ $(document).on("click",".re-del-btn", function(){
 		text: "삭제 후 되돌릴 수 없습니다.",
 		icon: "warning",
 		showCancelButton: true,
-		confirmButtonColor: "#3085d6",
-		cancelButtonColor: "#d33",
+		confirmButtonColor: "#d33",
+		cancelButtonColor: "#3085d6",
 		confirmButtonText: "삭제",
 		cancelButtonText: "취소"
 	})
@@ -89,9 +91,17 @@ $(document).on("click",".re-del-btn", function(){
 				beforeSend:function(xhr){
 					xhr.setRequestHeader(header, token);
 				},
-				success:function(){
+				success:function(result){
 					$("#"+data.reply_id).remove();
 					$("#reply_count").text($("#reply_count").text()-1);
+				},
+				error:() => {
+					Swal.fire({
+						title: "댓글 삭제 실패",
+						text: "로그인 상태 확인 후 시도해 주세요.",
+						icon: "error",
+						confirmButtonText: "닫기"
+					});
 				}
 			});
 		};
@@ -134,7 +144,7 @@ $(document).on("click", ".re-mod-btn", function(){
 				beforeSend:function(xhr){
 					xhr.setRequestHeader(header, token);
 				},
-				success:function(){
+				success:function(result){
 					$("#"+reply_id).css('display', 'block');
 					$("#"+reply_id+" .reply_content").text(data.reply_content);
 					modify_div.remove();
@@ -142,7 +152,7 @@ $(document).on("click", ".re-mod-btn", function(){
 				error:function(){
 					Swal.fire({
 						title: "댓글 수정 실패",
-						text: "다시 시도해 주세요.",
+						text: "로그인 상태 확인 후 시도해 주세요.",
 						icon: "error",
 						confirmButtonText: "닫기"
 					});
@@ -183,7 +193,8 @@ $(document).on("click", ".rereply-insert", function(){
 		beforeSend:function(xhr){
 			xhr.setRequestHeader(header, token);
 		},
-		success:function(){
+		success:function(result){
+			is_redirected(result);
 			getReply();
 			$(".rereply").remove();
 		},
@@ -223,7 +234,8 @@ $("#reply_btn").on("click", function(){
 			beforeSend:function(xhr){
 				xhr.setRequestHeader(header, token);
 			},
-			success:function(){
+			success:function(result){
+				is_redirected(result);
 				getReply();
 				$("#reply_form").each(function(){this.reset();})
 			},
@@ -274,6 +286,7 @@ $(document).on("click", "#do_vote", function(){
 			xhr.setRequestHeader(header, token);
 		},
 		success:function(result){
+			is_redirected(result);
 			if(result == -1){
 				Swal.fire({
 					title: "투표 실패",
@@ -290,7 +303,8 @@ $(document).on("click", "#do_vote", function(){
 				});
 			}
 			getVote();
-		}
+		},
+		error: () => { location.href="/member/anon/login" }
 	});
 });
 // 투표하기, 투표결과 토글
@@ -298,3 +312,10 @@ $(document).on("click", ".toggle_result", function(){
 	$("#vote_items").toggle();
 	$("#vote_result").toggle();
 });
+
+// 로그아웃 되서 요청이 로그인 페이지로 redirect된 경우 확인
+function is_redirected(result){
+	if(result.includes("<title>로그인</title>")){
+		location.href="/member/anon/login";
+	}
+}

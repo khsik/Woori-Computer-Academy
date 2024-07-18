@@ -73,7 +73,7 @@ submit_btn.addEventListener("click", function(){
 	if(overlap.innerText == pass_msg){ // 중복 검사 통과된 상태면
  		if(img.files[0] != null){ // 이미지 파일 있으면 검사
  			let filename = img.value.split('.');
- 			if(filename[filename.length-1].match(fileFormat) == null){
+ 			if(filename[filename.length-1].toLowerCase().match(fileFormat) == null){
 				Swal.fire({
 					title: "미지원 포맷",
 					text: "지원하지 않는 형식의 이미지 파일입니다.",

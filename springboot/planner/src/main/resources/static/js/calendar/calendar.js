@@ -22,6 +22,19 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 });
 
+// 달력 날짜 변경 버튼
+document.getElementById("go_date_btn").addEventListener("click", function(){
+	let selected_date = document.getElementById("go_date_input").value;
+	if(selected_date.length === 0){
+		return;
+	}
+	currentYear = selected_date.split("-")[0];
+	currentMonth = selected_date.split("-")[1];
+	createCalendar(currentMonth, currentYear);
+	let sday = parseInt(selected_date.split("-")[2]);
+	let selector = `div.day[data-day="${sday}"]`;
+	document.querySelector(selector).click();
+});
 
 // 달력 생성 함수
 function createCalendar(month, year) {
@@ -80,7 +93,7 @@ function createCalendar(month, year) {
 		"end_date": end_date,
 		"team_id": team_id
 	};
-	// 출력된 달의 일정 가져오기 (제목, MMdd 형식의 시작, 종료 날짜)
+	// 출력된 달의 일정 가져오기 (제목, yyyyMMdd 형식의 시작, 종료 날짜)
 	$.ajax({
 		url: "/planner/cal-sche",
 		type: "get",
@@ -90,7 +103,7 @@ function createCalendar(month, year) {
 			$("#schedule_count").text(result.length); // 이 달의 일정 개수 표시
 			document.querySelectorAll(".day").forEach(day => {
 				if(!day.classList.contains("blank")){
-					let date = String(monthName.dataset.month).padStart(2, '0') + String(day.innerText).padStart(2, '0');
+					let date = year + String(monthName.dataset.month).padStart(2, '0') + String(day.innerText).padStart(2, '0');
 					result.forEach( (dto) => {
 						let schedule_title = dto.schedule_title;
 						let schedule_start = dto.schedule_start;
@@ -138,7 +151,9 @@ function createCalendar(month, year) {
 				type: "get",
 				data: data,
 				success: function(html) {
-	
+					if(!html.includes("<title>스케쥴 상세보기</title>")){
+						location.href = "/member/anon/login";
+					}
 					$(".schedule").empty();
 					$(".schedule").append(html);
 	
@@ -295,11 +310,13 @@ function writeSchedule() {
 			//let end_date = $("#form").find('input[name="schedule_end"]').val();
 			
 			let schedule_title = $("#form").find('input[name="schedule_title"]').val();
-			let schedule_start = $("#form").find('input[name="schedule_start"]').val().substring(5,10).replace('-','');
-			let schedule_end = $("#form").find('input[name="schedule_end"]').val().substring(5,10).replace('-','');
+			let schedule_start = $("#form").find('input[name="schedule_start"]').val().substring(0,10).replaceAll('-','');
+			let schedule_end = $("#form").find('input[name="schedule_end"]').val().substring(0,10).replaceAll('-','');
+			console.log(schedule_start);
+			console.log(schedule_end);
 			document.querySelectorAll(".day").forEach(day => {
 				if(!day.classList.contains("blank")){
-					let date = String($(".month-name")[0].dataset.month).padStart(2, '0') + String(day.innerText).padStart(2, '0');
+					let date = $(".month-name")[0].dataset.year + String($(".month-name")[0].dataset.month).padStart(2, '0') + String(day.innerText).padStart(2, '0');
 					if(date >= schedule_start && date <= schedule_end){
 						let ele = document.createElement("p");
 						ele.classList.add("small-gray");

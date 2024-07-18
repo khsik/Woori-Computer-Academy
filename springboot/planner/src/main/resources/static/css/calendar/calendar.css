@@ -10,6 +10,15 @@
 	height:0;
 	transform:translateY(-40px);
 }
+#go-date-div{
+	text-align:right;
+	height:0;
+	transform:translateY(-50px);
+}
+#go_date_btn{
+	padding: 2px 8px;
+	vertical-align: bottom;
+}
 /* /planner/calendar 의 달력 css. */
 .calendar {
 	display: grid;
@@ -25,7 +34,14 @@
 	-ms-use-select: none;
 	user-select: none;
 }
-
+/* 달력이 6줄일 때 */
+.calendar:has(.day:nth-child(36)){
+	height:515px;
+}
+/* 달력이 4줄일 때 */
+.calendar:not(:has(.day:nth-child(29))){
+   height:400px;
+}
 /* 달 이름을 가운데 정렬 */
 .month-name {
 	text-align: center;

@@ -122,8 +122,8 @@ kick.forEach(e => {
 			title: nick + alert_text,
 			icon: "warning",
 			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#3085d6",
 			confirmButtonText: "예",
 			cancelButtonText:"아니오"
 		}).then((result) => {
