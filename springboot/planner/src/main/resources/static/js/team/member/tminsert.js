@@ -5,16 +5,14 @@ const submit_btn = document.getElementById("submit_btn");
 const check_msg = document.getElementById("check_msg");
 const overlap = document.getElementById("overlap");
 const nickover = document.getElementById("nickover");
-
 if(overlap !== null){
 	Swal.fire({
 		title: "중복된 신청입니다.",
 		text: overlap.value,
 		icon: "error",
 		confirmButtonText: "닫기"
-	})
-	.then(() => {
-		location.replace("/team/main");
+	}).then(() => {
+		location.replace("/team/main");		
 	});
 }
 

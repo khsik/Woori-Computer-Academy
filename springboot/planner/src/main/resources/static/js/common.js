@@ -25,7 +25,8 @@ const PAGE_LIST = {
 	CHANGE_PASSWORD_FORM: "/member/anon/pw/change/",
 	MEMBER_UPDATE_FORM: "/member/auth/update",
 	LOGIN_PAGE: "/member/anon/login",
-	CALENDAR_PAGE: "/planner/calendar"
+	CALENDAR_PAGE: "/planner/calendar",
+	NOTICE_LIST : "/admin/notice"
 };
 // CSRF 토큰
 let csrfToken = $("meta[name='_csrf']").attr("content");
@@ -37,7 +38,7 @@ const defaultErrorFn = (errorResponse) => {
 	swalCall("경고",response.message,"error");
 };
 // AJAX 공통			// 구조 분해할당
-const ajaxCall = ({ url, method, successFn, param = null, errorFn = defaultErrorFn }) => {
+const ajaxCall = ({url, method, successFn, param = null, errorFn = defaultErrorFn }) => {
 	$.ajax({
 		url: url,
 		method: method,
@@ -61,7 +62,6 @@ const ajaxCall = ({ url, method, successFn, param = null, errorFn = defaultError
 
 /*스윗 알러트 공통*/
 const swalCall = (title, text, icon, thenFn, confirmButtonText = "확인", showCancelButton = false, cancelButtonText = "아니요") => {
-	
 	Swal.fire({
 		title: title,
 		html: text,
@@ -71,6 +71,7 @@ const swalCall = (title, text, icon, thenFn, confirmButtonText = "확인", showC
 		cancelButtonText: cancelButtonText
 	}).then((result) => {
 		if (typeof thenFn == "function") {
+			console.log(thenFn);
 			thenFn(result);
 		}
 	});

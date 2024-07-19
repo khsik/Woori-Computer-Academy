@@ -6,7 +6,9 @@
 	margin: 0;
 	padding: 0;
 }
-
+a{
+	text-decoration: none;
+}
 .header {
     font-family: 'Noto Sans KR', sans-serif;
 }
@@ -99,6 +101,7 @@ html.m-menu-scroll, html.m-menu-scroll > body {
     left:0;
     width:100%;
     height:64px;
+/*     background-color:bisque; */
     background-color:aliceblue;
     z-index:100;
 }
@@ -114,10 +117,9 @@ html.m-menu-scroll, html.m-menu-scroll > body {
 /* 상단 로고 */
 .header > .header-inner > .logo {
     position:absolute;
-    top:30%;
+    top:19px;
     left:50%;
     transform:translatex(-50%);
-    width:128px;
 }
 
 .header > .header-inner > .search > a > span {
@@ -299,17 +301,17 @@ html.m-menu-scroll, html.m-menu-scroll > body {
 }
 
 .header > .header-inner > .top-menu-bar > ul > li > .sub-menu-height-5 {
-    height:0px;
+    height:94px;
 }
 
 /* 상단 헤더 반응형 */
-@media (max-width:1024px){
+@media (max-width:1110px){
     .header {
         display:none;
     }
 }
 
-@media (min-width:1025px){
+@media (min-width:1111px){
     .m-header {
         display:none;
     }
@@ -328,7 +330,6 @@ html.m-menu-scroll, html.m-menu-scroll > body {
 }
 
 .m-header > .logo {
-    width:82px;
     display:inline-block;
     margin-top: 19px;
 }
@@ -336,7 +337,7 @@ html.m-menu-scroll, html.m-menu-scroll > body {
 .m-header > .search {
     width:25px;
     position:absolute;
-    top:50%;
+    top:53%;
     right:12px;
     transform:translatey(-50%);
 }

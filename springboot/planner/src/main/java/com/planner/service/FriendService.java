@@ -26,12 +26,6 @@ public class FriendService {
 	private final FriendMapper friendMapper;
 	private final MemberMapper memberMapper;
 	
-//	시퀀스 받아서 객체 찾기
-	@Transactional(readOnly = true)
-	public FriendRequestDTO findByFriendRequest(Long member_id) {
-		return friendMapper.findByFriendRequest(member_id);
-	}
-	
 //	회원 시퀀스로 친구 시퀀스 찾기
 	@Transactional(readOnly = true)
 	public Long findByFriendSeq(Long member_my_id , Long member_friend_id) {
@@ -42,14 +36,13 @@ public class FriendService {
 	
 //	친구신청 (보냄)
 	@Transactional
-	public void friendRequest(Long member_id, Long myId) {	// member_id : 친구(신청 받은) 시퀀스
+	public void friendRequest(Long member_id, ResMemberDetail detail) {	// member_id : 친구(신청 받은) 시퀀스
 		FriendRequestDTO friendRequestDTO = new FriendRequestDTO();
-		if (CommonUtils.isEmpty(member_id)) {
+		if (CommonUtils.isEmpty(member_id) || CommonUtils.isEmpty(detail.getMember_id())) {
 			throw new CustomException(ErrorCode.NO_ACCOUNT);
 		}
-		
-		friendRequestDTO.setMember_receive_id(member_id);				// 내가 친구신청 보낸 친구의 시퀀스
-		friendRequestDTO.setMember_send_id(myId);						// 나의 시퀀스
+		friendRequestDTO.setMember_receive_id(member_id);				// 내가 친구신청 보낸 회원의 시퀀스
+		friendRequestDTO.setMember_send_id(detail.getMember_id());
 		
 		friendMapper.friendRequest(friendRequestDTO);					// 친구신청 void 메서드
 	}
